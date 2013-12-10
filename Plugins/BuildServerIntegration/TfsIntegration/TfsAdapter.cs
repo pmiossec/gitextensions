@@ -48,12 +48,21 @@ namespace TfsIntegration
         private string _tfsTeamCollectionName;
         private string _projectName;
         private Regex _tfsBuildDefinitionNameFilter;
+        private static bool _debugActivated = false;
 
         public void Initialize(IBuildServerWatcher buildServerWatcher, ISettingsSource config, Func<string, bool> isCommitInRevisionGrid)
         {
             if (_buildServerWatcher != null)
             {
                 throw new InvalidOperationException("Already initialized");
+
+            if (_debugActivated)
+            {
+                _debugActivated = true;
+                var filename = string.Format("TfsAdapter_debug_{0}.txt", DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss-fff"));
+                var filePath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), filename);
+
+                Trace.Listeners.Add(new TextWriterTraceListener(filePath));
             }
 
             _buildServerWatcher = buildServerWatcher;
