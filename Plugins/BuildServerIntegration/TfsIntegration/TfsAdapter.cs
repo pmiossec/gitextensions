@@ -1,3 +1,4 @@
+#define GITTFS
 using System;
 using System.ComponentModel.Composition;
 using System.Diagnostics;
@@ -49,6 +50,9 @@ namespace TfsIntegration
         private string _projectName;
         private Regex _tfsBuildDefinitionNameFilter;
         private static bool _debugActivated = false;
+#if GITTFS
+        private static string WorkingDir { get; set; }
+#endif
 
         public void Initialize(IBuildServerWatcher buildServerWatcher, ISettingsSource config, Func<string, bool> isCommitInRevisionGrid)
         {
@@ -66,6 +70,10 @@ namespace TfsIntegration
             }
 
             _buildServerWatcher = buildServerWatcher;
+
+#if GITTFS
+            WorkingDir = _buildServerWatcher.Get<GitCommands.GitModule>("Module").WorkingDir;
+#endif
 
             _tfsServer = config.GetString("TfsServer", null);
             _tfsTeamCollectionName = config.GetString("TfsTeamCollectionName", null);
@@ -164,7 +172,36 @@ namespace TfsIntegration
 
         private static BuildInfo CreateBuildInfo(IBuild buildDetail)
         {
-            string sha = buildDetail.Revision.Substring(buildDetail.Revision.LastIndexOf(":") + 1);
+            string sha;
+#if GITTFS
+            if (!buildDetail.Revision.Contains(":"))
+            {
+                //From TFS Reprository (using git-tfs)
+                ////git log -g --grep=";C13" --pretty="%H"
+                var p = new Process
+                    {
+                        StartInfo =
+                            {
+                                UseShellExecute = false,
+                                CreateNoWindow = true,
+                                RedirectStandardOutput = true,
+                                FileName = @"git.exe",
+                                Arguments = "log --all --grep=\";" + buildDetail.Revision + "\" --pretty=\"%H\"",
+                                WorkingDirectory = WorkingDir
+                            }
+                    };
+                p.Start();
+                sha = p.StandardOutput.ReadLine();
+                p.WaitForExit();
+            }
+            else
+            {
+                //From Git Repository
+#endif
+                sha = buildDetail.Revision.Substring(buildDetail.Revision.LastIndexOf(":") + 1);
+#if GITTFS
+            }
+#endif
 
             var buildInfo = new BuildInfo
             {
@@ -186,4 +223,24 @@ namespace TfsIntegration
             GC.SuppressFinalize(this);
         }
     }
+
+#if GITTFS
+    public static class ObjectExtension
+    {
+        public static T Get<T>(this object obj, string name)
+        {
+            BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic;
+            Type type = obj.GetType();
+            FieldInfo field = type.GetField(name, flags);
+            if (field != null)
+                return (T)field.GetValue(obj);
+
+            PropertyInfo property = type.GetProperty(name, flags);
+            if (property != null)
+                return (T)property.GetValue(obj, null);
+
+            return default(T);
+        }
+    }
+#endif
 }
