@@ -132,23 +132,33 @@ namespace GitUI.CommandsDialogs.BrowseDialog
 
             foreach (var repo in pinnedRepos)
             {
-                var item = new ListViewItem(repo.Caption) { Tag = repo, ToolTipText = repo.Caption };
-                if (repo.Repo.Anchor == Repository.RepositoryAnchor.Pinned)
-                {
-                    item.Font = AnchorFont;
-                }
+                var item = GetRepositoryListViewItem(repo, repo.Repo.Anchor == Repository.RepositoryAnchor.Pinned);
                 PinnedLB.Items.Add(item);
             }
 
             foreach (var repo in allRecentRepos)
             {
-                var item = new ListViewItem(repo.Caption) { Tag = repo, ToolTipText = repo.Caption };
-                if (repo.Repo.Anchor == Repository.RepositoryAnchor.AllRecent)
-                {
-                    item.Font = AnchorFont;
-                }
+                var item = GetRepositoryListViewItem(repo, repo.Repo.Anchor == Repository.RepositoryAnchor.AllRecent);
                 AllRecentLB.Items.Add(item);
             }
+        }
+
+        private ListViewItem GetRepositoryListViewItem(RecentRepoInfo repo, bool anchored)
+        {
+            var item = new ListViewItem(repo.Caption) { Tag = repo, ToolTipText = repo.Repo.Path };
+
+            if (anchored)
+            {
+                item.Font = AnchorFont;
+            }
+
+            if (!Directory.Exists(repo.Repo.Path))
+            {
+                item.ForeColor = Color.Red;
+                ContainsDeletedRepositories = true;
+            }
+            
+            return item;
         }
 
         private void SetComboWidth()
