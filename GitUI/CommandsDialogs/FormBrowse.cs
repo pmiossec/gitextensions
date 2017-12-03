@@ -41,6 +41,10 @@ namespace GitUI.CommandsDialogs
             new TranslationString("stashes");
         private readonly TranslationString _stashSingular =
             new TranslationString("stash");
+        private readonly TranslationString _stashPop =
+            new TranslationString("Stash pop");
+        private readonly TranslationString _viewStash =
+            new TranslationString("View stash");
 
         private readonly TranslationString _warningMiddleOfBisect =
             new TranslationString("You are in the middle of a bisect");
@@ -2812,6 +2816,14 @@ namespace GitUI.CommandsDialogs
         private void toolStripSplitStash_DropDownOpened(object sender, EventArgs e)
         {
             PreventToolStripSplitButtonClosing(sender as ToolStripSplitButton);
+            //TODO: solve opening slowdown :(
+            IList<GitStash> stashedItems = Module.GetStashes();
+            if (stashedItems.Count > 0)
+            {
+                stashPopToolStripMenuItem.Text = _stashPop + ": " + stashedItems[0].Message;
+            
+            }
+            viewStashToolStripMenuItem.Text = _viewStash + " (" + stashedItems.Count + ")";
         }
 
         private void toolStripBranchFilterComboBox_Click(object sender, EventArgs e)
