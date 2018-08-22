@@ -2059,6 +2059,11 @@ namespace GitUI.CommandsDialogs
                 foreach (var branchName in GetBranchNames())
                 {
                     var toolStripItem = branchSelect.DropDownItems.Add(branchName);
+                    if (branchName == "master")
+                    {
+                        toolStripItem.Font = new Font(toolStripItem.Font, FontStyle.Italic);
+                    }
+
                     toolStripItem.Click
                         += delegate { UICommands.StartCheckoutBranch(this, toolStripItem.Text); };
                 }
