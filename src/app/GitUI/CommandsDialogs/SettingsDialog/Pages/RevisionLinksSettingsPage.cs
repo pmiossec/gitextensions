@@ -1,6 +1,7 @@
 ﻿using GitCommands.ExternalLinks;
 using GitExtensions.Extensibility.Git;
 using GitExtensions.Extensibility.Settings;
+using GitExtUtils;
 using GitExtUtils.GitUI;
 using GitUI.CommandsDialogs.SettingsDialog.RevisionLinks;
 using Microsoft;
@@ -151,8 +152,7 @@ public sealed partial class RevisionLinksSettingsPage : DistributedSettingsPage
             return default;
         }
 
-        string[] remoteNames = ["upstream", "fork", "origin"];
-        foreach (string remoteName in remoteNames)
+        foreach (string remoteName in CommonGitNames.Remotes)
         {
             Remote remoteFound = remotes.FirstOrDefault(r => r.Name == remoteName);
             if (remoteFound.Name is not null)

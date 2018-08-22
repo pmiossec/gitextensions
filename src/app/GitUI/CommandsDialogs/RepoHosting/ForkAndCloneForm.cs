@@ -31,13 +31,14 @@ public partial class ForkAndCloneForm : GitExtensionsForm
     private readonly TranslationString _strSearching = new(" : SEARCHING : ");
     private readonly TranslationString _strSelectOneItem = new("You must select exactly one item");
     private readonly TranslationString _strCloneFolderCanNotBeEmpty = new("Clone folder can not be empty");
-
-    #endregion
-
-    private const string UpstreamRemoteName = "upstream";
     private readonly IGitUICommands _commands;
     private readonly IRepositoryHostPlugin _gitHoster;
     private readonly EventHandler<GitModuleEventArgs>? _gitModuleChanged;
+
+    private const int ResizeOnContent = -1;
+    private const int ResizeOnHeader = -2;
+
+    #endregion
 
     public ForkAndCloneForm(IGitUICommands commands, IRepositoryHostPlugin gitHoster, EventHandler<GitModuleEventArgs>? gitModuleChanged)
     {
@@ -129,9 +130,6 @@ public partial class ForkAndCloneForm : GitExtensionsForm
                 }
             });
     }
-
-    private const int ResizeOnContent = -1;
-    private const int ResizeOnHeader = -2;
 
     private static void ResizeColumnToFitContent(ColumnHeader column)
     {
@@ -457,8 +455,8 @@ public partial class ForkAndCloneForm : GitExtensionsForm
                 {
                     string upstreamRemoteName = repo.ParentOwner ?? "";
                     addUpstreamRemoteAsCB.Items.Add(upstreamRemoteName);
-                    addUpstreamRemoteAsCB.Items.Add(UpstreamRemoteName);
-                    if (addUpstreamRemoteAsCB.Text != UpstreamRemoteName)
+                    addUpstreamRemoteAsCB.Items.Add(CommonGitNames.Upstream);
+                    if (addUpstreamRemoteAsCB.Text != CommonGitNames.Upstream)
                     {
                         addUpstreamRemoteAsCB.Text = upstreamRemoteName;
                     }

@@ -1846,6 +1846,12 @@ public sealed partial class FormBrowse : GitModuleForm, IBrowseRepo
                 ToolStripItem toolStripItem = branchSelect.DropDownItems.Add(branch.Name);
                 toolStripItem.ForeColor = isBranchVisible ? branchSelect.ForeColor : Color.Silver.AdaptTextColor();
                 toolStripItem.Image = (isBranchVisible ? Images.Branch : Images.EyeClosed).AdaptLightness();
+
+                if (CommonGitNames.Locals.Contains(branch.Name))
+                {
+                    toolStripItem.Font = new Font(toolStripItem.Font, FontStyle.Italic);
+                }
+
                 toolStripItem.Click += (s, e) => UICommands.StartCheckoutBranch(this, toolStripItem.Text);
             }
 
