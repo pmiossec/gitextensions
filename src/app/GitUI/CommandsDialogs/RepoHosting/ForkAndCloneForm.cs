@@ -4,6 +4,7 @@ using GitCommands.UserRepositoryHistory;
 using GitExtensions.Extensibility;
 using GitExtensions.Extensibility.Git;
 using GitExtensions.Extensibility.Plugins;
+using GitExtUtils;
 using GitExtUtils.GitUI;
 using GitUI.HelperDialogs;
 using Microsoft;
@@ -33,7 +34,6 @@ namespace GitUI.CommandsDialogs.RepoHosting
 
         #endregion
 
-        private const string UpstreamRemoteName = "upstream";
         private readonly IGitUICommands _commands;
         private readonly IRepositoryHostPlugin _gitHoster;
         private readonly EventHandler<GitModuleEventArgs>? _gitModuleChanged;
@@ -456,8 +456,8 @@ namespace GitUI.CommandsDialogs.RepoHosting
                     {
                         string upstreamRemoteName = repo.ParentOwner ?? "";
                         addUpstreamRemoteAsCB.Items.Add(upstreamRemoteName);
-                        addUpstreamRemoteAsCB.Items.Add(UpstreamRemoteName);
-                        if (addUpstreamRemoteAsCB.Text != UpstreamRemoteName)
+                        addUpstreamRemoteAsCB.Items.Add(CommonGitNames.Upstream);
+                        if (addUpstreamRemoteAsCB.Text != CommonGitNames.Upstream)
                         {
                             addUpstreamRemoteAsCB.Text = upstreamRemoteName;
                         }
