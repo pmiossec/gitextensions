@@ -4,6 +4,7 @@ using GitCommands.Remotes;
 using GitCommands.UserRepositoryHistory;
 using GitExtensions.Extensibility;
 using GitExtensions.Extensibility.Git;
+using GitExtUtils;
 using GitExtUtils.GitUI;
 using GitExtUtils.GitUI.Theming;
 using GitUI.Infrastructure;
@@ -33,7 +34,7 @@ namespace GitUI.CommandsDialogs
         private readonly ListViewGroup _lvgEnabled;
         private readonly ListViewGroup _lvgDisabled;
 
-        private string[] _genericRemotesNames = ["origin", "upstream", "fork", "remote", "internal", .. AppSettings.CustomGenericRemoteNames];
+        private string[] _genericRemotesNames = [.. CommonGitNames.Remotes, .. AppSettings.CustomGenericRemoteNames];
 
         #region Translation
         private readonly TranslationString _remoteBranchDataError =
