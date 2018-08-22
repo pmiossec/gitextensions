@@ -7,6 +7,7 @@ using GitExtensions.Extensibility.Git;
 using GitExtensions.Extensibility.Plugins;
 using GitExtensions.Extensibility.Settings;
 using GitExtensions.Plugins.GitHub3.Properties;
+using GitExtUtils;
 using GitUI;
 using GitUIPluginInterfaces;
 using GitUIPluginInterfaces.RepositoryHosts;
@@ -83,7 +84,6 @@ namespace GitExtensions.Plugins.GitHub3
         private readonly TranslationString _error = new("Error");
 
         public static string GitHubAuthorizationRelativeUrl = "authorizations";
-        public static string UpstreamConventionName = "upstream";
         public readonly StringSetting GitHubHost = new("GitHub (Enterprise) hostname", "github.com");
         public readonly StringSetting PersonalAccessToken = new("OAuth Token", "Personal Access Token", "");
         private readonly BoolSetting _issueCommitMessageHelperEnabled = new("IssueCommitMessageHelperEnabled", "Enable commit message issue helper", true);
@@ -292,13 +292,13 @@ namespace GitExtensions.Plugins.GitHub3
                 return null;
             }
 
-            if ((await gitModule.GetRemotesAsync()).Any(r => r.Name == UpstreamConventionName || r.FetchUrl == hostedRepository.ParentUrl))
+            if ((await gitModule.GetRemotesAsync()).Any(r => r.Name == CommonGitNames.Upstream || r.FetchUrl == hostedRepository.ParentUrl))
             {
                 return null;
             }
 
-            gitModule.AddRemote(UpstreamConventionName, hostedRepository.ParentUrl);
-            return UpstreamConventionName;
+            gitModule.AddRemote(CommonGitNames.Upstream, hostedRepository.ParentUrl);
+            return CommonGitNames.Upstream;
         }
 
         public bool GitModuleIsRelevantToMe()
