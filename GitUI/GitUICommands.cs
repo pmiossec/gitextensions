@@ -11,6 +11,7 @@ using GitUI.CommandsDialogs;
 using GitUI.CommandsDialogs.RepoHosting;
 using GitUI.CommandsDialogs.SettingsDialog;
 using GitUI.HelperDialogs;
+using GitUI.Script;
 using GitUIPluginInterfaces;
 using GitUIPluginInterfaces.RepositoryHosts;
 using JetBrains.Annotations;
@@ -230,6 +231,24 @@ namespace GitUI
             {
                 FormProcess.ShowDialog(owner, Module, "stash apply " + stashName.Quote());
                 MergeConflictHandler.HandleMergeConflicts(this, owner, false, false);
+                return true;
+            }
+
+            return DoActionOnRepo(owner, true, true, null, null, Action);
+        }
+
+        public bool CreateBranchFromStash(IWin32Window owner, string stashName)
+        {
+            bool Action()
+            {
+                using (var prompt = new SimplePrompt())
+                {
+                    prompt.InputLabelText = "Please choose a branch name";
+                    prompt.ShowDialog();
+                    FormProcess.ShowDialog(owner, Module, "stash branch " + prompt.UserInput + " " + stashName.Quote());
+                    MergeConflictHandler.HandleMergeConflicts(this, owner, false, false);
+                }
+
                 return true;
             }
 

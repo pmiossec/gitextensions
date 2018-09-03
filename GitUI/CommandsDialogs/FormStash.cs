@@ -438,5 +438,11 @@ namespace GitUI.CommandsDialogs
                 Close();
             }
         }
+
+        private void CreateBranch_Click(object sender, EventArgs e)
+        {
+            UICommands.CreateBranchFromStash(this, GetStashName());
+            Initialize();
+        }
     }
 }

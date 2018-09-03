@@ -1355,6 +1355,9 @@
     <EmbeddedResource Include="Script\FormFilePrompt.resx">
       <DependentUpon>FormFilePrompt.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Script\SimplePrompt.resx">
+      <DependentUpon>SimplePrompt.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="UserControls\BranchSelector.resx">
       <DependentUpon>BranchSelector.cs</DependentUpon>
     </EmbeddedResource>

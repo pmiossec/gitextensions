@@ -5,6 +5,12 @@ namespace GitUI.Script
 {
     public partial class SimplePrompt : Form
     {
+        public string InputLabelText
+        {
+            get { return InputLabel.Text; }
+            set { InputLabel.Text = value; }
+        }
+
         public string UserInput { get; private set; } = "";
 
         public SimplePrompt()

@@ -46,7 +46,7 @@ namespace GitUI.CommandsDialogs
             this.Clear = new System.Windows.Forms.Button();
             this.StashMessage = new System.Windows.Forms.RichTextBox();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.Loading = new LoadingControl();
+			this.Loading = new GitUI.UserControls.RevisionGrid.LoadingControl();
             this.Stashed = new GitUI.FileStatusList();
             this.toolStrip1 = new GitUI.ToolStripEx();
             this.showToolStripLabel = new System.Windows.Forms.ToolStripLabel();
@@ -56,6 +56,7 @@ namespace GitUI.CommandsDialogs
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.View = new GitUI.Editor.FileViewer();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
+			this.CreateBranch = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.gitStashBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -115,10 +116,10 @@ namespace GitUI.CommandsDialogs
             // 
             // tableLayoutPanel1
             // 
-            this.tableLayoutPanel1.AutoSize = true;
             this.tableLayoutPanel1.ColumnCount = 2;
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+			this.tableLayoutPanel1.Controls.Add(this.CreateBranch, 0, 5);
             this.tableLayoutPanel1.Controls.Add(this.StashSelectedFiles, 0, 2);
             this.tableLayoutPanel1.Controls.Add(this.Stash, 0, 1);
             this.tableLayoutPanel1.Controls.Add(this.chkIncludeUntrackedFiles, 1, 0);
@@ -126,23 +127,24 @@ namespace GitUI.CommandsDialogs
             this.tableLayoutPanel1.Controls.Add(this.Apply, 0, 4);
             this.tableLayoutPanel1.Controls.Add(this.Clear, 0, 3);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 751);
+			this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 674);
             this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 5;
+			this.tableLayoutPanel1.RowCount = 6;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(280, 289);
+			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+			this.tableLayoutPanel1.Size = new System.Drawing.Size(280, 366);
             this.tableLayoutPanel1.TabIndex = 5;
             // 
             // StashSelectedFiles
             // 
             this.tableLayoutPanel1.SetColumnSpan(this.StashSelectedFiles, 2);
             this.StashSelectedFiles.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.StashSelectedFiles.Location = new System.Drawing.Point(6, 109);
+			this.StashSelectedFiles.Location = new System.Drawing.Point(6, 116);
             this.StashSelectedFiles.Margin = new System.Windows.Forms.Padding(6, 6, 0, 6);
             this.StashSelectedFiles.Name = "StashSelectedFiles";
             this.StashSelectedFiles.Size = new System.Drawing.Size(274, 50);
@@ -156,7 +158,7 @@ namespace GitUI.CommandsDialogs
             // 
             this.tableLayoutPanel1.SetColumnSpan(this.Stash, 2);
             this.Stash.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.Stash.Location = new System.Drawing.Point(6, 47);
+			this.Stash.Location = new System.Drawing.Point(6, 54);
             this.Stash.Margin = new System.Windows.Forms.Padding(6, 6, 0, 6);
             this.Stash.Name = "Stash";
             this.Stash.Size = new System.Drawing.Size(274, 50);
@@ -171,9 +173,9 @@ namespace GitUI.CommandsDialogs
             this.chkIncludeUntrackedFiles.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.chkIncludeUntrackedFiles.AutoSize = true;
             this.chkIncludeUntrackedFiles.Location = new System.Drawing.Point(146, 6);
-            this.chkIncludeUntrackedFiles.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+			this.chkIncludeUntrackedFiles.Margin = new System.Windows.Forms.Padding(6);
             this.chkIncludeUntrackedFiles.Name = "chkIncludeUntrackedFiles";
-            this.chkIncludeUntrackedFiles.Size = new System.Drawing.Size(128, 29);
+			this.chkIncludeUntrackedFiles.Size = new System.Drawing.Size(128, 36);
             this.chkIncludeUntrackedFiles.TabIndex = 14;
             this.chkIncludeUntrackedFiles.Text = "Include untracked files";
             this.toolTip.SetToolTip(this.chkIncludeUntrackedFiles, "All untracked files are also stashed and then cleaned");
@@ -184,9 +186,9 @@ namespace GitUI.CommandsDialogs
             this.StashKeepIndex.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.StashKeepIndex.AutoSize = true;
             this.StashKeepIndex.Location = new System.Drawing.Point(6, 6);
-            this.StashKeepIndex.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+			this.StashKeepIndex.Margin = new System.Windows.Forms.Padding(6);
             this.StashKeepIndex.Name = "StashKeepIndex";
-            this.StashKeepIndex.Size = new System.Drawing.Size(128, 29);
+			this.StashKeepIndex.Size = new System.Drawing.Size(128, 36);
             this.StashKeepIndex.TabIndex = 13;
             this.StashKeepIndex.Text = "Keep index";
             this.toolTip.SetToolTip(this.StashKeepIndex, "All changes already added to the index are left intact");
@@ -196,7 +198,7 @@ namespace GitUI.CommandsDialogs
             // 
             this.tableLayoutPanel1.SetColumnSpan(this.Apply, 2);
             this.Apply.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.Apply.Location = new System.Drawing.Point(6, 233);
+			this.Apply.Location = new System.Drawing.Point(6, 240);
             this.Apply.Margin = new System.Windows.Forms.Padding(6, 6, 0, 6);
             this.Apply.Name = "Apply";
             this.Apply.Size = new System.Drawing.Size(274, 50);
@@ -210,7 +212,7 @@ namespace GitUI.CommandsDialogs
             // 
             this.tableLayoutPanel1.SetColumnSpan(this.Clear, 2);
             this.Clear.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.Clear.Location = new System.Drawing.Point(6, 171);
+			this.Clear.Location = new System.Drawing.Point(6, 178);
             this.Clear.Margin = new System.Windows.Forms.Padding(6, 6, 0, 6);
             this.Clear.Name = "Clear";
             this.Clear.Size = new System.Drawing.Size(274, 50);
@@ -225,7 +227,7 @@ namespace GitUI.CommandsDialogs
             this.StashMessage.BackColor = System.Drawing.SystemColors.Info;
             this.StashMessage.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.StashMessage.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.StashMessage.Location = new System.Drawing.Point(0, 601);
+			this.StashMessage.Location = new System.Drawing.Point(0, 524);
             this.StashMessage.Margin = new System.Windows.Forms.Padding(0);
             this.StashMessage.Name = "StashMessage";
             this.StashMessage.ReadOnly = true;
@@ -242,7 +244,7 @@ namespace GitUI.CommandsDialogs
             this.panel1.Location = new System.Drawing.Point(0, 48);
             this.panel1.Margin = new System.Windows.Forms.Padding(0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(280, 553);
+			this.panel1.Size = new System.Drawing.Size(280, 476);
             this.panel1.TabIndex = 4;
             // 
             // Loading
@@ -250,10 +252,11 @@ namespace GitUI.CommandsDialogs
             this.Loading.BackColor = System.Drawing.SystemColors.Control;
             this.Loading.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.Loading.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.Loading.IsAnimating = true;
             this.Loading.Location = new System.Drawing.Point(0, 0);
             this.Loading.Margin = new System.Windows.Forms.Padding(0);
             this.Loading.Name = "Loading";
-            this.Loading.Size = new System.Drawing.Size(280, 553);
+			this.Loading.Size = new System.Drawing.Size(280, 476);
             this.Loading.TabIndex = 12;
             this.Loading.TabStop = false;
             this.Loading.Visible = false;
@@ -265,7 +268,7 @@ namespace GitUI.CommandsDialogs
             this.Stashed.Location = new System.Drawing.Point(0, 0);
             this.Stashed.Margin = new System.Windows.Forms.Padding(0);
             this.Stashed.Name = "Stashed";
-            this.Stashed.Size = new System.Drawing.Size(280, 553);
+			this.Stashed.Size = new System.Drawing.Size(280, 476);
             this.Stashed.TabIndex = 2;
             this.Stashed.SelectedIndexChanged += new System.EventHandler(this.StashedSelectedIndexChanged);
             // 
@@ -275,6 +278,7 @@ namespace GitUI.CommandsDialogs
             this.toolStrip1.ClickThrough = true;
             this.toolStrip1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.toolStrip1.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
+			this.toolStrip1.ImageScalingSize = new System.Drawing.Size(32, 32);
             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.showToolStripLabel,
             this.Stashes,
@@ -305,7 +309,6 @@ namespace GitUI.CommandsDialogs
             this.Stashes.Size = new System.Drawing.Size(278, 40);
             this.Stashes.ToolTipText = "Select a stash";
             this.Stashes.SelectedIndexChanged += new System.EventHandler(this.StashesSelectedIndexChanged);
-            this.Stashes.DropDown += Stashes_DropDown;
             // 
             // refreshToolStripButton
             // 
@@ -345,12 +348,26 @@ namespace GitUI.CommandsDialogs
             // 
             this.View.Dock = System.Windows.Forms.DockStyle.Fill;
             this.View.Location = new System.Drawing.Point(0, 0);
-            this.View.Margin = new System.Windows.Forms.Padding(8, 8, 8, 8);
+			this.View.Margin = new System.Windows.Forms.Padding(8);
             this.View.Name = "View";
-            this.View.Size = new System.Drawing.Size(1126, 1040);
+			this.View.Size = new System.Drawing.Size(1131, 1040);
             this.View.TabIndex = 0;
             this.View.KeyUp += new System.Windows.Forms.KeyEventHandler(this.View_KeyUp);
             // 
+			// CreateBranch
+			// 
+			this.tableLayoutPanel1.SetColumnSpan(this.CreateBranch, 2);
+			this.CreateBranch.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.CreateBranch.Location = new System.Drawing.Point(6, 302);
+			this.CreateBranch.Margin = new System.Windows.Forms.Padding(6, 6, 0, 6);
+			this.CreateBranch.Name = "CreateBranch";
+			this.CreateBranch.Size = new System.Drawing.Size(274, 58);
+			this.CreateBranch.TabIndex = 19;
+			this.CreateBranch.Text = "Convert Selected Stash in Branch";
+			this.toolTip.SetToolTip(this.CreateBranch, "Create a new branch and apply the selected stash on top of  it");
+			this.CreateBranch.UseVisualStyleBackColor = true;
+			this.CreateBranch.Click += new System.EventHandler(this.CreateBranch_Click);
+			// 
             // FormStash
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(192F, 192F);
@@ -358,7 +375,7 @@ namespace GitUI.CommandsDialogs
             this.CancelButton = null;
             this.ClientSize = new System.Drawing.Size(1416, 1040);
             this.Controls.Add(this.splitContainer1);
-            this.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+			this.Margin = new System.Windows.Forms.Padding(6);
             this.MinimumSize = new System.Drawing.Size(1254, 885);
             this.Name = "FormStash";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
@@ -407,5 +424,6 @@ namespace GitUI.CommandsDialogs
         private Panel panel1;
         private ToolTip toolTip;
         private Button StashSelectedFiles;
+        private Button CreateBranch;
     }
 }
