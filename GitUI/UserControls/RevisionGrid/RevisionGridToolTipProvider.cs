@@ -53,6 +53,15 @@ namespace GitUI
                     provider.TryGetToolTip(e, revision, out var toolTip) &&
                     !string.IsNullOrWhiteSpace(toolTip))
                 {
+                    int lineCount = 0;
+                    for (int pos = 0, length = toolTip.Length; pos < length; ++pos)
+                    {
+                        if (toolTip[pos] == '\n' && ++lineCount == 30)
+                        {
+                            return toolTip.Substring(0, pos + 1) + ">>> TOOLTIP TRUNCATED <<<";
+                        }
+                    }
+
                     return toolTip;
                 }
 

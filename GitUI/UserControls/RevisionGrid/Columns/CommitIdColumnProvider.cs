@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Text;
 using System.Windows.Forms;
 using GitCommands;
 using GitExtUtils.GitUI;
@@ -66,8 +67,26 @@ namespace GitUI.UserControls.RevisionGrid.Columns
                 return false;
             }
 
-            toolTip = revision.Guid;
+            toolTip = Format(revision.Guid);
             return true;
         }
+
+        public static string Format(string guid)
+        {
+            var text = new StringBuilder();
+            for (int pos = 0, length = guid.Length; pos < length; pos += 4)
+            {
+                if (pos > 0)
+                {
+                    text.Append(MinimumSpace);
+                }
+
+                text.Append(guid.Substring(pos, 4));
+            }
+
+            return text.ToString();
+        }
+
+        private const char MinimumSpace = '\x200A';
     }
 }
