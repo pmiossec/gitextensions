@@ -554,21 +554,21 @@ namespace GitUI.UserControls.RevisionGrid.Columns
                         {
                             if (!node.Revision.IsArtificial)
                             {
-                                laneInfoText.AppendLine(CommitIdColumnProvider.Format(node.Revision.Guid));
+                                laneInfoText.AppendFormat("<span class=\"hash\">{0}</span>", CommitIdColumnProvider.Format(node.Revision.Guid));
 
                                 var references = new References(node);
 
                                 if (references.CommittedTo.IsNotNullOrWhitespace())
                                 {
-                                    laneInfoText.AppendFormat("\nBranch: {0}", references.CommittedTo);
+                                    laneInfoText.AppendFormat("\nBranch: <span class=\"branch\">{0}</span>", references.CommittedTo);
                                     if (references.MergedWith.IsNotNullOrWhitespace())
                                     {
-                                        laneInfoText.AppendFormat(" (merged with {0})", references.MergedWith);
+                                        laneInfoText.AppendFormat(" (merged with <b>{0}</b>)", references.MergedWith);
                                     }
                                 }
 
-                                laneInfoText.Append(Format("\nContained in branches: {0}\n", references.Branches));
-                                laneInfoText.Append(Format("\nContained in tags: {0}\n", references.Tags));
+                                laneInfoText.Append(Format("\nContained in branches: <nobr> <span class=\"remote\">{0}</span>\n", references.Branches));
+                                laneInfoText.Append(Format("\nContained in tags: <nobr> <span class=\"tag\">{0}</span>\n", references.Tags));
 
                                 string Format<T>(string format, IEnumerable<T> list)
                                 {

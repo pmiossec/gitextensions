@@ -3,12 +3,15 @@ using System.Drawing;
 using System.Windows.Forms;
 using GitUI.UserControls.RevisionGrid;
 using GitUI.UserControls.RevisionGrid.Columns;
+using TheArtOfDev.HtmlRenderer.WinForms;
 
 namespace GitUI
 {
     internal sealed class RevisionGridToolTipProvider
     {
-        private readonly ToolTip _toolTip = new ToolTip();
+        ////private readonly ToolTip _toolTip = new ToolTip();
+        private readonly HtmlToolTip _toolTip = new HtmlToolTip();
+
         private readonly Dictionary<Point, bool> _isTruncatedByCellPos = new Dictionary<Point, bool>();
         private readonly RevisionDataGridView _gridView;
 
@@ -23,6 +26,13 @@ namespace GitUI
             _toolTip.AutoPopDelay = 32767;
         }
 
+        private const string TooltipStyle = @"<style type=""text/css"">
+ .branch { color: DarkRed; font-weight: bold; }
+ .remote { color: Green; font-weight: bold; }
+ .hash   { color: Gray; }
+ .tag    { color: DarkBlue; font-weight: bold; }
+</style>";
+
         public void OnCellMouseMove(DataGridViewCellMouseEventArgs e)
         {
             var revision = _gridView.GetRevision(e.RowIndex);
@@ -34,6 +44,11 @@ namespace GitUI
 
             var oldText = _toolTip.GetToolTip(_gridView);
             var newText = GetToolTipText();
+            newText = newText.Replace("\n", "<br>\n");
+            if (!string.IsNullOrWhiteSpace(newText))
+            {
+                newText += TooltipStyle;
+            }
 
             if (newText != oldText)
             {

@@ -67,6 +67,7 @@
       <Version>2.0.0.144</Version>
     </PackageReference>
     <PackageReference Include="System.Reactive" Version="3.1.1" />
+    <PackageReference Include="HtmlRenderer.WinForms" Version="1.5.0.6" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\CommonAssemblyInfo.cs">
