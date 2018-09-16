@@ -288,6 +288,13 @@ namespace GitUI.UserControls.RevisionGrid.Columns
             }
         }
 
+        private const string TooltipStyle = @"<style type=""text/css"">
+ .branch { color: DarkRed; }
+ .remote { color: Green; }
+ .hash   { color: Gray; }
+ .tag    { color: DarkBlue; }
+</style>";
+
         public override bool TryGetToolTip(DataGridViewCellMouseEventArgs e, GitRevision revision, out string toolTip)
         {
             if (!revision.IsArtificial && (revision.HasMultiLineMessage || revision.Refs.Count != 0))
@@ -316,11 +323,18 @@ namespace GitUI.UserControls.RevisionGrid.Columns
                         }
                         else
                         {
-                            s.Append('[').Append(gitRef.Name).Append(']').AppendLine();
+                            s.Append(FormatRef(gitRef)).AppendLine();
                         }
                     }
                 }
 
+                string FormatRef(IGitRef gitRef)
+                {
+                    var refType = gitRef.IsRemote ? "remote" : (gitRef.IsTag ? "tag" : "branch");
+                    return $"<span class=\"{refType}\">[{gitRef.Name}]</span>";
+                }
+
+                s.Append(TooltipStyle);
                 toolTip = s.ToString();
                 return true;
             }

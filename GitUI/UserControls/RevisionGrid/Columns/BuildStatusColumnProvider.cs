@@ -109,24 +109,7 @@ namespace GitUI.UserControls.RevisionGrid.Columns
             Color GetColor(Color foreColor)
             {
                 var isSelected = _gridView.Rows[e.RowIndex].Selected;
-
-                switch (revision.BuildStatus.Status)
-                {
-                    case BuildInfo.BuildStatus.Success:
-                        return isSelected ? Color.LightGreen : Color.DarkGreen;
-                    case BuildInfo.BuildStatus.Failure:
-                        return isSelected ? Color.Red : Color.DarkRed;
-                    case BuildInfo.BuildStatus.InProgress:
-                        return isSelected ? Color.LightBlue : Color.Blue;
-                    case BuildInfo.BuildStatus.Unstable:
-                        return Color.OrangeRed;
-                    case BuildInfo.BuildStatus.Stopped:
-                        return isSelected ? Color.LightGray : Color.Gray;
-                    case BuildInfo.BuildStatus.Unknown:
-                        return foreColor;
-                    default:
-                        throw new InvalidOperationException("Unsupported build status enum value.");
-                }
+                return GetBrushForStatus(revision.BuildStatus.Status, foreColor, isSelected);
             }
 
             Brush GetBrush()
@@ -158,11 +141,32 @@ namespace GitUI.UserControls.RevisionGrid.Columns
             e.FormattingApplied = true;
         }
 
+        private Color GetBrushForStatus(BuildInfo.BuildStatus status, Color foreColor, bool isOnDarkBackround)
+        {
+            switch (status)
+            {
+                case BuildInfo.BuildStatus.Success:
+                    return isOnDarkBackround ? Color.LightGreen : Color.DarkGreen;
+                case BuildInfo.BuildStatus.Failure:
+                    return isOnDarkBackround ? Color.Red : Color.DarkRed;
+                case BuildInfo.BuildStatus.InProgress:
+                    return isOnDarkBackround ? Color.LightBlue : Color.Blue;
+                case BuildInfo.BuildStatus.Unstable:
+                    return Color.OrangeRed;
+                case BuildInfo.BuildStatus.Stopped:
+                    return isOnDarkBackround ? Color.LightGray : Color.Gray;
+                case BuildInfo.BuildStatus.Unknown:
+                    return foreColor;
+                default:
+                    throw new InvalidOperationException("Unsupported build status enum value.");
+            }
+        }
+
         public override bool TryGetToolTip(DataGridViewCellMouseEventArgs e, GitRevision revision, out string toolTip)
         {
             if (revision.BuildStatus != null)
             {
-                toolTip = revision.BuildStatus.Tooltip ?? revision.BuildStatus.Description;
+                toolTip = revision.BuildStatus.Tooltip ?? $"<span style=\"color:{GetBrushForStatus(revision.BuildStatus.Status, Color.Gray, false).Name}\">" + revision.BuildStatus.Description + "</span>";
                 return true;
             }
 

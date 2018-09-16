@@ -4,12 +4,22 @@ using System.Drawing;
 using System.Windows.Forms;
 using GitUI.UserControls.RevisionGrid;
 using GitUI.UserControls.RevisionGrid.Columns;
+using TheArtOfDev.HtmlRenderer.WinForms;
 
 namespace GitUI
 {
     internal sealed class RevisionGridToolTipProvider
     {
-        private readonly ToolTip _toolTip = new ToolTip();
+        ////private readonly ToolTip _toolTip = new ToolTip();
+        private readonly HtmlToolTip _toolTip = new HtmlToolTip();
+
+        private const string TooltipStyle = @"<style type=""text/css"">
+ .branch { color: DarkRed; }
+ .remote { color: Green; }
+ .hash   { color: Gray; }
+ .tag    { color: DarkBlue; }
+</style>";
+
         private readonly Dictionary<Point, bool> _isTruncatedByCellPos = new Dictionary<Point, bool>();
         private readonly RevisionDataGridView _gridView;
 
@@ -35,6 +45,11 @@ namespace GitUI
 
             var oldText = _toolTip.GetToolTip(_gridView);
             var newText = GetToolTipText();
+            newText = newText.Replace("\n", "<br>\n");
+            if (!string.IsNullOrWhiteSpace(newText))
+            {
+                newText += TooltipStyle;
+            }
 
             if (newText != oldText)
             {
@@ -59,6 +74,7 @@ namespace GitUI
                         int lineCount = 0;
                         for (int pos = 0; pos < toolTip.Length; ++pos)
                         {
+                            // TODO: Fix => Should be broken now that using <br/>
                             if (toolTip[pos] == '\n' && ++lineCount == 30)
                             {
                                 return toolTip.Substring(0, pos + 1) + "...";
