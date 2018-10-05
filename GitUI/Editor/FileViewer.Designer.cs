@@ -218,8 +218,7 @@ namespace GitUI.Editor
             this.fileviewerToolbar.Name = "fileviewerToolbar";
             this.fileviewerToolbar.Size = new System.Drawing.Size(393, 23);
             this.fileviewerToolbar.TabIndex = 4;
-            this.fileviewerToolbar.Visible = false;
-            this.fileviewerToolbar.VisibleChanged += new System.EventHandler(this.fileviewerToolbar_VisibleChanged);
+            this.fileviewerToolbar.Visible = true;
             // 
             // nextChangeButton
             // 

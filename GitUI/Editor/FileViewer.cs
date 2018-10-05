@@ -124,23 +124,14 @@ namespace GitUI.Editor
 
             encodingToolStripComboBox.Items.AddRange(encodingList.ToArray<object>());
 
-            _internalFileViewer.MouseMove += (_, e) =>
-            {
-                if (_currentViewIsPatch && !fileviewerToolbar.Visible)
-                {
-                    fileviewerToolbar.Visible = true;
-                    fileviewerToolbar.Location = new Point(Width - fileviewerToolbar.Width - 40, 0);
-                    fileviewerToolbar.BringToFront();
-                }
-            };
-            _internalFileViewer.MouseLeave += (_, e) =>
-            {
-                if (GetChildAtPoint(PointToClient(MousePosition)) != fileviewerToolbar &&
-                    fileviewerToolbar != null)
-                {
-                    fileviewerToolbar.Visible = false;
-                }
-            };
+            ////_internalFileViewer.MouseMove += (_, e) =>
+            ////{
+            ////    if (_currentViewIsPatch && !fileviewerToolbar.Visible)
+            ////    {
+            ////        fileviewerToolbar.Location = new Point(Width - fileviewerToolbar.Width - 40, 0);
+            ////        fileviewerToolbar.BringToFront();
+            ////    }
+            ////};
             _internalFileViewer.TextChanged += (sender, e) =>
             {
                 if (_patchHighlighting)
@@ -149,6 +140,10 @@ namespace GitUI.Editor
                 }
 
                 TextChanged?.Invoke(sender, e);
+                if (Encoding != null)
+                {
+                    encodingToolStripComboBox.Text = Encoding.EncodingName;
+                }
             };
             _internalFileViewer.ScrollPosChanged += (sender, e) => ScrollPosChanged?.Invoke(sender, e);
             _internalFileViewer.SelectedLineChanged += (sender, e) => SelectedLineChanged?.Invoke(sender, e);
@@ -168,6 +163,8 @@ namespace GitUI.Editor
             };
 
             _fullPathResolver = new FullPathResolver(() => Module.WorkingDir);
+            fileviewerToolbar.Location = new Point(Width - fileviewerToolbar.Width - 40, 0);
+            fileviewerToolbar.BringToFront();
         }
 
         private void OnUICommandsSourceSet(object sender, GitUICommandsSourceEventArgs e)
@@ -326,13 +323,15 @@ namespace GitUI.Editor
 
         public void ResetCurrentScrollPos()
         {
-            _currentScrollPos = 0;
+            _currentScrollPos = Font.Height * 2;
         }
 
         private void RestoreCurrentScrollPos()
         {
-            if (_currentScrollPos < 0)
+            if (_currentScrollPos <= Font.Height * 2)
             {
+                ResetCurrentScrollPos();
+                ScrollPos = _currentScrollPos;
                 return;
             }
 
@@ -524,9 +523,10 @@ namespace GitUI.Editor
                     () =>
                     {
                         ResetForDiff();
-                        _internalFileViewer.SetText(text, openWithDifftool, isDiff: true);
+                        _internalFileViewer.SetText("\n\n" + text, openWithDifftool, isDiff: true);
                         TextLoaded?.Invoke(this, null);
                         RestoreCurrentScrollPos();
+                        _internalFileViewer.ScrollPos = Font.Height * 2;
                         return Task.CompletedTask;
                     }));
         }
@@ -560,7 +560,7 @@ namespace GitUI.Editor
             }
             else
             {
-                _internalFileViewer.SetText(text, openWithDifftool);
+                _internalFileViewer.SetText("\n\n" + text, openWithDifftool);
                 TextLoaded?.Invoke(this, null);
 
                 RestoreCurrentScrollPos();
@@ -1220,16 +1220,16 @@ namespace GitUI.Editor
             }
         }
 
-        private void fileviewerToolbar_VisibleChanged(object sender, EventArgs e)
-        {
-            if (fileviewerToolbar.Visible)
-            {
-                if (Encoding != null)
-                {
-                    encodingToolStripComboBox.Text = Encoding.EncodingName;
-                }
-            }
-        }
+        ////private void fileviewerToolbar_VisibleChanged(object sender, EventArgs e)
+        ////{
+        ////    if (fileviewerToolbar.Visible)
+        ////    {
+        ////        if (Encoding != null)
+        ////        {
+        ////            encodingToolStripComboBox.Text = Encoding.EncodingName;
+        ////        }
+        ////    }
+        ////}
 
         private void goToLineToolStripMenuItem_Click(object sender, EventArgs e)
         {
