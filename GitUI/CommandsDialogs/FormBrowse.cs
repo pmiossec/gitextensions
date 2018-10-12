@@ -2093,6 +2093,27 @@ namespace GitUI.CommandsDialogs
             UICommands.StartPullRequestsDialog(this, repoHost);
         }
 
+        private void addARemoteToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var repoHost = PluginRegistry.TryGetGitHosterForModule(Module);
+            if (repoHost == null)
+            {
+                MessageBox.Show(this, _noReposHostFound.Text, _errorCaption.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            var prompt = new SimplePrompt();
+            var dialogResult = prompt.ShowDialog();
+            if (dialogResult == DialogResult.OK)
+            {
+                var hostedRemotesForModule = repoHost.GetHostedRemotesForModule(Module);
+                var hostedRemote = hostedRemotesForModule[0];
+                Console.WriteLine(hostedRemote);
+                ////hostedRemotesForModule
+                // UICommands.GitModule.RunGitCmd()
+            }
+        }
+
         private void _createPullRequestToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var repoHost = PluginRegistry.TryGetGitHosterForModule(Module);

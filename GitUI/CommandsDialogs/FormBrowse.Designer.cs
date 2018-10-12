@@ -188,6 +188,7 @@ namespace GitUI.CommandsDialogs
             this.gitItemBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.gitRevisionBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.toolPanel = new System.Windows.Forms.ToolStripContainer();
+            this.addARemoteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
             toolStripMenuItem4 = new System.Windows.Forms.ToolStripMenuItem();
             toolStripSeparator14 = new System.Windows.Forms.ToolStripSeparator();
@@ -1508,7 +1509,8 @@ namespace GitUI.CommandsDialogs
             this._repositoryHostsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this._forkCloneRepositoryToolStripMenuItem,
             this._viewPullRequestsToolStripMenuItem,
-            this._createPullRequestsToolStripMenuItem});
+            this._createPullRequestsToolStripMenuItem,
+            this.addARemoteToolStripMenuItem});
             this._repositoryHostsToolStripMenuItem.Name = "_repositoryHostsToolStripMenuItem";
             this._repositoryHostsToolStripMenuItem.Size = new System.Drawing.Size(114, 20);
             this._repositoryHostsToolStripMenuItem.Text = "(Repository hosts)";
@@ -1728,6 +1730,13 @@ namespace GitUI.CommandsDialogs
             // 
             this.toolPanel.TopToolStripPanel.Controls.Add(this.ToolStrip);
             // 
+            // addARemoteToolStripMenuItem
+            // 
+            this.addARemoteToolStripMenuItem.Name = "addARemoteToolStripMenuItem";
+            this.addARemoteToolStripMenuItem.Size = new System.Drawing.Size(360, 38);
+            this.addARemoteToolStripMenuItem.Text = "Add a remote...";
+            this.addARemoteToolStripMenuItem.Click += new System.EventHandler(this.addARemoteToolStripMenuItem_Click);
+            // 
             // FormBrowse
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
@@ -1942,5 +1951,6 @@ namespace GitUI.CommandsDialogs
         private ToolStripMenuItem commitInfoBelowMenuItem;
         private ToolStripMenuItem commitInfoLeftwardMenuItem;
         private ToolStripMenuItem commitInfoRightwardMenuItem;
+        private ToolStripMenuItem addARemoteToolStripMenuItem;
     }
 }
