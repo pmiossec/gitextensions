@@ -10,7 +10,7 @@ using ResourceManager;
 namespace TeamCityIntegration.Settings
 {
     [Export(typeof(IBuildServerSettingsUserControl))]
-    [BuildServerSettingsUserControlMetadata(TeamCityAdapter.PluginName)]
+    [BuildServerSettingsUserControlMetadata(TeamCityAdapter.PluginName, TeamCityAdapter.PluginName)]
     [PartCreationPolicy(CreationPolicy.NonShared)]
     public partial class TeamCitySettingsUserControl : GitExtensionsControl, IBuildServerSettingsUserControl
     {

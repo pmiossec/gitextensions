@@ -29,8 +29,8 @@ namespace TeamCityIntegration
     [AttributeUsage(AttributeTargets.Class)]
     public class TeamCityIntegrationMetadataAttribute : BuildServerAdapterMetadataAttribute
     {
-        public TeamCityIntegrationMetadataAttribute(string buildServerType)
-            : base(buildServerType)
+        public TeamCityIntegrationMetadataAttribute(string buildServerType, string settingsKey)
+            : base(buildServerType, settingsKey)
         {
         }
 
@@ -51,7 +51,7 @@ namespace TeamCityIntegration
     }
 
     [Export(typeof(IBuildServerAdapter))]
-    [TeamCityIntegrationMetadata(PluginName)]
+    [TeamCityIntegrationMetadata(PluginName, PluginName)]
     [PartCreationPolicy(CreationPolicy.NonShared)]
     internal class TeamCityAdapter : IBuildServerAdapter
     {

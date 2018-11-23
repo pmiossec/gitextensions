@@ -8,7 +8,7 @@ using ResourceManager;
 namespace JenkinsIntegration.Settings
 {
     [Export(typeof(IBuildServerSettingsUserControl))]
-    [BuildServerSettingsUserControlMetadata(JenkinsAdapter.PluginName)]
+    [BuildServerSettingsUserControlMetadata(JenkinsAdapter.PluginName, JenkinsAdapter.PluginName)]
     [PartCreationPolicy(CreationPolicy.NonShared)]
     public partial class JenkinsSettingsUserControl : GitExtensionsControl, IBuildServerSettingsUserControl
     {

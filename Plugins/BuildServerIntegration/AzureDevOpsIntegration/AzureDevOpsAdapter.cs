@@ -15,8 +15,8 @@ namespace AzureDevOpsIntegration
     [AttributeUsage(AttributeTargets.Class)]
     public class AzureDevOpsIntegrationMetadata : BuildServerAdapterMetadataAttribute
     {
-        public AzureDevOpsIntegrationMetadata(string buildServerType)
-            : base(buildServerType)
+        public AzureDevOpsIntegrationMetadata(string buildServerType, string settingsKey)
+            : base(buildServerType, settingsKey)
         {
         }
     }
@@ -25,10 +25,11 @@ namespace AzureDevOpsIntegration
     /// Provides build server integration for Azure DevOps (or TFS>=2015) into GitExtensions
     /// </summary>
     [Export(typeof(IBuildServerAdapter))]
-    [AzureDevOpsIntegrationMetadata(PluginName)]
+    [AzureDevOpsIntegrationMetadata(PluginName, SettingsKey)]
     [PartCreationPolicy(CreationPolicy.NonShared)]
     internal class AzureDevOpsAdapter : IBuildServerAdapter
     {
+        public const string SettingsKey = "AzureDevOpsPlugin";
         public const string PluginName = "Azure DevOps and Team Foundation Server (since TFS2015)";
 
         private IBuildServerWatcher _buildServerWatcher;

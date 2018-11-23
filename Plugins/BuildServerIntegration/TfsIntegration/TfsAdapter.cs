@@ -19,8 +19,8 @@ namespace TfsIntegration
     [AttributeUsage(AttributeTargets.Class)]
     public sealed class TfsIntegrationMetadataAttribute : BuildServerAdapterMetadataAttribute
     {
-        public TfsIntegrationMetadataAttribute(string buildServerType)
-            : base(buildServerType)
+        public TfsIntegrationMetadataAttribute(string buildServerType, string settingsKey)
+            : base(buildServerType, settingsKey)
         {
         }
 
@@ -39,7 +39,7 @@ namespace TfsIntegration
     }
 
     [Export(typeof(IBuildServerAdapter))]
-    [TfsIntegrationMetadata(PluginName)]
+    [TfsIntegrationMetadata(PluginName, PluginName)]
     [PartCreationPolicy(CreationPolicy.NonShared)]
     internal class TfsAdapter : IBuildServerAdapter
     {

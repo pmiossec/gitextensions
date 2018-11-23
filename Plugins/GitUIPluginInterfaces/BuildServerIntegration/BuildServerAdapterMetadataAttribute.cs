@@ -8,7 +8,7 @@ namespace GitUIPluginInterfaces.BuildServerIntegration
     [AttributeUsage(AttributeTargets.Class)]
     public class BuildServerAdapterMetadataAttribute : ExportAttribute
     {
-        public BuildServerAdapterMetadataAttribute(string buildServerType)
+        public BuildServerAdapterMetadataAttribute(string buildServerType, string settingsKey)
             : base(typeof(IBuildServerTypeMetadata))
         {
             if (string.IsNullOrEmpty(buildServerType))
@@ -17,9 +17,11 @@ namespace GitUIPluginInterfaces.BuildServerIntegration
             }
 
             BuildServerType = buildServerType;
+            SettingsKey = settingsKey;
         }
 
         public string BuildServerType { get; }
+        public string SettingsKey { get; }
 
         [CanBeNull]
         public virtual string CanBeLoaded => null;

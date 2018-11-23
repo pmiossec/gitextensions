@@ -27,8 +27,8 @@ namespace JenkinsIntegration
     [AttributeUsage(AttributeTargets.Class)]
     public class JenkinsIntegrationMetadata : BuildServerAdapterMetadataAttribute
     {
-        public JenkinsIntegrationMetadata(string buildServerType)
-            : base(buildServerType)
+        public JenkinsIntegrationMetadata(string buildServerType, string settingsKey)
+            : base(buildServerType, settingsKey)
         {
         }
 
@@ -47,7 +47,7 @@ namespace JenkinsIntegration
     }
 
     [Export(typeof(IBuildServerAdapter))]
-    [JenkinsIntegrationMetadata(PluginName)]
+    [JenkinsIntegrationMetadata(PluginName, PluginName)]
     [PartCreationPolicy(CreationPolicy.NonShared)]
     internal class JenkinsAdapter : IBuildServerAdapter
     {

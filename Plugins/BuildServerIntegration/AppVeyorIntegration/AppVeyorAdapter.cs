@@ -22,8 +22,8 @@ namespace AppVeyorIntegration
     [AttributeUsage(AttributeTargets.Class)]
     public class AppVeyorIntegrationMetadata : BuildServerAdapterMetadataAttribute
     {
-        public AppVeyorIntegrationMetadata(string buildServerType)
-            : base(buildServerType)
+        public AppVeyorIntegrationMetadata(string buildServerType, string settingsKey)
+            : base(buildServerType, settingsKey)
         {
         }
 
@@ -42,7 +42,7 @@ namespace AppVeyorIntegration
     }
 
     [Export(typeof(IBuildServerAdapter))]
-    [AppVeyorIntegrationMetadata(PluginName)]
+    [AppVeyorIntegrationMetadata(PluginName, PluginName)]
     [PartCreationPolicy(CreationPolicy.NonShared)]
     internal class AppVeyorAdapter : IBuildServerAdapter
     {

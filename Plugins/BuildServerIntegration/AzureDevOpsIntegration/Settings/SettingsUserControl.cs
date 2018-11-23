@@ -10,7 +10,7 @@ using ResourceManager;
 namespace AzureDevOpsIntegration.Settings
 {
     [Export(typeof(IBuildServerSettingsUserControl))]
-    [BuildServerSettingsUserControlMetadata(AzureDevOpsAdapter.PluginName)]
+    [BuildServerSettingsUserControlMetadata(AzureDevOpsAdapter.PluginName, VstsAndTfsAdapter.SettingsKey)]
     [PartCreationPolicy(CreationPolicy.NonShared)]
     public partial class SettingsUserControl : GitExtensionsControl, IBuildServerSettingsUserControl
     {
