@@ -13,7 +13,7 @@
     <FileAlignment>512</FileAlignment>
     <SignAssembly>false</SignAssembly>
     <AssemblyOriginatorKeyFile>gituikey.snk.pfx</AssemblyOriginatorKeyFile>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
   </PropertyGroup>
@@ -63,6 +63,9 @@
     </PackageReference>
     <PackageReference Include="Microsoft-WindowsAPICodePack-Shell">
       <Version>1.1.3.3</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Toolkit.Forms.UI.Controls.WebView">
+      <Version>5.0.1</Version>
     </PackageReference>
     <PackageReference Include="System.IO.Abstractions">
       <Version>2.0.0.144</Version>
@@ -522,9 +525,7 @@
     <Compile Include="UserControls\WaitSpinner.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="UserControls\WebBrowserControl.cs">
-      <SubType>Component</SubType>
-    </Compile>
+    <Compile Include="UserControls\WebBrowserControl.cs" />
     <Compile Include="UserEnvironmentInformation.cs" />
     <Compile Include="UserManual\UserManual.cs" />
     <Compile Include="UserManual\SingleHtmlUserManual.cs" />
