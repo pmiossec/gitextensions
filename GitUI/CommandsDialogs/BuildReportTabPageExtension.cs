@@ -11,6 +11,7 @@ using GitCommands.Settings;
 using GitUI.UserControls;
 using GitUIPluginInterfaces;
 using JetBrains.Annotations;
+using Microsoft.Toolkit.Forms.UI.Controls;
 
 namespace GitUI.CommandsDialogs
 {
@@ -21,7 +22,7 @@ namespace GitUI.CommandsDialogs
         private readonly Func<IGitModule> _getModule;
 
         private TabPage _buildReportTabPage;
-        private WebBrowserControl _buildReportWebBrowser;
+        private WebView _buildReportWebBrowser;
         private GitRevision _selectedGitRevision;
         private string _url;
 
@@ -71,7 +72,8 @@ namespace GitUI.CommandsDialogs
                             if (revision.BuildStatus.ShowInBuildReportTab)
                             {
                                 _url = null;
-                                _buildReportWebBrowser.Navigate(revision.BuildStatus.Url);
+                                _buildReportWebBrowser.Navigate("http://html5test.com/"); // revision.BuildStatus.Url);
+                                _buildReportWebBrowser.NavigationCompleted += _buildReportWebBrowser_NavigationCompleted;
                             }
                             else
                             {
@@ -79,10 +81,10 @@ namespace GitUI.CommandsDialogs
                                 _buildReportWebBrowser.Navigate("about:blank");
                             }
 
-                            if (isFavIconMissing)
-                            {
-                                _buildReportWebBrowser.Navigated += BuildReportWebBrowserOnNavigated;
-                            }
+                            ////if (isFavIconMissing)
+                            ////{
+                            ////    _buildReportWebBrowser.Navigated += BuildReportWebBrowserOnNavigated;
+                            ////}
                         }
                         catch
                         {
@@ -100,7 +102,7 @@ namespace GitUI.CommandsDialogs
                     if (_buildReportTabPage != null && _tabControl.Controls.Contains(_buildReportTabPage))
                     {
                         _buildReportWebBrowser.Stop();
-                        _buildReportWebBrowser.Document.Write(string.Empty);
+                        _buildReportWebBrowser.NavigateToString(string.Empty);
                         _tabControl.Controls.Remove(_buildReportTabPage);
                     }
                 }
@@ -109,6 +111,11 @@ namespace GitUI.CommandsDialogs
             {
                 _tabControl.ResumeLayout();
             }
+        }
+
+        private void _buildReportWebBrowser_NavigationCompleted(object sender, Microsoft.Toolkit.Win32.UI.Controls.Interop.WinRT.WebViewControlNavigationCompletedEventArgs e)
+        {
+            Console.WriteLine("Navigation Completed");
         }
 
         private void RevisionPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -129,57 +136,59 @@ namespace GitUI.CommandsDialogs
                 Text = _caption,
                 UseVisualStyleBackColor = true
             };
-            _buildReportWebBrowser = new WebBrowserControl
+            _buildReportWebBrowser = new WebView
             {
-                Dock = DockStyle.Fill
             };
+            ((ISupportInitialize)_buildReportWebBrowser).BeginInit();
+            _buildReportWebBrowser.Dock = DockStyle.Fill;
             _buildReportTabPage.Controls.Add(_buildReportWebBrowser);
+            ((ISupportInitialize)_buildReportWebBrowser).EndInit();
         }
 
-        private void BuildReportWebBrowserOnNavigated(object sender,
-                                                      WebBrowserNavigatedEventArgs webBrowserNavigatedEventArgs)
-        {
-            _buildReportWebBrowser.Navigated -= BuildReportWebBrowserOnNavigated;
+        ////private void BuildReportWebBrowserOnNavigated(object sender,
+        ////                                              WebBrowserNavigatedEventArgs webBrowserNavigatedEventArgs)
+        ////{
+        ////    _buildReportWebBrowser.NavigationCompleted -= BuildReportWebBrowserOnNavigated;
 
-            var favIconUrl = DetermineFavIconUrl(_buildReportWebBrowser.Document);
+        ////    var favIconUrl = DetermineFavIconUrl(_buildReportWebBrowser.Document);
 
-            if (favIconUrl != null)
-            {
-                ThreadHelper.JoinableTaskFactory.RunAsync(
-                    async () =>
-                    {
-                        using (var imageStream = await DownloadRemoteImageFileAsync(favIconUrl))
-                        {
-                            if (imageStream != null)
-                            {
-                                await _tabControl.SwitchToMainThreadAsync();
+        ////    if (favIconUrl != null)
+        ////    {
+        ////        ThreadHelper.JoinableTaskFactory.RunAsync(
+        ////            async () =>
+        ////            {
+        ////                using (var imageStream = await DownloadRemoteImageFileAsync(favIconUrl))
+        ////                {
+        ////                    if (imageStream != null)
+        ////                    {
+        ////                        await _tabControl.SwitchToMainThreadAsync();
 
-                                var favIconImage = Image.FromStream(imageStream)
-                                                        .GetThumbnailImage(16, 16, null, IntPtr.Zero);
-                                var imageCollection = _tabControl.ImageList.Images;
-                                var imageIndex = _buildReportTabPage.ImageIndex;
+        ////                        var favIconImage = Image.FromStream(imageStream)
+        ////                                                .GetThumbnailImage(16, 16, null, IntPtr.Zero);
+        ////                        var imageCollection = _tabControl.ImageList.Images;
+        ////                        var imageIndex = _buildReportTabPage.ImageIndex;
 
-                                if (imageIndex < 0)
-                                {
-                                    _buildReportTabPage.ImageIndex = imageCollection.Count;
-                                    imageCollection.Add(favIconImage);
-                                }
-                                else
-                                {
-                                    imageCollection[imageIndex] = favIconImage;
-                                }
+        ////                        if (imageIndex < 0)
+        ////                        {
+        ////                            _buildReportTabPage.ImageIndex = imageCollection.Count;
+        ////                            imageCollection.Add(favIconImage);
+        ////                        }
+        ////                        else
+        ////                        {
+        ////                            imageCollection[imageIndex] = favIconImage;
+        ////                        }
 
-                                _tabControl.Invalidate(false);
-                            }
-                        }
-                    });
-            }
+        ////                        _tabControl.Invalidate(false);
+        ////                    }
+        ////                }
+        ////            });
+        ////    }
 
-            if (_url != null)
-            {
-                _buildReportWebBrowser.Document.Write("<HTML><a href=\"" + _url + "\" target=\"_blank\">Open report</a></HTML>");
-            }
-        }
+        ////    if (_url != null)
+        ////    {
+        ////        _buildReportWebBrowser.NavigateToString("<HTML><a href=\"" + _url + "\" target=\"_blank\">Open report</a></HTML>");
+        ////    }
+        ////}
 
         private bool IsBuildResultPageEnabled()
         {

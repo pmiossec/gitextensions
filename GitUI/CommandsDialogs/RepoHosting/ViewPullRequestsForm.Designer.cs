@@ -1,3 +1,6 @@
+using System.ComponentModel;
+using System.Windows.Forms;
+
 namespace GitUI.CommandsDialogs.RepoHosting
 {
     partial class ViewPullRequestsForm
@@ -37,7 +40,7 @@ namespace GitUI.CommandsDialogs.RepoHosting
             this._diffViewer = new GitUI.Editor.FileViewer();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-            this._discussionWB = new GitUI.UserControls.WebBrowserControl();
+            this._discussionWB = new Microsoft.Toolkit.Forms.UI.Controls.WebView();
             this._postCommentText = new GitUI.SpellChecker.EditNetSpell();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this._refreshCommentsBtn = new System.Windows.Forms.Button();
@@ -311,7 +314,10 @@ namespace GitUI.CommandsDialogs.RepoHosting
             // 
             this.tableLayoutPanel1.ColumnCount = 1;
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            ((ISupportInitialize)_discussionWB).BeginInit();
+            _discussionWB.Dock = DockStyle.Fill;
             this.tableLayoutPanel1.Controls.Add(this._discussionWB, 0, 0);
+            ((ISupportInitialize)_discussionWB).EndInit();
             this.tableLayoutPanel1.Controls.Add(this._postCommentText, 0, 1);
             this.tableLayoutPanel1.Controls.Add(this.flowLayoutPanel1, 0, 2);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -328,14 +334,14 @@ namespace GitUI.CommandsDialogs.RepoHosting
             // _discussionWB
             // 
             this._discussionWB.Dock = System.Windows.Forms.DockStyle.Fill;
-            this._discussionWB.IsWebBrowserContextMenuEnabled = false;
+            //this._discussionWB.IsWebBrowserContextMenuEnabled = false;
             this._discussionWB.Location = new System.Drawing.Point(3, 3);
             this._discussionWB.MinimumSize = new System.Drawing.Size(20, 20);
             this._discussionWB.Name = "_discussionWB";
-            this._discussionWB.ScriptErrorsSuppressed = true;
+            //this._discussionWB.ScriptErrorsSuppressed = true;
             this._discussionWB.Size = new System.Drawing.Size(736, 156);
             this._discussionWB.TabIndex = 9;
-            this._discussionWB.WebBrowserShortcutsEnabled = false;
+            //this._discussionWB.WebBrowserShortcutsEnabled = false;
             // 
             // _postCommentText
             // 
@@ -428,7 +434,7 @@ namespace GitUI.CommandsDialogs.RepoHosting
         private Editor.FileViewer _diffViewer;
         private System.Windows.Forms.TabPage tabPage2;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
-        private GitUI.UserControls.WebBrowserControl _discussionWB;
+        private Microsoft.Toolkit.Forms.UI.Controls.WebView _discussionWB;
         private SpellChecker.EditNetSpell _postCommentText;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
         private System.Windows.Forms.Button _refreshCommentsBtn;

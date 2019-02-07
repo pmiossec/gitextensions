@@ -63,7 +63,7 @@ namespace GitUI.CommandsDialogs.RepoHosting
         private void ViewPullRequestsForm_Load(object sender, EventArgs e)
         {
             _fileStatusList.SelectedIndexChanged += _fileStatusList_SelectedIndexChanged;
-            _discussionWB.DocumentCompleted += _discussionWB_DocumentCompleted;
+            _discussionWB.NavigationCompleted += _discussionWB_NavigationCompleted;
 
             _isFirstLoad = true;
 
@@ -190,7 +190,7 @@ namespace GitUI.CommandsDialogs.RepoHosting
 
         private void ResetAllAndShowLoadingPullRequests()
         {
-            _discussionWB.DocumentText = "";
+            _discussionWB.NavigateToString(string.Empty);
             _diffViewer.ViewPatch(null);
             _fileStatusList.SetDiffs();
 
@@ -241,7 +241,7 @@ namespace GitUI.CommandsDialogs.RepoHosting
             if (_pullRequestsList.SelectedItems.Count != 1)
             {
                 _currentPullRequestInfo = null;
-                _discussionWB.DocumentText = "";
+                _discussionWB.NavigateToString(string.Empty);
                 ThreadHelper.JoinableTaskFactory.RunAsync(
                     () => _diffViewer.ViewTextAsync("", ""));
                 return;
@@ -258,7 +258,7 @@ namespace GitUI.CommandsDialogs.RepoHosting
                 return;
             }
 
-            _discussionWB.DocumentText = DiscussionHtmlCreator.CreateFor(_currentPullRequestInfo);
+            _discussionWB.NavigateToString(DiscussionHtmlCreator.CreateFor(_currentPullRequestInfo));
             _diffViewer.ViewPatch(null);
             _fileStatusList.SetDiffs();
 
@@ -294,19 +294,24 @@ namespace GitUI.CommandsDialogs.RepoHosting
         private void LoadDiscussion([CanBeNull] IPullRequestDiscussion discussion)
         {
             var t = DiscussionHtmlCreator.CreateFor(_currentPullRequestInfo, discussion?.Entries);
-            _discussionWB.DocumentText = t;
+            _discussionWB.NavigateToString(t);
         }
 
-        private void _discussionWB_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
+        private void _discussionWB_NavigationCompleted(object sender, Microsoft.Toolkit.Win32.UI.Controls.Interop.WinRT.WebViewControlNavigationCompletedEventArgs e)
         {
-            if (_discussionWB.Document != null)
-            {
-                if (_discussionWB.Document.Window != null && _discussionWB.Document.Body != null)
-                {
-                    _discussionWB.Document.Window.ScrollTo(0, _discussionWB.Document.Body.ScrollRectangle.Height);
-                }
-            }
+            // throw new NotImplementedException();
         }
+
+        ////private void _discussionWB_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
+        ////{
+        ////    if (_discussionWB.Document != null)
+        ////    {
+        ////        if (_discussionWB.Document.Window != null && _discussionWB.Document.Body != null)
+        ////        {
+        ////            _discussionWB.Document.Window.ScrollTo(0, _discussionWB.Document.Body.ScrollRectangle.Height);
+        ////        }
+        ////    }
+        ////}
 
         private void LoadDiffPatch()
         {

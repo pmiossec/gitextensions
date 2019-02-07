@@ -64,21 +64,16 @@ namespace GitUI.Properties {
         ///   Looks up a localized string similar to Changelog
         ///=========
         ///
-        ///### [Version 2.51.05] (2 September 2018)
+        ///### Version 3.0.1 (30 Dec 2018)
         ///
         ///#### Fixes:
-        ///* Git config log.showSignature breaks revision grid - Issue [5179]
-        ///
-        ///#### Fixes (Mono specific):
-        ///* Settings causes crash under linux/mono - Issue [5311]
-        ///* Git Extension crashes when trying to access settings page in Ubuntu 16.04 - Issue [5187]
-        ///* Diff view options are positioned wrong, cannot be selected under linux/mono - Issue [4978]
-        ///
-        ///
-        ///### [Version 2.51.04] (8 July 2018)
-        ///
-        ///#### Fixes:
-        ///* A number of changed files on Co [rest of string was truncated]&quot;;.
+        ///* Application crashes on repository change - Issue [6094]
+        ///* Broken issue templates - Issue [6075]
+        ///* Commit Template Settings: Commit Template field one line only - Issue [6029]
+        ///* Exception if no current checkout when selecting current revision - PR [6023]
+        ///* [Bug]  Custom stash names not working - Issue [6016]
+        ///* Update nuget.exe 4.7.1 -&gt; 4.9.2 - PR [6006]
+        ///* Empty/exception when reseting to a remote branch, complaining about the Com [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string ChangeLog {
             get {
