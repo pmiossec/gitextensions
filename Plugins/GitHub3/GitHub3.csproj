@@ -67,6 +67,12 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="UserInputPrompt.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UserInputPrompt.Designer.cs">
+      <DependentUpon>UserInputPrompt.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Externals\Git.hub\Git.hub\Git.hub.csproj">
@@ -97,6 +103,9 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserInputPrompt.resx">
+      <DependentUpon>UserInputPrompt.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
