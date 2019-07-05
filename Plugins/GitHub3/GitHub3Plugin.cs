@@ -64,6 +64,12 @@ namespace GitHub3
                 GitHub3Plugin.GitHub.setOAuth2Token(value);
             }
         }
+
+        public static string GitHubApiEndpoint
+        {
+            get => GitHub3Plugin.Instance.GitHubApiEndpoint.ValueOrDefault(GitHub3Plugin.Instance.Settings);
+            set => GitHub3Plugin.Instance.GitHubApiEndpoint[GitHub3Plugin.Instance.Settings] = value.TrimEnd('/');
+        }
     }
 
     [Export(typeof(IGitPlugin))]
@@ -97,6 +103,7 @@ namespace GitHub3
 
         public override IEnumerable<ISetting> GetSettings()
         {
+            yield return GitHubApiEndpoint;
             yield return OAuthToken;
         }
 
@@ -149,7 +156,26 @@ namespace GitHub3
             return GitHub.getRepositories().Select(repo => (IHostedRepository)new GitHubRepo(repo)).ToList();
         }
 
-        public bool ConfigurationOk => !string.IsNullOrEmpty(GitHubLoginInfo.OAuthToken);
+        public bool ConfigurationOk
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(GitHubLoginInfo.OAuthToken))
+                {
+                    return false;
+                }
+
+                try
+                {
+                    new Uri(GitHubLoginInfo.GitHubApiEndpoint);
+                    return true;
+                }
+                catch (Exception)
+                {
+                    return false;
+                }
+            }
+        }
 
         public string OwnerLogin => GitHub.getCurrentUser()?.Login;
 
