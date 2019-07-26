@@ -42,15 +42,7 @@ namespace ProxySwitcher
 
         private void ProxySwitcherForm_Load(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(_plugin.HttpProxy.ValueOrDefault(_settings)))
-            {
-                MessageBox.Show(this, _pleaseSetProxy.Text, Text, MessageBoxButtons.OK);
-                Close();
-            }
-            else
-            {
-                RefreshProxy();
-            }
+            RefreshProxy();
         }
 
         private void RefreshProxy()

@@ -30,6 +30,12 @@ namespace ProxySwitcher
 
         public override bool Execute(GitUIEventArgs args)
         {
+            if (string.IsNullOrEmpty(HttpProxy.ValueOrDefault(Settings)))
+            {
+                args.GitUICommands.StartSettingsDialog(this);
+                return false;
+            }
+
             using (var form = new ProxySwitcherForm(this, Settings, args))
             {
                 form.ShowDialog(args.OwnerForm);
