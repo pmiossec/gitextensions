@@ -3421,6 +3421,71 @@ namespace GitUI.CommandsDialogs
 
             internal CheckBox Amend => _formCommit.Amend;
         }
+
+        private void toWindowsCRLFToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ConvertEndOfLines(Environment.NewLine);
+        }
+
+        private void ConvertEndOfLines(string eol)
+        {
+            if (Unstaged.SelectedItem == null || !Unstaged.SelectedItem.Item.IsTracked)
+            {
+                return;
+            }
+
+            var filePath = Path.Combine(Module.WorkingDir, Unstaged.SelectedItem.Item.Name);
+
+            if (!File.Exists(filePath))
+            {
+                return;
+            }
+
+            try
+            {
+                var allLines = new List<string>();
+
+                using (var stream = File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                using (var reader = new StreamReader(stream, Module.FilesEncoding))
+                {
+                    string line;
+                    while ((line = reader.ReadLine()) != null)
+                    {
+                        allLines.Add(line);
+                    }
+
+                    var filePreamble = reader.CurrentEncoding.GetPreamble();
+
+                    if (filePreamble is null || Module.FilesEncoding.GetPreamble().SequenceEqual(filePreamble))
+                    {
+                        File.WriteAllText(filePath, string.Join(eol, allLines), Module.FilesEncoding);
+                    }
+                    else
+                    {
+                        using (var bytes = new MemoryStream())
+                        {
+                            bytes.Write(filePreamble, 0, filePreamble.Length);
+                            using (var writer = new StreamWriter(bytes, Module.FilesEncoding))
+                            {
+                                writer.Write(string.Join(eol, allLines));
+                            }
+
+                            File.WriteAllBytes(filePath, bytes.ToArray());
+                        }
+                    }
+                }
+
+                ShowChanges(Unstaged.SelectedItem, false);
+            }
+            catch (Exception)
+            {
+            }
+        }
+
+        private void toUnixLFToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ConvertEndOfLines("\n");
+        }
     }
 
     /// <summary>
