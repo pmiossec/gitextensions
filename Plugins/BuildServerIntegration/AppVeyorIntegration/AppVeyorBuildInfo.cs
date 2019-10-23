@@ -1,4 +1,6 @@
 using System;
+using System.Drawing;
+using AppVeyorIntegration.Properties;
 using GitUIPluginInterfaces;
 using GitUIPluginInterfaces.BuildServerIntegration;
 
@@ -7,6 +9,12 @@ namespace AppVeyorIntegration
     public sealed class AppVeyorBuildInfo : BuildInfo
     {
         private static readonly IBuildDurationFormatter _buildDurationFormatter = new BuildDurationFormatter();
+        private static readonly Image _providerIcon = Resources.AppVeyor.ToBitmap();
+
+        public AppVeyorBuildInfo()
+        {
+            ProviderIcon = _providerIcon;
+        }
 
         private int _buildProgressCount;
 

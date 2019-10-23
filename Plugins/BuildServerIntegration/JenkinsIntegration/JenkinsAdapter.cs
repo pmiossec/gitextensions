@@ -17,6 +17,7 @@ using GitCommands.Utils;
 using GitUI;
 using GitUIPluginInterfaces;
 using GitUIPluginInterfaces.BuildServerIntegration;
+using JenkinsIntegration.Properties;
 using JetBrains.Annotations;
 using Microsoft.VisualStudio.Threading;
 using Newtonsoft.Json.Linq;
@@ -391,7 +392,8 @@ namespace JenkinsIntegration
                 Duration = buildDuration,
                 Status = status,
                 CommitHashList = commitHashList.ToArray(),
-                Url = webUrl
+                Url = webUrl,
+                ProviderIcon = Resources.Jenkins
             };
             var durationText = _buildDurationFormatter.Format(buildInfo.Duration);
             buildInfo.Description = $"#{idValue} {durationText} {testResults} {statusText}";

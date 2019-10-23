@@ -22,6 +22,7 @@ using GitUIPluginInterfaces;
 using GitUIPluginInterfaces.BuildServerIntegration;
 using JetBrains.Annotations;
 using Microsoft.VisualStudio.Threading;
+using TeamCityIntegration.Properties;
 
 namespace TeamCityIntegration
 {
@@ -334,7 +335,8 @@ namespace TeamCityIntegration
                 Status = ParseBuildStatus(statusValue),
                 Description = statusText,
                 CommitHashList = commitHashList,
-                Url = webUrl
+                Url = webUrl,
+                ProviderIcon = Resources.TeamCity
             };
             return buildInfo;
         }

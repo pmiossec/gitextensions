@@ -11,6 +11,7 @@ using GitCommands.Utils;
 using GitUIPluginInterfaces;
 using GitUIPluginInterfaces.BuildServerIntegration;
 using JetBrains.Annotations;
+using TfsIntegration.Properties;
 using TfsInterop.Interface;
 
 namespace TfsIntegration
@@ -168,7 +169,8 @@ namespace TfsIntegration
                 Description = $"{buildDetail.Label} ({buildDetail.Description})",
                 CommitHashList = new[] { objectId },
                 Url = buildDetail.Url,
-                ShowInBuildReportTab = false
+                ShowInBuildReportTab = false,
+                ProviderIcon = Resources.TFS,
             };
         }
 

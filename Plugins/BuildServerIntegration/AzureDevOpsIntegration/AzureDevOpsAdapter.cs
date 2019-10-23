@@ -1,11 +1,13 @@
 using System;
 using System.ComponentModel.Composition;
+using System.Drawing;
 using System.Globalization;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using AzureDevOpsIntegration.Properties;
 using AzureDevOpsIntegration.Settings;
 using GitUIPluginInterfaces;
 using GitUIPluginInterfaces.BuildServerIntegration;
@@ -123,7 +125,8 @@ namespace AzureDevOpsIntegration
                 Tooltip = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(buildDetail.IsInProgress ? buildDetail.Status : buildDetail.Result) + Environment.NewLine + duration + Environment.NewLine + buildDetail.BuildNumber,
                 CommitHashList = new[] { ObjectId.Parse(buildDetail.SourceVersion) },
                 Url = buildDetail._links.Web.Href,
-                ShowInBuildReportTab = false
+                ShowInBuildReportTab = false,
+                ProviderIcon = Resources.IconAzureDevOps
             };
 
             return buildInfo;

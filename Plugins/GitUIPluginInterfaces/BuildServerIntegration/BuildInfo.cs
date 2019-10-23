@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 
 namespace GitUIPluginInterfaces.BuildServerIntegration
 {
@@ -25,5 +26,6 @@ namespace GitUIPluginInterfaces.BuildServerIntegration
         public bool ShowInBuildReportTab { get; set; } = true;
         public string Tooltip { get; set; }
         public string PullRequestUrl { get; set; }
+        public Image ProviderIcon { get; set; }
     }
 }
