@@ -139,13 +139,28 @@ namespace AzureDevOpsIntegration
                     return;
                 }
 
+                if (!running && !sinceDate.HasValue && CacheAzureDevOps.FinishedBuilds.Any())
+                {
+                    foreach (var buildInfo in CacheAzureDevOps.FinishedBuilds)
+                    {
+                        observer.OnNext(buildInfo);
+                    }
+
+                    return;
+                }
+
                 var builds = running ?
                     FilterRunningBuilds(await _apiClient.QueryRunningBuildsAsync(_buildDefinitions)) :
                     await _apiClient.QueryFinishedBuildsAsync(_buildDefinitions, sinceDate);
 
                 foreach (var build in builds)
                 {
-                    observer.OnNext(CreateBuildInfo(build));
+                    var buildInfo = CreateBuildInfo(build);
+                    observer.OnNext(buildInfo);
+                    if (!running)
+                    {
+                        CacheAzureDevOps.FinishedBuilds.Add(buildInfo);
+                    }
                 }
             }
             catch (OperationCanceledException)
