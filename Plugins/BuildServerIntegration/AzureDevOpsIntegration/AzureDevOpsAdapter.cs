@@ -146,7 +146,7 @@ namespace AzureDevOpsIntegration
                         observer.OnNext(buildInfo);
                     }
 
-                    return;
+                    sinceDate = CacheAzureDevOps.LastCall;
                 }
 
                 var builds = running ?
@@ -160,6 +160,10 @@ namespace AzureDevOpsIntegration
                     if (!running)
                     {
                         CacheAzureDevOps.FinishedBuilds.Add(buildInfo);
+                        if (build.FinishTime.HasValue && build.FinishTime.Value >= CacheAzureDevOps.LastCall)
+                        {
+                            CacheAzureDevOps.LastCall = build.FinishTime.Value.AddSeconds(1);
+                        }
                     }
                 }
             }
