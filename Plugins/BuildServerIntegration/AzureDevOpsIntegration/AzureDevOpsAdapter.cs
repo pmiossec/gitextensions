@@ -219,7 +219,7 @@ Detail of the error:");
                     return;
                 }
 
-                if (!running && !sinceDate.HasValue && CacheAzureDevOps.FinishedBuilds.Any())
+                if (!running && !sinceDate.HasValue && CacheAzureDevOps != null && CacheAzureDevOps.FinishedBuilds.Any())
                 {
                     foreach (var buildInfo in CacheAzureDevOps.FinishedBuilds)
                     {
@@ -233,16 +233,28 @@ Detail of the error:");
                     FilterRunningBuilds(await _apiClient.QueryRunningBuildsAsync(_buildDefinitions)) :
                     await _apiClient.QueryFinishedBuildsAsync(_buildDefinitions, sinceDate);
 
-                foreach (var build in builds)
+                if (running)
                 {
-                    var buildInfo = CreateBuildInfo(build);
-                    observer.OnNext(buildInfo);
-                    if (!running)
+                    foreach (var build in builds)
                     {
-                        CacheAzureDevOps.FinishedBuilds.Add(buildInfo);
-                        if (build.FinishTime.HasValue && build.FinishTime.Value >= CacheAzureDevOps.LastCall)
+                        observer.OnNext(CreateBuildInfo(build));
+                    }
+                }
+                else
+                {
+                    var buildsByCommit = builds.GroupBy(b => b.SourceVersion);
+                    foreach (var buildsForACommit in buildsByCommit)
+                    {
+                        var buildToDisplay = buildsForACommit.OrderByDescending(b => b.FinishTime).First();
+                        var buildInfo = CreateBuildInfo(buildToDisplay);
+                        observer.OnNext(buildInfo);
+                        if (CacheAzureDevOps != null)
                         {
-                            CacheAzureDevOps.LastCall = build.FinishTime.Value.AddSeconds(1);
+                            CacheAzureDevOps.FinishedBuilds.Add(buildInfo);
+                            if (buildToDisplay.FinishTime.HasValue && buildToDisplay.FinishTime.Value >= CacheAzureDevOps.LastCall)
+                            {
+                                CacheAzureDevOps.LastCall = buildToDisplay.FinishTime.Value.AddSeconds(1);
+                            }
                         }
                     }
                 }
