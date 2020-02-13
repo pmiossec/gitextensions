@@ -4198,6 +4198,12 @@ namespace GitCommands
             }
         }
 
+        public void FastForward(string branchName, string remoteName)
+        {
+            var gitCommand = $"fetch {remoteName} {branchName}:{branchName}";
+            _gitCommandRunner.RunDetached(gitCommand);
+        }
+
         internal TestAccessor GetTestAccessor() => new TestAccessor(this);
 
         internal readonly struct TestAccessor

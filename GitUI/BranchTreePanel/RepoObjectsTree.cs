@@ -95,6 +95,8 @@ namespace GitUI.BranchTreePanel
             mnubtnFilterRemoteBranchInRevisionGrid.ToolTipText = _showBranchOnly.Text;
             mnubtnFilterLocalBranchInRevisionGrid.ToolTipText = _showBranchOnly.Text;
 
+            menuBranch.Opening += MenuBranch_Opening;
+
             return;
 
             void InitImageList()
@@ -211,6 +213,29 @@ namespace GitUI.BranchTreePanel
                         }
                     }
                 }
+            }
+        }
+
+        private void MenuBranch_Opening(object sender, CancelEventArgs e)
+        {
+            fastForwardThisBranchWithToolStripMenuItem.DropDownItems.Clear();
+            var branchNode = (LocalBranchNode)treeMain.SelectedNode.Tag;
+
+            var currentBranch = Module.GetRefs(false, true).FirstOrDefault(r => r.LocalName == branchNode.FullPath);
+
+            if (currentBranch == null || string.IsNullOrWhiteSpace(currentBranch.MergeWith))
+            {
+                fastForwardThisBranchWithToolStripMenuItem.Enabled = false;
+                return;
+            }
+
+            fastForwardThisBranchWithToolStripMenuItem.Enabled = true;
+
+            foreach (var remote in Module.GetRemoteNames())
+            {
+                var menuItem = new ToolStripMenuItem(remote) { Tag = remote };
+                menuItem.Click += FastForwardBranchToolStripMenuItem_Click;
+                fastForwardThisBranchWithToolStripMenuItem.DropDownItems.Add(menuItem);
             }
         }
 
@@ -595,6 +620,13 @@ namespace GitUI.BranchTreePanel
                     _repoObjectsTree.RemoveTree(tree);
                 }
             }
+        }
+
+        private void FastForwardBranchToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var item = (ToolStripMenuItem)sender;
+            var branchNode = (LocalBranchNode)treeMain.SelectedNode.Tag;
+            branchNode.FastForward((string)item.Tag);
         }
     }
 }

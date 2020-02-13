@@ -6,9 +6,13 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using GitCommands;
 using GitCommands.Git;
+using GitExtUtils;
 using GitExtUtils.GitUI.Theming;
 using GitUI.BranchTreePanel.Interfaces;
+using GitUI.CommandsDialogs;
+using GitUI.HelperDialogs;
 using GitUI.Properties;
 using GitUI.UserControls.RevisionGrid;
 using GitUIPluginInterfaces;
@@ -252,6 +256,21 @@ namespace GitUI.BranchTreePanel
             public bool Rename()
             {
                 return UICommands.StartRenameDialog(ParentWindow(), branch: FullPath);
+            }
+
+            public void FastForward(string remoteName)
+            {
+                var argumentString = new GitArgumentBuilder("fetch")
+                {
+                    remoteName,
+                    $"{FullPath}:{FullPath}"
+                };
+
+                UICommands.DoActionOnRepo(() =>
+                {
+                    FormProcess.ShowDialog(ParentWindow(), "git", argumentString, Module.WorkingDir, null, true);
+                    return true;
+                });
             }
         }
 

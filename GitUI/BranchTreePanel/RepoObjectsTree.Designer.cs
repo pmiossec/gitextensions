@@ -65,6 +65,7 @@ namespace GitUI.BranchTreePanel
             this.menuBranch = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.mnubtnFilterLocalBranchInRevisionGrid = new System.Windows.Forms.ToolStripMenuItem();
             this.runScriptToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.fastForwardThisBranchWithToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mnubtnFilterRemoteBranchInRevisionGrid = new System.Windows.Forms.ToolStripMenuItem();
             this.menuTags = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.menuRemotes = new System.Windows.Forms.ContextMenuStrip(this.components);
@@ -195,6 +196,7 @@ namespace GitUI.BranchTreePanel
             // 
             this.menuBranch.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.mnubtnFilterLocalBranchInRevisionGrid,
+            this.fastForwardThisBranchWithToolStripMenuItem,
             this.runScriptToolStripMenuItem});
             this.menuBranch.Name = "contextmenuBranch";
             this.menuBranch.Size = new System.Drawing.Size(192, 48);
@@ -213,6 +215,12 @@ namespace GitUI.BranchTreePanel
             this.runScriptToolStripMenuItem.Name = "runScriptToolStripMenuItem";
             this.runScriptToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
             this.runScriptToolStripMenuItem.Text = "Run script";
+            // 
+            // fastForwardThisBranchWithToolStripMenuItem
+            // 
+            this.fastForwardThisBranchWithToolStripMenuItem.Name = "fastForwardThisBranchWithToolStripMenuItem";
+            this.fastForwardThisBranchWithToolStripMenuItem.Size = new System.Drawing.Size(496, 40);
+            this.fastForwardThisBranchWithToolStripMenuItem.Text = "Fast forward this branch with remote";
             // 
             // mnubtnFilterRemoteBranchInRevisionGrid
             // 
@@ -720,6 +728,7 @@ namespace GitUI.BranchTreePanel
         private ToolStripButton tsbShowRemotes;
         private ToolStripButton tsbShowTags;
         private ToolStripButton tsbShowSubmodules;
+        private ToolStripMenuItem fastForwardThisBranchWithToolStripMenuItem;
 
 #nullable restore
     }
