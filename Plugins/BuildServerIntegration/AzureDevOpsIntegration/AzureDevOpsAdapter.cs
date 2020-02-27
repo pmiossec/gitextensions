@@ -105,6 +105,9 @@ Detail of the error:");
             else
             {
                 _buildDefinitions = CacheAzureDevOps.BuildDefinitions;
+
+                // We are still in the same repository, so don't dispose the cache of builds
+                CacheAzureDevOps.ShouldBeKept = true;
             }
         }
 
@@ -158,7 +161,7 @@ Detail of the error:");
                             return;
                         }
 
-                        CacheAzureDevOps = new CacheAzureDevOps { Id = CacheKey, BuildDefinitions = _buildDefinitions };
+                        CacheAzureDevOps = new CacheAzureDevOps { Id = CacheKey, BuildDefinitions = _buildDefinitions, ShouldBeKept = true };
                     }
                     catch (UnauthorizedAccessException)
                     {
@@ -343,6 +346,20 @@ Detail of the error:");
         public void Dispose()
         {
             _apiClient?.Dispose();
+            if (CacheAzureDevOps != null)
+            {
+                if (CacheAzureDevOps.ShouldBeKept)
+                {
+                    CacheAzureDevOps.ShouldBeKept = false;
+                }
+                else
+                {
+                    // Remove cache when we move away of this repository
+                    // and so, we didn't set `ShouldBeKept` at true
+                    CacheAzureDevOps = null;
+                }
+            }
+
             GC.SuppressFinalize(this);
         }
 
