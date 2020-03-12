@@ -1,9 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  
+
   <PropertyGroup>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
-  
+
   <ItemGroup>
     <Compile Include="..\CommonAssemblyInfo.cs" Link="Properties\CommonAssemblyInfo.cs" />
   </ItemGroup>
@@ -28,7 +28,7 @@
     <PackageReference Include="Microsoft-WindowsAPICodePack-Core" Version="1.1.3.3" />
     <PackageReference Include="Microsoft-WindowsAPICodePack-Shell" Version="1.1.3.3" />
     <PackageReference Include="System.IO.Abstractions" Version="2.0.0.144" />
-    <PackageReference Include="System.Reactive" Version="4.2.0" />
+    <PackageReference Include="System.Reactive" Version="4.3.2" />
     <PackageReference Include="System.Runtime.InteropServices.RuntimeInformation" Version="4.3.0" />
   </ItemGroup>
 
@@ -64,7 +64,7 @@
     <None Remove="Resources\Icons\artwork\**" />
     <None Remove="Resources\Icons\originals\**" />
   </ItemGroup>
-  
+
   <ItemGroup>
     <None Include="app.config">
       <SubType>Designer</SubType>
