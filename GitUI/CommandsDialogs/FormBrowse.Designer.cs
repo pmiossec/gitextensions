@@ -48,10 +48,12 @@ namespace GitUI.CommandsDialogs
             this.toolStripButtonPull = new System.Windows.Forms.ToolStripSplitButton();
             this.mergeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.rebaseToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripButtonFetch = new System.Windows.Forms.ToolStripSplitButton();
             this.fetchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.pullToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.fetchAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.fetchPruneAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.setDefaultFetchButtonActionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.setDefaultPullButtonActionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripButtonPush = new GitUI.CommandsDialogs.ToolStripPushButton();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
@@ -253,6 +255,7 @@ namespace GitUI.CommandsDialogs
             this._NO_TRANSLATE_WorkingDir,
             this.branchSelect,
             this.toolStripSeparator1,
+            this.toolStripButtonFetch,
             this.toolStripButtonPull,
             this.toolStripButtonPush,
             this.toolStripButtonCommit,
@@ -265,7 +268,7 @@ namespace GitUI.CommandsDialogs
             this.ToolStripMain.Location = new System.Drawing.Point(3, 0);
             this.ToolStripMain.Name = "ToolStripMain";
             this.ToolStripMain.Padding = new System.Windows.Forms.Padding(0);
-            this.ToolStripMain.Size = new System.Drawing.Size(479, 25);
+            this.ToolStripMain.Size = new System.Drawing.Size(607, 25);
             this.ToolStripMain.TabIndex = 0;
             this.ToolStripMain.Text = "Standard";
             // 
@@ -403,6 +406,23 @@ namespace GitUI.CommandsDialogs
             this.toolStripSplitStash.ButtonClick += new System.EventHandler(this.ToolStripSplitStashButtonClick);
             this.toolStripSplitStash.DropDownOpened += new System.EventHandler(this.toolStripSplitStash_DropDownOpened);
             // 
+            // toolStripButtonFetch
+            // 
+            this.toolStripButtonFetch.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripButtonFetch.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.fetchToolStripMenuItem,
+            this.fetchAllToolStripMenuItem,
+            this.fetchPruneAllToolStripMenuItem,
+            toolStripSeparator11,
+            this.setDefaultFetchButtonActionToolStripMenuItem});
+            this.toolStripButtonFetch.Image = global::GitUI.Properties.Images.Pull;
+            this.toolStripButtonFetch.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButtonFetch.Name = "toolStripButtonFetch";
+            this.toolStripButtonFetch.Size = new System.Drawing.Size(32, 22);
+            this.toolStripButtonFetch.Text = "Fetch";
+            this.toolStripButtonFetch.ButtonClick += new System.EventHandler(this.ToolStripButtonFetchClick);
+            this.toolStripButtonFetch.DropDownOpened += new System.EventHandler(this.ToolStripButtonFetch_DropDownOpened);
+            // 
             // stashChangesToolStripMenuItem
             // 
             this.stashChangesToolStripMenuItem.Name = "stashChangesToolStripMenuItem";
@@ -431,6 +451,12 @@ namespace GitUI.CommandsDialogs
             // 
             this.toolStripSeparator9.Name = "toolStripSeparator9";
             this.toolStripSeparator9.Size = new System.Drawing.Size(164, 6);
+            // 
+            // setDefaultFetchButtonActionToolStripMenuItem
+            // 
+            this.setDefaultFetchButtonActionToolStripMenuItem.Name = "setDefaultFetchButtonActionToolStripMenuItem";
+            this.setDefaultFetchButtonActionToolStripMenuItem.Size = new System.Drawing.Size(228, 22);
+            this.setDefaultFetchButtonActionToolStripMenuItem.Text = "Set default Fetch button action";
             // 
             // manageStashesToolStripMenuItem
             // 
@@ -463,12 +489,8 @@ namespace GitUI.CommandsDialogs
             this.toolStripButtonPull.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.toolStripButtonPull.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.pullToolStripMenuItem1,
-            toolStripSeparator11,
             this.mergeToolStripMenuItem,
             this.rebaseToolStripMenuItem1,
-            this.fetchToolStripMenuItem,
-            this.fetchAllToolStripMenuItem,
-            this.fetchPruneAllToolStripMenuItem,
             toolStripSeparator14,
             this.setDefaultPullButtonActionToolStripMenuItem});
             this.toolStripButtonPull.Image = global::GitUI.Properties.Images.Pull;
@@ -488,7 +510,7 @@ namespace GitUI.CommandsDialogs
             // 
             this.mergeToolStripMenuItem.Image = global::GitUI.Properties.Images.PullMerge;
             this.mergeToolStripMenuItem.Name = "mergeToolStripMenuItem";
-            this.mergeToolStripMenuItem.Size = new System.Drawing.Size(239, 22);
+            this.mergeToolStripMenuItem.Size = new System.Drawing.Size(228, 22);
             this.mergeToolStripMenuItem.Text = "Pull - &merge";
             this.mergeToolStripMenuItem.Click += new System.EventHandler(this.mergeToolStripMenuItem_Click);
             // 
@@ -496,7 +518,7 @@ namespace GitUI.CommandsDialogs
             // 
             this.rebaseToolStripMenuItem1.Image = global::GitUI.Properties.Images.PullRebase;
             this.rebaseToolStripMenuItem1.Name = "rebaseToolStripMenuItem1";
-            this.rebaseToolStripMenuItem1.Size = new System.Drawing.Size(239, 22);
+            this.rebaseToolStripMenuItem1.Size = new System.Drawing.Size(228, 22);
             this.rebaseToolStripMenuItem1.Text = "Pull - &rebase";
             this.rebaseToolStripMenuItem1.Click += new System.EventHandler(this.rebaseToolStripMenuItem1_Click);
             // 
@@ -515,6 +537,7 @@ namespace GitUI.CommandsDialogs
             this.pullToolStripMenuItem1.Name = "pullToolStripMenuItem1";
             this.pullToolStripMenuItem1.Size = new System.Drawing.Size(239, 22);
             this.pullToolStripMenuItem1.Text = "Open &pull dialog...";
+            this.pullToolStripMenuItem1.ToolTipText = "Open pull dialog";
             this.pullToolStripMenuItem1.Click += new System.EventHandler(this.pullToolStripMenuItem1_Click);
             // 
             // fetchAllToolStripMenuItem
@@ -538,7 +561,7 @@ namespace GitUI.CommandsDialogs
             // setDefaultPullButtonActionToolStripMenuItem
             // 
             this.setDefaultPullButtonActionToolStripMenuItem.Name = "setDefaultPullButtonActionToolStripMenuItem";
-            this.setDefaultPullButtonActionToolStripMenuItem.Size = new System.Drawing.Size(239, 22);
+            this.setDefaultPullButtonActionToolStripMenuItem.Size = new System.Drawing.Size(228, 22);
             this.setDefaultPullButtonActionToolStripMenuItem.Text = "Set &default Pull button action";
             // 
             // toolStripButtonPush
@@ -1898,6 +1921,8 @@ namespace GitUI.CommandsDialogs
         private ToolStripMenuItem setDefaultPullButtonActionToolStripMenuItem;
         private ToolStripMenuItem fetchAllToolStripMenuItem;
         private ToolStripMenuItem fetchPruneAllToolStripMenuItem;
+        private ToolStripMenuItem setDefaultFetchButtonActionToolStripMenuItem;
+        private ToolStripSplitButton toolStripButtonFetch;
         private ToolStripMenuItem resetToolStripMenuItem;
         private ToolStripMenuItem reportAnIssueToolStripMenuItem;
         private ToolStripSeparator toolStripSeparator41;
