@@ -1876,7 +1876,7 @@ namespace GitUI
 
             if (arguments.ContainsKey("fetch"))
             {
-                AppSettings.DefaultPullAction = AppSettings.PullAction.Fetch;
+                AppSettings.DefaultFetchAction = AppSettings.PullAction.Fetch;
             }
 
             if (arguments.ContainsKey("autostash"))

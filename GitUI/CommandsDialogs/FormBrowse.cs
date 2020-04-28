@@ -475,8 +475,9 @@ namespace GitUI.CommandsDialogs
                     Handle,
                     new WindowsThumbnailToolbarButtons(
                         new WindowsThumbnailToolbarButton(toolStripButtonCommit.Text, toolStripButtonCommit.Image, CommitToolStripMenuItemClick),
-                        new WindowsThumbnailToolbarButton(toolStripButtonPush.Text, toolStripButtonPush.Image, PushToolStripMenuItemClick),
-                        new WindowsThumbnailToolbarButton(toolStripButtonPull.Text, toolStripButtonPull.Image, PullToolStripMenuItemClick)));
+                        new WindowsThumbnailToolbarButton(toolStripButtonFetch.Text, toolStripButtonFetch.Image, fetchToolStripMenuItem_Click),
+                        new WindowsThumbnailToolbarButton(toolStripButtonPull.Text, toolStripButtonPull.Image, PullToolStripMenuItemClick),
+                        new WindowsThumbnailToolbarButton(toolStripButtonPush.Text, toolStripButtonPush.Image, PushToolStripMenuItemClick)));
             }
 
             this.InvokeAsync(OnActivate).FileAndForget();
@@ -517,7 +518,7 @@ namespace GitUI.CommandsDialogs
         protected override void OnUICommandsChanged(GitUICommandsChangedEventArgs e)
         {
             var oldCommands = e.OldCommands;
-            RefreshDefaultPullAction();
+            RefreshDefaultActions();
 
             if (oldCommands is not null)
             {
@@ -1418,7 +1419,7 @@ namespace GitUI.CommandsDialogs
 
             _gitStatusMonitor.Active = NeedsGitStatusMonitor() && Module.IsValidGitWorkingDir();
 
-            RefreshDefaultPullAction();
+            RefreshDefaultActions();
         }
 
         private void TagToolStripMenuItemClick(object sender, EventArgs e)
@@ -2478,6 +2479,16 @@ namespace GitUI.CommandsDialogs
         {
             // "Open Pull Dialog..." toolbar menu item always open the dialog with the current default action
             DoPull(pullAction: AppSettings.FormPullAction, isSilent: false);
+        }
+
+        private void ToolStripButtonFetchClick(object sender, EventArgs e)
+        {
+            DoPull(pullAction: AppSettings.DefaultFetchAction, isSilent: true);
+        }
+
+        private void ToolStripButtonFetch_DropDownOpened(object sender, EventArgs e)
+        {
+            ToolStripFilters.PreventToolStripSplitButtonClosing(sender as ToolStripSplitButton);
         }
 
         private void mergeToolStripMenuItem_Click(object sender, EventArgs e)

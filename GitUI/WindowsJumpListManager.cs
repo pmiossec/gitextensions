@@ -37,6 +37,7 @@ namespace GitUI
         private readonly IRepositoryDescriptionProvider _repositoryDescriptionProvider;
         private ThumbnailToolBarButton? _commitButton;
         private ThumbnailToolBarButton? _pushButton;
+        private ThumbnailToolBarButton? _fetchButton;
         private ThumbnailToolBarButton? _pullButton;
         private string? _deferredAddToRecent;
         private bool ToolbarButtonsCreated => _commitButton is not null;
@@ -69,6 +70,7 @@ namespace GitUI
                 _commitButton?.Dispose();
                 _pushButton?.Dispose();
                 _pullButton?.Dispose();
+                _fetchButton?.Dispose();
             }
         }
 
@@ -128,10 +130,12 @@ namespace GitUI
 
                 Validates.NotNull(_commitButton);
                 Validates.NotNull(_pushButton);
+                Validates.NotNull(_fetchButton);
                 Validates.NotNull(_pullButton);
 
                 _commitButton.Enabled = true;
                 _pushButton.Enabled = true;
+                _fetchButton.Enabled = true;
                 _pullButton.Enabled = true;
             }, nameof(AddToRecent));
         }
@@ -188,17 +192,20 @@ namespace GitUI
 
             void CreateTaskbarButtons(IntPtr handle, WindowsThumbnailToolbarButtons thumbButtons)
             {
-                _commitButton = new ThumbnailToolBarButton(MakeIcon(thumbButtons.Commit.Image, 48, true), thumbButtons.Commit.Text);
-                _commitButton.Click += thumbButtons.Commit.Click;
+                _commitButton = CreateThumbnailToolBarButton(thumbButtons.Commit);
+                _fetchButton = CreateThumbnailToolBarButton(thumbButtons.Fetch);
+                _pullButton = CreateThumbnailToolBarButton(thumbButtons.Pull);
+                _pushButton = CreateThumbnailToolBarButton(thumbButtons.Push);
 
-                _pushButton = new ThumbnailToolBarButton(MakeIcon(thumbButtons.Push.Image, 48, true), thumbButtons.Push.Text);
-                _pushButton.Click += thumbButtons.Push.Click;
-
-                _pullButton = new ThumbnailToolBarButton(MakeIcon(thumbButtons.Pull.Image, 48, true), thumbButtons.Pull.Text);
-                _pullButton.Click += thumbButtons.Pull.Click;
+                ThumbnailToolBarButton CreateThumbnailToolBarButton(WindowsThumbnailToolbarButton button)
+                {
+                    var thumbnailToolBarButton = new ThumbnailToolBarButton(MakeIcon(button.Image, 48, true), button.Text);
+                    thumbnailToolBarButton.Click += button.Click;
+                    return thumbnailToolBarButton;
+                }
 
                 // Call this method using reflection.  This is a workaround to *not* reference WPF libraries, because of how the WindowsAPICodePack was implemented.
-                TaskbarManager.Instance.ThumbnailToolBars.AddButtons(handle, _commitButton, _pullButton, _pushButton);
+                TaskbarManager.Instance.ThumbnailToolBars.AddButtons(handle, _commitButton, _fetchButton, _pullButton, _pushButton);
             }
         }
 
@@ -216,10 +223,12 @@ namespace GitUI
             {
                 Validates.NotNull(_commitButton);
                 Validates.NotNull(_pushButton);
+                Validates.NotNull(_fetchButton);
                 Validates.NotNull(_pullButton);
                 _commitButton.Enabled = false;
                 _pushButton.Enabled = false;
                 _pullButton.Enabled = false;
+                _fetchButton.Enabled = false;
             }, nameof(DisableThumbnailToolbar));
         }
 

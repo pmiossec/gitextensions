@@ -36,6 +36,7 @@ namespace GitUI.CommandsDialogs
                 translateToolStripMenuItem,
                 recoverLostObjectsToolStripMenuItem,
                 branchSelect,
+                toolStripButtonFetch,
                 toolStripButtonPull,
                 pullToolStripMenuItem,
                 pullToolStripMenuItem1,
@@ -70,8 +71,9 @@ namespace GitUI.CommandsDialogs
 
             UpdateCommitButtonAndGetBrush(status: null, AppSettings.ShowGitStatusInBrowseToolbar);
 
+            FillNextFetchActionAsDefaultToolStripMenuItems();
             FillNextPullActionAsDefaultToolStripMenuItems();
-            RefreshDefaultPullAction();
+            RefreshDefaultActions();
 
             FillUserShells(defaultShell: BashShell.ShellName);
 
@@ -144,9 +146,32 @@ namespace GitUI.CommandsDialogs
             }
         }
 
+        private void FillNextFetchActionAsDefaultToolStripMenuItems()
+        {
+            FillNextActionAsDefaultToolStripMenuItems(toolStripButtonFetch, setDefaultFetchButtonActionToolStripMenuItem,
+                (object sender, EventArgs eventArgs) =>
+                {
+                    var clickedMenuItem = (ToolStripMenuItem)sender;
+                    AppSettings.DefaultFetchAction = (AppSettings.PullAction)clickedMenuItem.Tag;
+                    RefreshDefaultFetchAction();
+                });
+        }
+
         private void FillNextPullActionAsDefaultToolStripMenuItems()
         {
-            var setDefaultPullActionDropDown = (ToolStripDropDownMenu)setDefaultPullButtonActionToolStripMenuItem.DropDown;
+            FillNextActionAsDefaultToolStripMenuItems(toolStripButtonPull, setDefaultPullButtonActionToolStripMenuItem,
+            (object sender, EventArgs eventArgs) =>
+            {
+                var clickedMenuItem = (ToolStripMenuItem)sender;
+                AppSettings.DefaultPullAction = (AppSettings.PullAction)clickedMenuItem.Tag;
+                RefreshDefaultPullAction();
+            });
+        }
+
+        private void FillNextActionAsDefaultToolStripMenuItems(ToolStripSplitButton buttonActionToolStripMenuItem,
+            ToolStripMenuItem defaultButtonActionToolStripMenuItem, EventHandler setDefaultPullActionMenuItemClick)
+        {
+            var setDefaultPullActionDropDown = (ToolStripDropDownMenu)defaultButtonActionToolStripMenuItem.DropDown;
 
             // Show both Check and Image margins in a menu
             setDefaultPullActionDropDown.ShowImageMargin = true;
@@ -161,7 +186,7 @@ namespace GitUI.CommandsDialogs
                 }
             };
 
-            var setDefaultPullActionDropDownItems = toolStripButtonPull.DropDownItems
+            var setDefaultPullActionDropDownItems = buttonActionToolStripMenuItem.DropDownItems
                 .OfType<ToolStripMenuItem>()
                 .Where(tsmi => tsmi.Tag is AppSettings.PullAction)
                 .Select(tsmi =>
@@ -175,19 +200,12 @@ namespace GitUI.CommandsDialogs
                         Tag = tsmi.Tag
                     };
 
-                    tsi.Click += SetDefaultPullActionMenuItemClick;
+                    tsi.Click += setDefaultPullActionMenuItemClick;
 
                     return tsi;
                 });
 
             setDefaultPullActionDropDown.Items.AddRange(setDefaultPullActionDropDownItems.ToArray());
-
-            void SetDefaultPullActionMenuItemClick(object sender, EventArgs eventArgs)
-            {
-                var clickedMenuItem = (ToolStripMenuItem)sender;
-                AppSettings.DefaultPullAction = (AppSettings.PullAction)clickedMenuItem.Tag;
-                RefreshDefaultPullAction();
-            }
         }
 
         private void FillUserShells(string defaultShell)
@@ -239,17 +257,31 @@ namespace GitUI.CommandsDialogs
             gitBashToolStripMenuItem.Tag = _shellProvider.GetShell(BashShell.ShellName);
         }
 
+        private void RefreshDefaultActions()
+        {
+            RefreshDefaultFetchAction();
+            RefreshDefaultPullAction();
+        }
+
+        private void RefreshDefaultFetchAction()
+        {
+            RefreshDefaultAction(setDefaultFetchButtonActionToolStripMenuItem, AppSettings.DefaultFetchAction);
+        }
+
         private void RefreshDefaultPullAction()
         {
-            if (setDefaultPullButtonActionToolStripMenuItem is null)
+            RefreshDefaultAction(setDefaultPullButtonActionToolStripMenuItem, AppSettings.DefaultPullAction);
+        }
+
+        private void RefreshDefaultAction(ToolStripMenuItem? toolStripMenuItem, AppSettings.PullAction defaultPullAction)
+        {
+            if (toolStripMenuItem is null)
             {
                 // We may get called while instantiating the form
                 return;
             }
 
-            var defaultPullAction = AppSettings.DefaultPullAction;
-
-            foreach (ToolStripMenuItem menuItem in setDefaultPullButtonActionToolStripMenuItem.DropDown.Items)
+            foreach (ToolStripMenuItem menuItem in toolStripMenuItem.DropDown.Items)
             {
                 menuItem.Checked = (AppSettings.PullAction)menuItem.Tag == defaultPullAction;
             }
@@ -257,18 +289,18 @@ namespace GitUI.CommandsDialogs
             switch (defaultPullAction)
             {
                 case AppSettings.PullAction.Fetch:
-                    toolStripButtonPull.Image = Images.PullFetch.AdaptLightness();
-                    toolStripButtonPull.ToolTipText = _pullFetch.Text;
+                    toolStripButtonFetch.Image = Images.PullFetch.AdaptLightness();
+                    toolStripButtonFetch.ToolTipText = _pullFetch.Text;
                     break;
 
                 case AppSettings.PullAction.FetchAll:
-                    toolStripButtonPull.Image = Images.PullFetchAll.AdaptLightness();
-                    toolStripButtonPull.ToolTipText = _pullFetchAll.Text;
+                    toolStripButtonFetch.Image = Images.PullFetchAll.AdaptLightness();
+                    toolStripButtonFetch.ToolTipText = _pullFetchAll.Text;
                     break;
 
                 case AppSettings.PullAction.FetchPruneAll:
-                    toolStripButtonPull.Image = Images.PullFetchPruneAll.AdaptLightness();
-                    toolStripButtonPull.ToolTipText = _pullFetchPruneAll.Text;
+                    toolStripButtonFetch.Image = Images.PullFetchPruneAll.AdaptLightness();
+                    toolStripButtonFetch.ToolTipText = _pullFetchPruneAll.Text;
                     break;
 
                 case AppSettings.PullAction.Merge:
