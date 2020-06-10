@@ -6,13 +6,15 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
-using Git.hub;
 using GitCommands;
 using GitCommands.Config;
 using GitUIPluginInterfaces;
 using JetBrains.Annotations;
+using Octokit;
 using ResourceManager;
+using Application = System.Windows.Forms.Application;
 
 namespace GitUI.CommandsDialogs.BrowseDialog
 {
@@ -46,7 +48,7 @@ namespace GitUI.CommandsDialogs.BrowseDialog
         public void SearchForUpdatesAndShow(IWin32Window ownerWindow, bool alwaysShow)
         {
             OwnerWindow = ownerWindow;
-            new Thread(SearchForUpdates).Start();
+            new Thread(SearchForUpdatesAsync).Start();
             if (alwaysShow)
             {
                 ShowDialog(ownerWindow);
@@ -68,16 +70,20 @@ namespace GitUI.CommandsDialogs.BrowseDialog
             return base.ProcessCmdKey(ref msg, keyData);
         }
 
-        private void SearchForUpdates()
+        private async Task SearchForUpdatesAsync()
         {
             try
             {
-                var github = new Client();
-                Repository gitExtRepo = github.getRepository("gitextensions", "gitextensions");
+                var github = new GitHubClient(new ProductHeaderValue("GitExtensions"));
+                var configData = await github.Git.Reference.Get("gitextensions", "gitextensions", "heads/configdata");
+                ////Repository gitExtRepo = await github.Repository.Get("gitextensions", "gitextensions");
 
-                var configData = gitExtRepo?.GetRef("heads/configdata");
+                ////var configData = gitExtRepo.?.GetRef();
 
-                var tree = configData?.GetTree();
+                var tree = await github.Git.Tree.Get("gitextensions", "gitextensions", configData.Ref).ConfigureAwait(false);
+                var blob = await github.Git.Blob.Get("gitextensions", "gitextensions", ).ConfigureAwait(false);
+                blob.
+                var tree = configData?.Object.GetTree();
                 if (tree == null)
                 {
                     return;

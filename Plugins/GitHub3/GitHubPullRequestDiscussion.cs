@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Git.hub;
 using GitUIPluginInterfaces.RepositoryHosts;
 
 namespace GitHub3

@@ -5,12 +5,12 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Git.hub;
 using GitCommands.Config;
 using GitCommands.Remotes;
 using GitHub3.Properties;
 using GitUIPluginInterfaces;
 using GitUIPluginInterfaces.RepositoryHosts;
+using Octokit;
 using ResourceManager;
 
 namespace GitHub3
@@ -35,7 +35,9 @@ namespace GitHub3
 
                 try
                 {
-                    var user = GitHub3Plugin.GitHub.getCurrentUser();
+#pragma warning disable VSTHRD002 // Avoid problematic synchronous waits
+                    var user = GitHub3Plugin.GitHub.User.Current().Result;
+#pragma warning restore VSTHRD002 // Avoid problematic synchronous waits
                     if (user != null)
                     {
                         _username = user.Login;
@@ -62,7 +64,7 @@ namespace GitHub3
             {
                 _username = null;
                 GitHub3Plugin.Instance.OAuthToken[GitHub3Plugin.Instance.Settings] = value;
-                GitHub3Plugin.GitHub.setOAuth2Token(value);
+                GitHub3Plugin.GitHub.Credentials = new Credentials(value);
             }
         }
     }
@@ -81,8 +83,8 @@ namespace GitHub3
         public string GitHubEndpoint => $"https://{GitHubHost.ValueOrDefault(Settings)}";
 
         internal static GitHub3Plugin Instance;
-        internal static Client _gitHub;
-        internal static Client GitHub => _gitHub ?? (_gitHub = new Client(Instance.GitHubApiEndpoint));
+        internal static GitHubClient _gitHub;
+        internal static GitHubClient GitHub => _gitHub ?? (_gitHub = new GitHubClient(new ProductHeaderValue("GitExtensions"), new Uri(Instance.GitHubApiEndpoint)));
 
         private IGitUICommands _currentGitUiCommands;
         private IReadOnlyList<IHostedRemote> _hostedRemotesForModule;
@@ -110,7 +112,7 @@ namespace GitHub3
             _currentGitUiCommands = gitUiCommands;
             if (!string.IsNullOrEmpty(GitHubLoginInfo.OAuthToken))
             {
-                GitHub.setOAuth2Token(GitHubLoginInfo.OAuthToken);
+                GitHub.Credentials = new Credentials(GitHubLoginInfo.OAuthToken);
             }
         }
 
@@ -136,7 +138,7 @@ namespace GitHub3
 
         public IReadOnlyList<IHostedRepository> SearchForRepository(string search)
         {
-            return GitHub.searchRepositories(search).Select(repo => (IHostedRepository)new GitHubRepo(repo)).ToList();
+            return (await GitHub.Search.SearchRepo(new SearchRepositoriesRequest(search))).Items.Select(repo => (IHostedRepository)new GitHubRepo(repo)).ToList();
         }
 
         public IReadOnlyList<IHostedRepository> GetRepositoriesOfUser(string user)
@@ -156,7 +158,7 @@ namespace GitHub3
 
         public bool ConfigurationOk => !string.IsNullOrEmpty(GitHubLoginInfo.OAuthToken);
 
-        public string OwnerLogin => GitHub.getCurrentUser()?.Login;
+        public string OwnerLogin => (await GitHub.User.Current()).Login;
 
         public async Task<string> AddUpstreamRemoteAsync()
         {

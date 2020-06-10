@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Git.hub;
 using GitUIPluginInterfaces.RepositoryHosts;
+using Octokit;
 
 namespace GitHub3
 {
@@ -21,7 +21,7 @@ namespace GitHub3
         public bool IsAFork => _repo.Fork;
         public bool IsMine => Owner == GitHubLoginInfo.Username;
         public bool IsPrivate => _repo.Private;
-        public int Forks => _repo.Forks;
+        public int Forks => _repo.ForksCount;
         public string Homepage => _repo.Homepage;
 
         public string ParentReadOnlyUrl
@@ -40,7 +40,11 @@ namespace GitHub3
                         return null;
                     }
 
-                    _repo = GitHub3Plugin.GitHub.getRepository(Owner, Name);
+#pragma warning disable VSTHRD104 // Offer async methods
+#pragma warning disable VSTHRD002 // Avoid problematic synchronous waits
+                    _repo = GitHub3Plugin.GitHub.Repository.Get(Owner, Name).Result;
+#pragma warning restore VSTHRD002 // Avoid problematic synchronous waits
+#pragma warning restore VSTHRD104 // Offer async methods
                 }
 
                 return CloneProtocol == GitProtocol.Ssh ? _repo.Parent?.GitUrl : _repo.Parent?.CloneUrl;

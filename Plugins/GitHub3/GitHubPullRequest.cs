@@ -3,8 +3,8 @@ using System.IO;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
-using Git.hub;
 using GitUIPluginInterfaces.RepositoryHosts;
+using Octokit;
 
 namespace GitHub3
 {
@@ -23,7 +23,7 @@ namespace GitHub3
 
         public string Owner => _pullRequest.User.Login;
 
-        public DateTime Created => _pullRequest.CreatedAt;
+        public DateTime Created => _pullRequest.CreatedAt.DateTime;
 
         private string _diffData;
 
@@ -49,7 +49,7 @@ namespace GitHub3
             {
                 if (_baseRepo == null)
                 {
-                    _baseRepo = new GitHubRepo(_pullRequest.Base.Repo);
+                    _baseRepo = new GitHubRepo(_pullRequest.Base.Repository);
                 }
 
                 return _baseRepo;
@@ -63,7 +63,7 @@ namespace GitHub3
             {
                 if (_headRepo == null)
                 {
-                    _headRepo = new GitHubRepo(_pullRequest.Head.Repo);
+                    _headRepo = new GitHubRepo(_pullRequest.Head.Repository);
                 }
 
                 return _headRepo;
