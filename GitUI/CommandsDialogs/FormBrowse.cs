@@ -2131,6 +2131,7 @@ namespace GitUI.CommandsDialogs
 
         private void CurrentBranchDropDownOpening(object sender, EventArgs e)
         {
+            var selectedBranch = branchSelect.Text;
             branchSelect.DropDownItems.Clear();
 
             AddCheckoutBranchMenuItem();
@@ -2160,7 +2161,12 @@ namespace GitUI.CommandsDialogs
 
                     ToolStripItem toolStripItem = branchSelect.DropDownItems.Add(branch.Name);
                     toolStripItem.ForeColor = isBranchVisible ? branchSelect.ForeColor : Color.Silver.AdaptTextColor();
-                    toolStripItem.Image = isBranchVisible ? Images.Branch : Images.EyeClosed;
+                    toolStripItem.Image = isBranchVisible ? null : Images.EyeClosed;
+
+                    if (branch.Name == selectedBranch)
+                    {
+                        toolStripItem.Image = Resources.branch;
+                    }
 
                     if (branch.Name == "master")
                     {
