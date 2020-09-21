@@ -46,6 +46,11 @@ namespace GitUI.CommandsDialogs
                 ShortcutKeyDisplayString = branchName
             };
 
+            if (menuItemContainer.Text == caption)
+            {
+                item.Image = menuItemContainer.Image;
+            }
+
             menuItemContainer.DropDownItems.Add(item);
 
             item.Click += (obj, args) =>
