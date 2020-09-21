@@ -33,6 +33,11 @@ namespace GitUI
                 DisplayStyle = ToolStripItemDisplayStyle.ImageAndText
             };
 
+            if (menuItemContainer.Text == caption)
+            {
+                item.Image = menuItemContainer.Image;
+            }
+
             menuItemContainer.DropDownItems.Add(item);
 
             item.Click += (obj, args) =>
