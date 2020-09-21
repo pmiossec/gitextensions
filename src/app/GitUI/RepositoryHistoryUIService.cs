@@ -55,6 +55,11 @@ internal class RepositoryHistoryUIService : IRepositoryHistoryUIService
             item.Image = Images.Pin;
         }
 
+        if (menuItemContainer.Text == caption)
+        {
+            item.Image = menuItemContainer.Image;
+        }
+
         menuItemContainer.DropDownItems.Add(item);
 
         item.Click += (obj, args) =>
