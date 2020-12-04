@@ -39,6 +39,7 @@ namespace GitUI.BuildServerIntegration
         private readonly IRepoNameExtractor _repoNameExtractor;
         private IDisposable? _buildStatusCancellationToken;
         private IBuildServerAdapter? _buildServerAdapter;
+        private readonly object _observerLock = new object();
 
         internal BuildStatusColumnProvider ColumnProvider { get; }
 
@@ -95,7 +96,10 @@ namespace GitUI.BuildServerIntegration
                 buildServerAdapter.GetFinishedBuildsSince(scheduler, nowFrozen)
                             .Finally(() => shouldLookForNewlyFinishedBuilds = false));
 
-            CompositeDisposable cancellationToken = new()
+            CancelBuildStatusFetchOperation();
+            lock (_observerLock)
+            {
+                _buildStatusCancellationToken = new CompositeDisposable
                     {
                         fullDayObservable.OnErrorResumeNext(fullObservable)
                                          .OnErrorResumeNext(Observable.Empty<BuildInfo>()
@@ -118,11 +122,9 @@ namespace GitUI.BuildServerIntegration
                                                .ObserveOn(MainThreadScheduler.Instance)
                                                .Subscribe(OnBuildInfoUpdate)
                     };
+            }
 
             await _revisionGridView.SwitchToMainThreadAsync(launchToken);
-
-            CancelBuildStatusFetchOperation();
-            _buildStatusCancellationToken = cancellationToken;
         }
 
         public void CancelBuildStatusFetchOperation()
@@ -256,9 +258,12 @@ namespace GitUI.BuildServerIntegration
 
         private void OnBuildInfoUpdate(BuildInfo buildInfo)
         {
-            if (_buildStatusCancellationToken is null)
+            lock (_observerLock)
             {
-                return;
+                if (_buildStatusCancellationToken is null)
+                {
+                    return;
+                }
             }
 
             foreach (var commitHash in buildInfo.CommitHashList)
