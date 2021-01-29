@@ -2951,5 +2951,10 @@ namespace GitUI
                 _revisionGridControl._latestSelectedRowIndex = -1;
             }
         }
+
+        public void ChangeRepository()
+        {
+            _buildServerWatcher.ChangeRepository();
+        }
     }
 }
