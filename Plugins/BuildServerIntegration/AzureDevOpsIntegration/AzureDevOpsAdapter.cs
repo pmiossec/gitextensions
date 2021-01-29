@@ -161,18 +161,6 @@ Detail of the error:");
                 }
                 else
                 {
-                    // Display cached builds results
-                    if (!sinceDate.HasValue && CacheAzureDevOps.FinishedBuilds.Any())
-                    {
-                        foreach (BuildInfo? buildInfo in CacheAzureDevOps.FinishedBuilds)
-                        {
-                            observer.OnNext(buildInfo);
-                        }
-
-                        // Reduce the scope to query only the builds finished after the last one in the cache
-                        sinceDate = CacheAzureDevOps.LastCall;
-                    }
-
                     IEnumerable<Build>? builds = await _apiClient.QueryFinishedBuildsAsync(_buildDefinitions, sinceDate);
                     IEnumerable<IGrouping<string?, Build>>? buildsByCommit = builds.GroupBy(b => b.SourceVersion);
 
@@ -181,11 +169,6 @@ Detail of the error:");
                         Build? buildToDisplay = buildsForACommit.OrderByDescending(b => b.FinishTime).First();
                         BuildInfo? buildInfo = CreateBuildInfo(buildToDisplay);
                         observer.OnNext(buildInfo);
-                        CacheAzureDevOps.FinishedBuilds.Add(buildInfo);
-                        if (buildToDisplay.FinishTime.HasValue && buildToDisplay.FinishTime.Value >= CacheAzureDevOps.LastCall)
-                        {
-                            CacheAzureDevOps.LastCall = buildToDisplay.FinishTime.Value.AddSeconds(1);
-                        }
                     }
                 }
             }
