@@ -103,7 +103,7 @@ namespace GitUI.BuildServerIntegration
             CancelBuildStatusFetchOperation();
             foreach (BuildInfo buildInfo in FinishedBuilds.Values)
             {
-                OnBuildInfoUpdate(buildInfo);
+                OnBuildInfoUpdate(buildInfo, false);
             }
 
             lock (_observerLock)
@@ -117,7 +117,7 @@ namespace GitUI.BuildServerIntegration
                                                                       .Retry()
                                                                       .Repeat())
                                          .ObserveOn(MainThreadScheduler.Instance)
-                                         .Subscribe(OnBuildInfoUpdate),
+                                         .Subscribe(buildInfo => OnBuildInfoUpdate(buildInfo)),
 
                         runningBuildsObservable.Do(buildInfo =>
                                                     {
@@ -129,7 +129,7 @@ namespace GitUI.BuildServerIntegration
                                                .Finally(() => anyRunningBuilds = false)
                                                .Repeat()
                                                .ObserveOn(MainThreadScheduler.Instance)
-                                               .Subscribe(OnBuildInfoUpdate)
+                                               .Subscribe(buildInfo => OnBuildInfoUpdate(buildInfo))
                     };
             }
 
@@ -265,7 +265,7 @@ namespace GitUI.BuildServerIntegration
             return null;
         }
 
-        private void OnBuildInfoUpdate(BuildInfo buildInfo)
+        private void OnBuildInfoUpdate(BuildInfo buildInfo, bool storeFinishedBuild = true)
         {
             lock (_observerLock)
             {
@@ -297,7 +297,7 @@ namespace GitUI.BuildServerIntegration
 
                     if (index.Value < _revisionGridView.RowCount)
                     {
-                        if (buildInfo.Status != BuildInfo.BuildStatus.InProgress && buildInfo.Status != BuildInfo.BuildStatus.Unknown)
+                        if (storeFinishedBuild && buildInfo.Status != BuildInfo.BuildStatus.InProgress && buildInfo.Status != BuildInfo.BuildStatus.Unknown)
                         {
                             if (!FinishedBuilds.ContainsKey(buildInfo.Id))
                             {
