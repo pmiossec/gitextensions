@@ -222,7 +222,7 @@ Detail of the error:");
                     return;
                 }
 
-                if (!running && !sinceDate.HasValue && CacheAzureDevOps.FinishedBuilds.Any())
+                if (!running && !sinceDate.HasValue && CacheAzureDevOps != null && CacheAzureDevOps.FinishedBuilds.Any())
                 {
                     foreach (var buildInfo in CacheAzureDevOps.FinishedBuilds)
                     {
@@ -251,10 +251,13 @@ Detail of the error:");
                         var buildToDisplay = buildsForACommit.OrderByDescending(b => b.FinishTime).First();
                         var buildInfo = CreateBuildInfo(buildToDisplay);
                         observer.OnNext(buildInfo);
-                        CacheAzureDevOps.FinishedBuilds.Add(buildInfo);
-                        if (buildToDisplay.FinishTime.HasValue && buildToDisplay.FinishTime.Value >= CacheAzureDevOps.LastCall)
+                        if (CacheAzureDevOps != null)
                         {
-                            CacheAzureDevOps.LastCall = buildToDisplay.FinishTime.Value.AddSeconds(1);
+                            CacheAzureDevOps.FinishedBuilds.Add(buildInfo);
+                            if (buildToDisplay.FinishTime.HasValue && buildToDisplay.FinishTime.Value >= CacheAzureDevOps.LastCall)
+                            {
+                                CacheAzureDevOps.LastCall = buildToDisplay.FinishTime.Value.AddSeconds(1);
+                            }
                         }
                     }
                 }
