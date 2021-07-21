@@ -96,7 +96,7 @@ namespace GitUI.CommandsDialogs
                         ScriptManager.RunEventScripts(this, ScriptEvent.AfterPush);
                         if (DeleteLocalTrackingBranch.Checked)
                         {
-                            var localTrackingBranches = Module.GetRefs(tags: false, branches: true).Where(b => selectedBranches.Any(r => b.IsTrackingRemote(r)))
+                            var localTrackingBranches = Module.GetRefs(RefsFilter.Heads).Where(b => selectedBranches.Any(r => b.IsTrackingRemote(r)))
                                 .Select(r => r.LocalName).ToList();
                             if (localTrackingBranches.Any())
                             {
