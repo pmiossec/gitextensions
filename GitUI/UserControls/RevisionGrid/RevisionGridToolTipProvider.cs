@@ -9,7 +9,7 @@ namespace GitUI
 {
     internal sealed class RevisionGridToolTipProvider
     {
-        private readonly ToolTip _toolTip = new();
+        private readonly ToolTip _toolTip = new() { OwnerDraw = true };
         private readonly Dictionary<Point, bool> _isTruncatedByCellPos = new();
         private readonly RevisionDataGridView _gridView;
         private int _previousRowIndex = -1;
@@ -18,6 +18,49 @@ namespace GitUI
         public RevisionGridToolTipProvider(RevisionDataGridView gridView)
         {
             _gridView = gridView;
+            _toolTip.Draw += _toolTip_Draw;
+        }
+
+        private void _toolTip_Draw(object sender, DrawToolTipEventArgs e)
+        {
+            // Draw the custom background.
+            e.Graphics.FillRectangle(SystemBrushes.ActiveCaption, e.Bounds);
+
+            // Draw the standard border.
+            e.DrawBorder();
+
+            // Draw the custom text.
+            // The using block will dispose the StringFormat automatically.
+            using (StringFormat sf = new())
+            {
+                sf.Alignment = StringAlignment.Near;
+                sf.LineAlignment = StringAlignment.Near;
+                sf.HotkeyPrefix = System.Drawing.Text.HotkeyPrefix.None;
+                sf.FormatFlags = StringFormatFlags.NoWrap;
+
+                var branchesIndex = e.ToolTipText.IndexOf("[");
+                if (branchesIndex != -1)
+                {
+                    using (Font f = new("Tahoma", 9))
+                    {
+                        e.Graphics.DrawString(e.ToolTipText.Substring(0, branchesIndex), f,
+                            SystemBrushes.ActiveCaptionText, e.Bounds, sf);
+
+                        var branchesString = e.ToolTipText.Substring(branchesIndex);
+                        SizeF sizeF = e.Graphics.MeasureString(branchesString, f);
+                        e.Graphics.DrawString(branchesString, f,
+                            Brushes.DarkRed, new RectangleF(e.Bounds.X, e.Bounds.Bottom - sizeF.Height, sizeF.Width, sizeF.Height), sf);
+                    }
+                }
+                else
+                {
+                    using (Font f = new("Tahoma", 9))
+                    {
+                        e.Graphics.DrawString(e.ToolTipText, f,
+                            SystemBrushes.ActiveCaptionText, e.Bounds, sf);
+                    }
+                }
+            }
         }
 
         public void OnCellMouseEnter()
