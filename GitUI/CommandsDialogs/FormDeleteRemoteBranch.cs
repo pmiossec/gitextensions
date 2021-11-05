@@ -118,6 +118,15 @@ namespace GitUI.CommandsDialogs
                 if (!form.ErrorOccurred() && !Module.InTheMiddleOfAction())
                 {
                     ScriptManager.RunEventScripts(this, ScriptEvent.AfterPush);
+                    if (DeleteLocalTrackingBranch.Checked)
+                    {
+                        var localTrackingBranches = Module.GetRefs(RefsFilter.Heads).Where(b => selectedBranches.Any(r => b.IsTrackingRemote(r)))
+                            .Select(r => r.LocalName).ToList();
+                        if (localTrackingBranches.Any())
+                        {
+                            UICommands.StartDeleteBranchDialog(this, localTrackingBranches);
+                        }
+                    }
                 }
             }
 
