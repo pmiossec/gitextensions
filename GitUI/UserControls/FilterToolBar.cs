@@ -36,6 +36,7 @@ namespace GitUI.UserControls
             };
 
             tscboBranchFilter.ComboBox.ResizeDropDownWidth(AppSettings.BranchDropDownMinWidth, AppSettings.BranchDropDownMaxWidth);
+            tscboBranchFilter.ComboBox.Width = DpiUtil.Scale(tscboBranchFilter.ComboBox.Width);
         }
 
         public RefsFilter BranchesFilter

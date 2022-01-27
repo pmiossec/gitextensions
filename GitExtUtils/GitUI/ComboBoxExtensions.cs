@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
+using GitExtUtils.GitUI;
 
 namespace GitUI
 {
@@ -29,8 +30,13 @@ namespace GitUI
                 throw new ArgumentNullException(nameof(comboBox));
             }
 
-            var calculatedWidth = GetPreferredDropDownWidth(comboBox);
-            comboBox.DropDownWidth = Math.Min(Math.Max(calculatedWidth, minWidth), maxWidth);
+            comboBox.DropDownWidth = GetDropDownWidth(comboBox, minWidth, maxWidth);
+        }
+
+        private static int GetDropDownWidth(dynamic control, int minWidth, int maxWidth)
+        {
+            var calculatedWidth = GetPreferredDropDownWidth(control);
+            return Math.Min(Math.Max(calculatedWidth, DpiUtil.Scale(minWidth)), DpiUtil.Scale(maxWidth));
         }
 
         public static void ResizeDropDownWidth(this ToolStripComboBox comboBox, int minWidth, int maxWidth)
@@ -40,8 +46,7 @@ namespace GitUI
                 throw new ArgumentNullException(nameof(comboBox));
             }
 
-            var calculatedWidth = GetPreferredDropDownWidth(comboBox.Control);
-            comboBox.DropDownWidth = Math.Min(Math.Max(calculatedWidth, minWidth), maxWidth);
+            comboBox.DropDownWidth = GetDropDownWidth(comboBox.Control, minWidth, maxWidth);
         }
 
         private static int GetPreferredDropDownWidth(dynamic comboBox)
