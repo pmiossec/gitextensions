@@ -120,7 +120,8 @@ namespace GitUI.SpellChecker
 
         public int LineLength(int line)
         {
-            return LineCount() <= line ? 0 : TextBox.Lines[line].Length;
+            var lines = TextBox.Lines;
+            return lines.Length <= line ? 0 : lines[line].Length;
         }
 
         public int LineCount()
@@ -448,11 +449,12 @@ namespace GitUI.SpellChecker
                 return;
             }
 
-            var numLines = TextBox.Lines.Length;
+            string[] textBoxLines = TextBox.Lines;
+            var numLines = textBoxLines.Length;
             var chars = 0;
             for (var curLine = 0; curLine < numLines; ++curLine)
             {
-                var curLength = TextBox.Lines[curLine].Length;
+                var curLength = textBoxLines[curLine].Length;
                 var curMaxLength = curLine switch
                 {
                     0 => 50,
