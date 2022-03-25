@@ -106,13 +106,13 @@ namespace GitUI.SpellChecker
             return TextBox.Lines[line];
         }
 
-        public void ReplaceLine(int line, string withText)
+        public void ReplaceLine(int line, string withText, string oldText)
         {
             var oldPos = TextBox.SelectionStart + TextBox.SelectionLength;
             var startIdx = TextBox.GetFirstCharIndexFromLine(line);
             TextBox.SelectionLength = 0;
             TextBox.SelectionStart = startIdx;
-            TextBox.SelectionLength = Line(line).Length;
+            TextBox.SelectionLength = oldText.Length; // for performance, we trust the caller... (instead of calling the very slow `Line(line)`)
             TextBox.SelectedText = withText;
             TextBox.SelectionLength = 0;
             TextBox.SelectionStart = oldPos;

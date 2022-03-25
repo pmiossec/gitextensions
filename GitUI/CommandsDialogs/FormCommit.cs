@@ -2975,13 +2975,13 @@ namespace GitUI.CommandsDialogs
 
                     bool WrapIfNecessary()
                     {
-                        if (Message.LineLength(line) > limitX)
+                        var oldText = Message.Line(line);
+                        if (oldText.Length > limitX)
                         {
-                            var oldText = Message.Line(line);
                             var newText = WordWrapper.WrapSingleLine(oldText, limitX);
                             if (!string.Equals(oldText, newText))
                             {
-                                Message.ReplaceLine(line, newText);
+                                Message.ReplaceLine(line, newText, oldText);
                                 return true;
                             }
                         }
