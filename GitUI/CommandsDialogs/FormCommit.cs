@@ -168,7 +168,6 @@ namespace GitUI.CommandsDialogs
         private readonly SplitterManager _splitterManager = new(new AppSettingsPath("CommitDialog"));
         private readonly Subject<string> _selectionFilterSubject = new();
         private readonly IFullPathResolver _fullPathResolver;
-        private readonly List<string> _formattedLines = new();
 
         private CommitKind _commitKind;
         private FileStatusList? _currentFilesList;
@@ -186,6 +185,7 @@ namespace GitUI.CommandsDialogs
         private IReadOnlyList<GitItemStatus>? _currentSelection;
         private int _alreadyLoadedTemplatesCount = -1;
         private EventHandler? _branchNameLabelOnClick;
+        private List<string> _formattedLines = new(10);
 
         private CommitKind CommitKind
         {
@@ -2865,13 +2865,14 @@ namespace GitUI.CommandsDialogs
             bool commitValidationAutoWrap = AppSettings.CommitValidationAutoWrap;
             bool commitValidationIndentAfterFirstLine = AppSettings.CommitValidationIndentAfterFirstLine;
 
+            var couldReformat = empty2 || commitValidationAutoWrap;
             FormatAllText(0);
 
             void FormatAllText(int startLine)
             {
                 var lineCount = Message.LineCount();
 
-                TrimFormattedLines();
+                ResizeFormattedLines(couldReformat);
 
                 for (int line = startLine; line < lineCount; line++)
                 {
@@ -2888,11 +2889,17 @@ namespace GitUI.CommandsDialogs
 
                 return;
 
-                void TrimFormattedLines()
+                void ResizeFormattedLines(bool couldReformat)
                 {
                     if (_formattedLines.Count > lineCount)
                     {
                         _formattedLines.RemoveRange(lineCount, _formattedLines.Count - lineCount);
+                    }
+                    else if (_formattedLines.Count < lineCount)
+                    {
+                        var saveFormattedLines = _formattedLines;
+                        _formattedLines = new(couldReformat ? lineCount + 10 : lineCount);
+                        _formattedLines.AddRange(saveFormattedLines);
                     }
                 }
 
