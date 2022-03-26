@@ -106,6 +106,8 @@ namespace GitUI.SpellChecker
             return TextBox.Lines[line];
         }
 
+        public IReadOnlyList<string> Lines() => TextBox.Lines;
+
         public void ReplaceLine(int line, string withText, string oldText)
         {
             var oldPos = TextBox.SelectionStart + TextBox.SelectionLength;

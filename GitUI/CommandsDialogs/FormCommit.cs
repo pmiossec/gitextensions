@@ -2865,40 +2865,52 @@ namespace GitUI.CommandsDialogs
             bool commitValidationAutoWrap = AppSettings.CommitValidationAutoWrap;
             bool commitValidationIndentAfterFirstLine = AppSettings.CommitValidationIndentAfterFirstLine;
 
-            var couldReformat = empty2 || commitValidationAutoWrap;
-            FormatAllText(0);
+            var couldCreateNewLines = empty2 || commitValidationAutoWrap;
 
-            void FormatAllText(int startLine)
+            // Format first...
+            if (couldCreateNewLines)
             {
-                var lineCount = Message.LineCount();
+                FormatAllText();
+            }
 
-                ResizeFormattedLines(couldReformat);
+            // ...to be able to work on lines in memory that won't change (for perf)
+            ColorAllText();
 
-                for (int line = startLine; line < lineCount; line++)
+            void FormatAllText()
+            {
+                var lines = Message.Lines();
+
+                ResizeFormattedLines();
+
+                int line = 0;
+                while (line < lines.Count)
                 {
                     if (DidFormattedLineChange(line))
                     {
                         bool lineChanged = FormatLine(line);
-                        SetFormattedLine(line);
                         if (lineChanged)
                         {
-                            FormatAllText(line);
+                            lines = Message.Lines();
                         }
+
+                        SetFormattedLine(line, lines[line]);
                     }
+
+                    line++;
                 }
 
                 return;
 
-                void ResizeFormattedLines(bool couldReformat)
+                void ResizeFormattedLines()
                 {
-                    if (_formattedLines.Count > lineCount)
+                    if (_formattedLines.Count > lines.Count)
                     {
-                        _formattedLines.RemoveRange(lineCount, _formattedLines.Count - lineCount);
+                        _formattedLines.RemoveRange(lines.Count, _formattedLines.Count - lines.Count);
                     }
-                    else if (_formattedLines.Count < lineCount)
+                    else if (_formattedLines.Count < lines.Count)
                     {
                         var saveFormattedLines = _formattedLines;
-                        _formattedLines = new(couldReformat ? lineCount + 10 : lineCount);
+                        _formattedLines = new(lines.Count + 10);
                         _formattedLines.AddRange(saveFormattedLines);
                     }
                 }
@@ -2906,23 +2918,17 @@ namespace GitUI.CommandsDialogs
                 bool DidFormattedLineChange(int lineNumber)
                 {
                     return _formattedLines.Count <= lineNumber ||
-                           !_formattedLines[lineNumber].Equals(Message.Line(lineNumber), StringComparison.OrdinalIgnoreCase);
+                           !_formattedLines[lineNumber].Equals(lines[lineNumber], StringComparison.OrdinalIgnoreCase);
                 }
 
                 bool FormatLine(int line)
                 {
                     var changed = false;
 
-                    if (limit1 > 0 && line == 0)
-                    {
-                        ColorTextAsNecessary(limit1, fullRefresh: false);
-                    }
-
                     if (empty2 && line == 1)
                     {
                         // Ensure next line. Optionally add a bullet.
                         Message.EnsureEmptyLine(commitValidationIndentAfterFirstLine, 1);
-                        Message.ChangeTextColor(2, 0, Message.LineLength(2), SystemColors.ControlText);
                         if (FormatLine(2))
                         {
                             changed = true;
@@ -2935,20 +2941,80 @@ namespace GitUI.CommandsDialogs
                         {
                             changed = true;
                         }
-
-                        ColorTextAsNecessary(limitX, changed);
                     }
 
                     return changed;
 
-                    void ColorTextAsNecessary(int lineLimit, bool fullRefresh)
+                    bool WrapIfNecessary()
                     {
-                        var lineLength = Message.LineLength(line);
+                        var oldText = lines[line];
+                        if (oldText.Length > limitX)
+                        {
+                            var newText = WordWrapper.WrapSingleLine(oldText, limitX);
+                            if (!string.Equals(oldText, newText))
+                            {
+                                Message.ReplaceLine(line, newText, oldText);
+                                return true;
+                            }
+                        }
+
+                        return false;
+                    }
+                }
+
+                void SetFormattedLine(int lineNumber, string lineText)
+                {
+                    // line not formatted yet
+                    if (_formattedLines.Count <= lineNumber)
+                    {
+                        Debug.Assert(_formattedLines.Count == lineNumber, $"{_formattedLines.Count}:{lineNumber}");
+                        _formattedLines.Add(lineText);
+                    }
+                    else
+                    {
+                        _formattedLines[lineNumber] = lineText;
+                    }
+                }
+            }
+
+            void ColorAllText()
+            {
+                var lines = Message.Lines();
+
+                for (int line = 0; line < lines.Count; line++)
+                {
+                    ColorLine(line);
+                }
+
+                return;
+
+                void ColorLine(int line)
+                {
+                    if (limit1 > 0 && line == 0)
+                    {
+                        ColorTextAsNecessary(limit1);
+                    }
+
+                    if (empty2 && line == 1)
+                    {
+                        Message.ChangeTextColor(2, 0, lines[2].Length, SystemColors.ControlText);
+                    }
+
+                    if (limitX > 0 && line >= (empty2 ? 2 : 1))
+                    {
+                        ColorTextAsNecessary(limitX);
+                    }
+
+                    return;
+
+                    void ColorTextAsNecessary(int lineLimit)
+                    {
+                        var lineLength = lines[line].Length;
                         int offset = 0;
                         bool textAppended = false;
-                        if (!fullRefresh && _formattedLines.Count > line)
+                        if (_formattedLines.Count > line)
                         {
-                            offset = _formattedLines[line].CommonPrefix(Message.Line(line)).Length;
+                            offset = _formattedLines[line].CommonPrefix(lines[line]).Length;
                             textAppended = offset > 0 && offset == _formattedLines[line].Length;
                         }
 
@@ -2971,36 +3037,6 @@ namespace GitUI.CommandsDialogs
                                 }
                             }
                         }
-                    }
-
-                    bool WrapIfNecessary()
-                    {
-                        var oldText = Message.Line(line);
-                        if (oldText.Length > limitX)
-                        {
-                            var newText = WordWrapper.WrapSingleLine(oldText, limitX);
-                            if (!string.Equals(oldText, newText))
-                            {
-                                Message.ReplaceLine(line, newText, oldText);
-                                return true;
-                            }
-                        }
-
-                        return false;
-                    }
-                }
-
-                void SetFormattedLine(int lineNumber)
-                {
-                    // line not formatted yet
-                    if (_formattedLines.Count <= lineNumber)
-                    {
-                        Debug.Assert(_formattedLines.Count == lineNumber, $"{_formattedLines.Count}:{lineNumber}");
-                        _formattedLines.Add(Message.Line(lineNumber));
-                    }
-                    else
-                    {
-                        _formattedLines[lineNumber] = Message.Line(lineNumber);
                     }
                 }
             }
