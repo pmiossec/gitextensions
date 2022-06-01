@@ -369,6 +369,7 @@ namespace GitUI.Blame
             string emptyLine = new(' ', lineLength);
             Dictionary<string, Image?> cacheAvatars = new();
             var noAuthorImage = (Image)new Bitmap(Images.User80, avatarSize, avatarSize);
+            var authorLineCache = new Dictionary<ObjectId, string>();
             for (var index = 0; index < _blame.Lines.Count; index++)
             {
                 var line = _blame.Lines[index];
@@ -402,11 +403,14 @@ namespace GitUI.Blame
                         }
                     }
 
-                    BuildAuthorLine(line, lineBuilder, dateTimeFormat, filename, AppSettings.BlameShowAuthor, AppSettings.BlameShowAuthorDate, AppSettings.BlameShowOriginalFilePath, AppSettings.BlameDisplayAuthorFirst);
+                    if (!authorLineCache.TryGetValue(line.Commit.ObjectId, out var authorLine))
+                    {
+                        authorLine = BuildAuthorLine(line, lineBuilder, lineLength, dateTimeFormat, filename, AppSettings.BlameShowAuthor, AppSettings.BlameShowAuthorDate, AppSettings.BlameShowOriginalFilePath, AppSettings.BlameDisplayAuthorFirst);
+                        authorLineCache.Add(line.Commit.ObjectId, authorLine);
+                        lineBuilder.Clear();
+                    }
 
-                    gutter.Append(lineBuilder);
-                    gutter.Append(' ', lineLength - lineBuilder.Length).AppendLine();
-                    lineBuilder.Clear();
+                    gutter.Append(authorLine);
                 }
 
                 body.AppendLine(line.Text);
@@ -417,38 +421,42 @@ namespace GitUI.Blame
             return (gutter.ToString(), body.ToString(), gitBlameDisplays);
         }
 
-        private void BuildAuthorLine(GitBlameLine line, StringBuilder lineBuilder, string dateTimeFormat,
+        private string BuildAuthorLine(GitBlameLine line, StringBuilder authorLineBuilder, int lineLength, string dateTimeFormat,
             string? filename, bool showAuthor, bool showAuthorDate, bool showOriginalFilePath, bool displayAuthorFirst)
         {
             if (showAuthor && displayAuthorFirst)
             {
-                lineBuilder.Append(line.Commit.Author);
+                authorLineBuilder.Append(line.Commit.Author);
                 if (showAuthorDate)
                 {
-                    lineBuilder.Append(" - ");
+                    authorLineBuilder.Append(" - ");
                 }
             }
 
             if (showAuthorDate)
             {
-                lineBuilder.Append(line.Commit.AuthorTime.ToString(dateTimeFormat));
+                authorLineBuilder.Append(line.Commit.AuthorTime.ToString(dateTimeFormat));
             }
 
             if (showAuthor && !displayAuthorFirst)
             {
                 if (showAuthorDate)
                 {
-                    lineBuilder.Append(" - ");
+                    authorLineBuilder.Append(" - ");
                 }
 
-                lineBuilder.Append(line.Commit.Author);
+                authorLineBuilder.Append(line.Commit.Author);
             }
 
             if (showOriginalFilePath && filename != line.Commit.FileName)
             {
-                lineBuilder.Append(" - ");
-                lineBuilder.Append(line.Commit.FileName);
+                authorLineBuilder.Append(" - ");
+                authorLineBuilder.Append(line.Commit.FileName);
             }
+
+            authorLineBuilder.Append(' ', lineLength - authorLineBuilder.Length).AppendLine();
+
+            return authorLineBuilder.ToString();
         }
 
         private static IList<Color> GetAgeBucketGradientColors()
@@ -708,8 +716,8 @@ namespace GitUI.Blame
 
             public DateTime ArtificialOldBoundary => _control.ArtificialOldBoundary;
 
-            public void BuildAuthorLine(GitBlameLine line, StringBuilder lineBuilder, string dateTimeFormat, string filename, bool showAuthor, bool showAuthorDate, bool showOriginalFilePath, bool displayAuthorFirst)
-                => _control.BuildAuthorLine(line, lineBuilder, dateTimeFormat, filename, showAuthor, showAuthorDate, showOriginalFilePath, displayAuthorFirst);
+            public void BuildAuthorLine(GitBlameLine line, StringBuilder lineBuilder, int lineLength, string dateTimeFormat, string filename, bool showAuthor, bool showAuthorDate, bool showOriginalFilePath, bool displayAuthorFirst)
+                => _control.BuildAuthorLine(line, lineBuilder, lineLength, dateTimeFormat, filename, showAuthor, showAuthorDate, showOriginalFilePath, displayAuthorFirst);
 
             public (string gutter, string body, List<GitBlameEntry> avatars) BuildBlameContents(string filename) => _control.BuildBlameContents(filename, avatarSize: 10);
 
