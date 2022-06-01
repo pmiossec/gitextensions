@@ -1,4 +1,5 @@
 using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -3305,6 +3306,8 @@ namespace GitCommands
             }
         }
 
+        private static readonly Regex _headerRegex = new(@"^(?<objectid>[0-9a-f]{40}) (?<origlinenum>\d+) (?<finallinenum>\d+)", RegexOptions.Compiled);
+
         internal GitBlame ParseGitBlame(string output, Encoding encoding)
         {
             // "git blame --porcelain" produces a stable, machine-readable format which we parse here.
@@ -3367,9 +3370,7 @@ namespace GitCommands
             // is a blank line, and third is an introductory paragraph about the project.
 
             Dictionary<ObjectId, GitBlameCommit> commitByObjectId = new();
-            List<GitBlameLine> lines = new(capacity: 256);
-
-            Regex headerRegex = new(@"^(?<objectid>[0-9a-f]{40}) (?<origlinenum>\d+) (?<finallinenum>\d+)", RegexOptions.Compiled);
+            List<GitBlameLine> lines = new(capacity: Math.Min(Math.Max(256, output.Length / 120), 1000));
 
             bool hasCommitHeader;
             ObjectId? objectId;
@@ -3390,7 +3391,7 @@ namespace GitCommands
 
             foreach (var line in output.LazySplit('\n').Select(l => l.TrimEnd('\r')))
             {
-                var match = headerRegex.Match(line);
+                var match = _headerRegex.Match(line);
 
                 if (match.Success)
                 {
@@ -3408,7 +3409,7 @@ namespace GitCommands
                     {
                         // TODO quite a few nullable suppressions here (via ! character) which should be addressed as they hint at a design flaw
 
-                        if (!commitByObjectId.ContainsKey(objectId!))
+                        if (!commitByObjectId.TryGetValue(objectId!, out GitBlameCommit? commitData))
                         {
                             commit = new GitBlameCommit(
                                 objectId!,
@@ -3426,7 +3427,6 @@ namespace GitCommands
                         }
                         else
                         {
-                            var commitData = commitByObjectId[objectId!];
                             if (filename == commitData.FileName)
                             {
                                 commit = commitData;
