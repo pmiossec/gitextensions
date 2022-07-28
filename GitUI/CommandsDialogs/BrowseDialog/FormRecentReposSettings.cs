@@ -13,6 +13,7 @@ namespace GitUI.CommandsDialogs.BrowseDialog
 {
     public partial class FormRecentReposSettings : GitExtensionsForm
     {
+        private static Font AnchorFont = new Font(new ListViewItem().Font, FontStyle.Bold);
         private IList<Repository>? _repositoryHistory;
 
         public FormRecentReposSettings()
@@ -131,12 +132,22 @@ namespace GitUI.CommandsDialogs.BrowseDialog
 
             foreach (var repo in pinnedRepos)
             {
-                PinnedLB.Items.Add(new ListViewItem(repo.Caption) { Tag = repo, ToolTipText = repo.Caption });
+                var item = new ListViewItem(repo.Caption) { Tag = repo, ToolTipText = repo.Caption };
+                if (repo.Repo.Anchor == Repository.RepositoryAnchor.Pinned)
+                {
+                    item.Font = AnchorFont;
+                }
+                PinnedLB.Items.Add(item);
             }
 
             foreach (var repo in allRecentRepos)
             {
-                AllRecentLB.Items.Add(new ListViewItem(repo.Caption) { Tag = repo, ToolTipText = repo.Caption });
+                var item = new ListViewItem(repo.Caption) { Tag = repo, ToolTipText = repo.Caption };
+                if (repo.Repo.Anchor == Repository.RepositoryAnchor.AllRecent)
+                {
+                    item.Font = AnchorFont;
+                }
+                AllRecentLB.Items.Add(item);
             }
         }
 
