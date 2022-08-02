@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using GitCommands;
@@ -13,7 +14,7 @@ namespace GitUI.CommandsDialogs.BrowseDialog
 {
     public partial class FormRecentReposSettings : GitExtensionsForm
     {
-        private static Font AnchorFont = new Font(new ListViewItem().Font, FontStyle.Bold);
+        private static Font AnchorFont = new(new ListViewItem().Font, FontStyle.Bold);
         private IList<Repository>? _repositoryHistory;
 
         public FormRecentReposSettings()
@@ -155,9 +156,10 @@ namespace GitUI.CommandsDialogs.BrowseDialog
             if (!Directory.Exists(repo.Repo.Path))
             {
                 item.ForeColor = Color.Red;
-                ContainsDeletedRepositories = true;
+
+                // ContainsDeletedRepositories = true;
             }
-            
+
             return item;
         }
 
@@ -266,7 +268,7 @@ namespace GitUI.CommandsDialogs.BrowseDialog
                 }
             }
 
-            return  repos.Count != 0;
+            return repos.Count != 0;
         }
 
         private void anchorToMostToolStripMenuItem_Click(object sender, EventArgs e)
@@ -277,6 +279,7 @@ namespace GitUI.CommandsDialogs.BrowseDialog
                 {
                     repo.Repo.Anchor = Repository.RepositoryAnchor.Pinned;
                 }
+
                 RefreshRepos();
                 SetComboWidth();
             }
@@ -290,6 +293,7 @@ namespace GitUI.CommandsDialogs.BrowseDialog
                 {
                     repo.Repo.Anchor = Repository.RepositoryAnchor.AllRecent;
                 }
+
                 RefreshRepos();
                 SetComboWidth();
             }
@@ -303,6 +307,7 @@ namespace GitUI.CommandsDialogs.BrowseDialog
                 {
                     repo.Repo.Anchor = Repository.RepositoryAnchor.None;
                 }
+
                 RefreshRepos();
                 SetComboWidth();
             }
