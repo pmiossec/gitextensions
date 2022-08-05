@@ -168,6 +168,7 @@ namespace GitUI.CommandsDialogs
 
         private void FormResolveConflicts_Load(object sender, EventArgs e)
         {
+            InitMergetool();
             Initialize();
         }
 
@@ -226,8 +227,6 @@ namespace GitUI.CommandsDialogs
                         }
                     }
                 }
-
-                InitMergetool();
 
                 // Update UI after tool configuration is known
                 UpdateConflictedFilesMenu();
