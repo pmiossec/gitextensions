@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
@@ -51,6 +52,8 @@ namespace GitUI.CommandsDialogs
             View.EscapePressed += () => DialogResult = DialogResult.Cancel;
             splitContainer1.SplitterDistance = DpiUtil.Scale(280);
             InitializeComplete();
+            Stashes.ComboBox.DrawMode = DrawMode.OwnerDrawVariable;
+            Stashes.ComboBox.DrawItem += new DrawItemEventHandler(ComboBox_DrawItem);
         }
 
         protected override void OnKeyDown(KeyEventArgs e)
@@ -122,6 +125,8 @@ namespace GitUI.CommandsDialogs
             ResizeStashesWidth();
         }
 
+        private int _selectedStashIndex = 0;
+
         private void Initialize()
         {
             var stashedItems = Module.GetStashes().ToList();
@@ -138,6 +143,7 @@ namespace GitUI.CommandsDialogs
             Stashes.SelectedItem = null;
             Stashes.ComboBox.DisplayMember = nameof(GitStash.Summary);
             Stashes.Items.Clear();
+
             foreach (GitStash stashedItem in stashedItems)
             {
                 Stashes.Items.Add(stashedItem);
@@ -167,6 +173,32 @@ namespace GitUI.CommandsDialogs
                 // (no stashes) -> select default ("Current working directory changes")
                 Stashes.SelectedIndex = 0;
             }
+
+            _selectedStashIndex = Stashes.SelectedIndex;
+        }
+
+        private Font _selectedFont;
+        private Font _normalFont;
+        private void ComboBox_DrawItem(object? sender, DrawItemEventArgs e)
+        {
+            if (_selectedFont == null)
+            {
+                _normalFont = Stashes.ComboBox.Font;
+                _selectedFont = new Font(_normalFont.FontFamily, _normalFont.Size, FontStyle.Italic);
+            }
+
+            if (Stashes.Items.Count == 0)
+            {
+                return;
+            }
+
+            var gitStash = (GitStash)Stashes.ComboBox.Items[e.Index];
+
+            Debug.WriteLine($"e.Index: {e.Index} / SelectedStashIndex: {_selectedStashIndex} / gitStash.Summary: {gitStash.Summary}");
+
+            bool isSelected = e.Index == _selectedStashIndex;
+            ////var itemFont = isSelected ? _selectedFont : _normalFont;
+            e.Graphics.DrawString(gitStash.Summary, _normalFont, isSelected ? SystemBrushes.ControlText : SystemBrushes.ButtonShadow, e.Bounds);
         }
 
         private void InitializeSoft()
@@ -307,6 +339,7 @@ namespace GitUI.CommandsDialogs
             _ = View.ViewChangesAsync(Stashed.SelectedItem,
                 cancellationToken: _viewChangesSequence.Next());
             EnablePartialStash();
+            _selectedStashIndex = Stashes.SelectedIndex;
         }
 
         private void StashClick(object sender, EventArgs e)
