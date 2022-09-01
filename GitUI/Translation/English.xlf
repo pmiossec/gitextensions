@@ -3587,6 +3587,10 @@ Do you want to continue?</source>
         <source>Commit validation</source>
         <target />
       </trans-unit>
+      <trans-unit id="_conventionalCommitMessages.Text">
+        <source>Conventional commit message</source>
+        <target />
+      </trans-unit>
       <trans-unit id="_deleteFailed.Text">
         <source>Delete file failed</source>
         <target />

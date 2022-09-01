@@ -128,6 +128,7 @@ namespace GitUI.CommandsDialogs
         private readonly TranslationString _commitValidationCaption = new("Commit validation");
 
         private readonly TranslationString _commitMessageSettings = new("Edit commit message templates and settings...");
+        private readonly TranslationString _conventionalCommitMessages = new("Conventional commit message");
 
         private readonly TranslationString _commitAuthorInfo = new("Author");
         private readonly TranslationString _commitCommitterInfo = new("Committer");
@@ -166,6 +167,8 @@ namespace GitUI.CommandsDialogs
         private readonly Subject<string> _selectionFilterSubject = new();
         private readonly IFullPathResolver _fullPathResolver;
         private readonly List<string> _formattedLines = [];
+        private static readonly string[] _headerCommitTypes = { "build", "chore", "ci", "docs", "feat", "fix", "perf", "refactor", "style", "test" };
+        private static readonly string[] _footerKeywords = { "BREAKING CHANGE", "Co-authored-by", "Reviewed-by" };
 
         private CommitKind _commitKind;
         private FileStatusList _currentFilesList;
@@ -3097,7 +3100,10 @@ namespace GitUI.CommandsDialogs
 
                 AddSeparator();
 
-                // Add a settings item
+                AddConventionalCommitMessagesItems();
+
+                AddSeparator();
+
                 AddSettingsItem();
                 commitTemplatesToolStripMenuItem.DropDown.ResumeLayout();
 
@@ -3146,6 +3152,60 @@ namespace GitUI.CommandsDialogs
                         _shouldReloadCommitTemplates = true;
                     };
                     commitTemplatesToolStripMenuItem.DropDownItems.Add(settingsItem);
+                }
+
+                void AddConventionalCommitMessagesItems()
+                {
+                    ToolStripMenuItem conventionalCommitItem = new(_conventionalCommitMessages.Text, Images.GitCommandLog);
+
+                    foreach (string conventionKeyword in _headerCommitTypes)
+                    {
+                        ToolStripMenuItem commitTypeMenuItem = new(conventionKeyword, null, (_, _) =>
+                        {
+                            Message.Text = $"{conventionKeyword}: {Message.Text}";
+                            Message.SelectionStart = Message.Text.Length;
+                            Message.Focus();
+                        });
+
+                        if (commitTypeMenuItem.Text.StartsWith("f"))
+                        {
+                            commitTypeMenuItem.Font = new Font(commitTypeMenuItem.Font, FontStyle.Bold);
+                        }
+
+                        conventionalCommitItem.DropDownItems.Add(commitTypeMenuItem);
+                    }
+
+                    conventionalCommitItem.DropDownItems.Add(new ToolStripSeparator());
+
+                    foreach (string footerKeyword in _footerKeywords)
+                    {
+                        AddFooter(footerKeyword, $"{footerKeyword}: ");
+                    }
+
+                    AddFooter("[skip ci]");
+
+                    void AddFooter(string itemText, string messageText = null)
+                    {
+                        messageText ??= itemText;
+                        conventionalCommitItem.DropDownItems.Add(itemText, null, (_, _) =>
+                        {
+                            Message.Text = $"{Message.Text}{Environment.NewLine}{messageText}";
+                            Message.SelectionStart = Message.Text.Length;
+                            Message.Focus();
+                        });
+                    }
+
+                    conventionalCommitItem.DropDownItems.Add(new ToolStripSeparator());
+
+                    conventionalCommitItem.DropDownItems.Add("Conventional Commits documentation...", Images.Information, (_, _) =>
+                    {
+                        Process myProcess = new();
+                        myProcess.StartInfo.UseShellExecute = true;
+                        myProcess.StartInfo.FileName = "https://www.conventionalcommits.org";
+                        myProcess.Start();
+                    });
+
+                    commitTemplatesToolStripMenuItem.DropDownItems.Add(conventionalCommitItem);
                 }
             }
         }
