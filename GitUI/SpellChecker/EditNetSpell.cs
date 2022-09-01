@@ -714,6 +714,11 @@ namespace GitUI.SpellChecker
                 return;
             }
 
+            if (e.KeyCode == Keys.Space)
+            {
+                AutoComplete.Visible = false;
+            }
+
             // handle paste from clipboard (Ctrl+V, Shift+Ins)
             if ((e.Control && e.KeyCode == Keys.V) || (e.Shift && e.KeyCode == Keys.Insert))
             {
