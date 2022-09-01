@@ -735,9 +735,16 @@ namespace GitUI.SpellChecker
             TextBox.Paste(DataFormats.GetFormat(DataFormats.UnicodeText));
         }
 
+        private static readonly char[] ClosingAutoCompleteKeys = new[] { ' ', '(', ')' };
+
         private void TextBox_KeyPress(object sender, KeyPressEventArgs e)
         {
             _disableAutoCompleteTriggerOnTextUpdate = e.KeyChar.IsSeparator();
+
+            if (ClosingAutoCompleteKeys.Contains(e.KeyChar))
+            {
+                AutoComplete.Visible = false;
+            }
 
             OnKeyPress(e);
         }
