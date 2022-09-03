@@ -128,14 +128,10 @@ Detail of the error:");
         }
 
         public IObservable<BuildInfo> GetRunningBuilds(IScheduler scheduler)
-        {
-            return GetBuilds(scheduler, null, true);
-        }
+            => GetBuilds(scheduler, null, true);
 
         private IObservable<BuildInfo> GetBuilds(IScheduler scheduler, DateTime? sinceDate = null, bool running = false)
-        {
-            return Observable.Create<BuildInfo>((observer, cancellationToken) => ObserveBuildsAsync(sinceDate, running, observer, cancellationToken));
-        }
+            => Observable.Create<BuildInfo>((observer, cancellationToken) => ObserveBuildsAsync(sinceDate, running, observer, cancellationToken));
 
         private async Task ObserveBuildsAsync(DateTime? sinceDate, bool running, IObserver<BuildInfo> observer, CancellationToken cancellationToken)
         {
@@ -147,109 +143,41 @@ Detail of the error:");
 
             try
             {
-                if (_buildDefinitions is null)
+                bool isBuildDefinitionsInitializedSuccessfully = await EnsureBuildDefinitionsIsInitializedAsync(observer);
+                if (!isBuildDefinitionsInitializedSuccessfully)
                 {
-                    try
-                    {
-                        Validates.NotNull(_buildDefinitionsTask);
-
-                        _buildDefinitions = await _buildDefinitionsTask.JoinAsync();
-
-                        if (_buildDefinitions is null)
-                        {
-                            observer.OnCompleted();
-                            return;
-                        }
-
-                        CacheAzureDevOps = new CacheAzureDevOps { Id = CacheKey, BuildDefinitions = _buildDefinitions, ShouldBeKept = true };
-                    }
-                    catch (UnauthorizedAccessException)
-                    {
-                        string errorMessage = _badTokenErrorMessage.Text;
-                        ManageError(errorMessage);
-
-                        if (ProjectOnErrorKey is null || ProjectOnErrorKey != CacheKey)
-                        {
-                            ProjectOnErrorKey = CacheKey;
-
-                            TaskDialogButton btnOpenSettings = new("Open settings");
-                            TaskDialogButton btnIgnore = new("Ignore");
-                            TaskDialogPage page = new()
-                            {
-                                Heading = errorMessage,
-                                Icon = TaskDialogIcon.Error,
-                                AllowCancel = true,
-                                Caption = _buildIntegrationErrorCaption.Text,
-                                Buttons = { btnOpenSettings, btnIgnore }
-                            };
-
-                            TaskDialogButton result = TaskDialog.ShowDialog(page);
-                            if (result == btnOpenSettings)
-                            {
-                                ProjectOnErrorKey = null;
-                                Validates.NotNull(_openSettings);
-                                _openSettings.Invoke();
-                            }
-                        }
-
-                        return;
-                    }
-                    catch (Exception ex)
-                    {
-                        string errorMessage = _genericErrorMessage.Text + ex.Message;
-                        ManageError(errorMessage);
-
-                        if (ProjectOnErrorKey is null || ProjectOnErrorKey != CacheKey)
-                        {
-                            ProjectOnErrorKey = CacheKey;
-                            MessageBox.Show(errorMessage, _buildIntegrationErrorCaption.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        }
-
-                        return;
-                    }
-                }
-
-                void ManageError(string errorMessage)
-                {
-                    _apiClient = null;
-                    observer.OnNext(new BuildInfo { CommitHashList = new[] { ObjectId.WorkTreeId }, Description = errorMessage, Status = BuildInfo.BuildStatus.Failure });
-                    observer.OnCompleted();
-                }
-
-                if (_buildDefinitions is null)
-                {
-                    observer.OnCompleted();
                     return;
                 }
 
-                if (!running && !sinceDate.HasValue && CacheAzureDevOps != null && CacheAzureDevOps.FinishedBuilds.Any())
-                {
-                    foreach (var buildInfo in CacheAzureDevOps.FinishedBuilds)
-                    {
-                        observer.OnNext(buildInfo);
-                    }
-
-                    sinceDate = CacheAzureDevOps.LastCall;
-                }
-
-                var builds = running ?
-                    FilterRunningBuilds(await _apiClient.QueryRunningBuildsAsync(_buildDefinitions)) :
-                    await _apiClient.QueryFinishedBuildsAsync(_buildDefinitions, sinceDate);
-
                 if (running)
                 {
-                    foreach (var build in builds)
+                    IEnumerable<Build>? builds = FilterRunningBuilds(await _apiClient.QueryRunningBuildsAsync(_buildDefinitions));
+                    foreach (Build? build in builds)
                     {
                         observer.OnNext(CreateBuildInfo(build));
                     }
                 }
                 else
                 {
-                    var buildsByCommit = builds.GroupBy(b => b.SourceVersion);
-                    foreach (var buildsForACommit in buildsByCommit)
+                    // Display cached builds results
+                    if (!sinceDate.HasValue && CacheAzureDevOps != null && CacheAzureDevOps.FinishedBuilds.Any())
                     {
-                        var buildToDisplay = buildsForACommit.OrderByDescending(b => b.FinishTime).First();
-                        var buildInfo = CreateBuildInfo(buildToDisplay);
+                        foreach (BuildInfo? buildInfo in CacheAzureDevOps.FinishedBuilds)
+                        {
+                            observer.OnNext(buildInfo);
+                        }
+
+                        // Reduce the scope to query only the builds finished after the last one in the cache
+                        sinceDate = CacheAzureDevOps.LastCall;
+                    }
+
+                    IEnumerable<Build>? builds = await _apiClient.QueryFinishedBuildsAsync(_buildDefinitions, sinceDate);
+                    IEnumerable<IGrouping<string?, Build>>? buildsByCommit = builds.GroupBy(b => b.SourceVersion);
+
+                    foreach (IGrouping<string?, Build>? buildsForACommit in buildsByCommit)
+                    {
+                        Build? buildToDisplay = buildsForACommit.OrderByDescending(b => b.FinishTime).First();
+                        BuildInfo? buildInfo = CreateBuildInfo(buildToDisplay);
                         observer.OnNext(buildInfo);
                         if (CacheAzureDevOps != null)
                         {
@@ -272,6 +200,81 @@ Detail of the error:");
             }
         }
 
+        private async Task<bool> EnsureBuildDefinitionsIsInitializedAsync(IObserver<BuildInfo> observer)
+        {
+            if (_buildDefinitions is not null)
+            {
+                return true;
+            }
+
+            try
+            {
+                Validates.NotNull(_buildDefinitionsTask);
+
+                _buildDefinitions = await _buildDefinitionsTask.JoinAsync();
+
+                if (_buildDefinitions is null)
+                {
+                    observer.OnCompleted();
+                    return false;
+                }
+
+                CacheAzureDevOps = new CacheAzureDevOps { Id = CacheKey, BuildDefinitions = _buildDefinitions, ShouldBeKept = true };
+                return true;
+            }
+            catch (UnauthorizedAccessException)
+            {
+                string errorMessage = _badTokenErrorMessage.Text;
+                ManageError(errorMessage);
+
+                if (ProjectOnErrorKey is null || ProjectOnErrorKey != CacheKey)
+                {
+                    ProjectOnErrorKey = CacheKey;
+
+                    TaskDialogButton btnOpenSettings = new("Open settings");
+                    TaskDialogButton btnIgnore = new("Ignore");
+                    TaskDialogPage page = new()
+                    {
+                        Heading = errorMessage,
+                        Icon = TaskDialogIcon.Error,
+                        AllowCancel = true,
+                        Caption = _buildIntegrationErrorCaption.Text,
+                        Buttons = { btnOpenSettings, btnIgnore }
+                    };
+
+                    TaskDialogButton result = TaskDialog.ShowDialog(page);
+                    if (result == btnOpenSettings)
+                    {
+                        ProjectOnErrorKey = null;
+                        Validates.NotNull(_openSettings);
+                        _openSettings.Invoke();
+                    }
+                }
+
+                return false;
+            }
+            catch (Exception ex)
+            {
+                string errorMessage = _genericErrorMessage.Text + ex.Message;
+                ManageError(errorMessage);
+
+                if (ProjectOnErrorKey is null || ProjectOnErrorKey != CacheKey)
+                {
+                    ProjectOnErrorKey = CacheKey;
+                    MessageBox.Show(errorMessage, _buildIntegrationErrorCaption.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+
+                return false;
+            }
+
+            void ManageError(string errorMessage)
+            {
+                _apiClient = null;
+                observer.OnNext(new BuildInfo { CommitHashList = new[] { ObjectId.WorkTreeId }, Description = errorMessage, Status = BuildInfo.BuildStatus.Failure });
+                observer.OnCompleted();
+            }
+        }
+
         private IEnumerable<Build> FilterRunningBuilds(IList<Build> runningBuilds)
         {
             if (runningBuilds.Count < 2)
@@ -279,14 +282,14 @@ Detail of the error:");
                 return runningBuilds;
             }
 
-            var byCommitBuilds = runningBuilds.GroupBy(b => b.SourceVersion);
+            IEnumerable<IGrouping<string?, Build>>? byCommitBuilds = runningBuilds.GroupBy(b => b.SourceVersion);
             runningBuilds = new List<Build>();
 
             // Filter running builds to display the best build as we can only display one build for a commit
             // by selecting the first started or if none, one that is waiting to start
-            foreach (var commitBuilds in byCommitBuilds)
+            foreach (IGrouping<string?, Build>? commitBuilds in byCommitBuilds)
             {
-                var buildSelected = commitBuilds.Where(b => b.StartTime.HasValue).OrderBy(b => b.StartTime).FirstOrDefault()
+                var buildSelected = commitBuilds.Where(b => b.StartTime.HasValue).MinBy(b => b.StartTime)
                                     ?? commitBuilds.First();
                 runningBuilds.Add(buildSelected);
             }
