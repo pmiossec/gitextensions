@@ -160,7 +160,7 @@ Detail of the error:");
                 else
                 {
                     // Display cached builds results
-                    if (!sinceDate.HasValue && CacheAzureDevOps != null && CacheAzureDevOps.FinishedBuilds.Any())
+                    if (!sinceDate.HasValue && CacheAzureDevOps.FinishedBuilds.Any())
                     {
                         foreach (BuildInfo? buildInfo in CacheAzureDevOps.FinishedBuilds)
                         {
@@ -179,13 +179,10 @@ Detail of the error:");
                         Build? buildToDisplay = buildsForACommit.OrderByDescending(b => b.FinishTime).First();
                         BuildInfo? buildInfo = CreateBuildInfo(buildToDisplay);
                         observer.OnNext(buildInfo);
-                        if (CacheAzureDevOps != null)
+                        CacheAzureDevOps.FinishedBuilds.Add(buildInfo);
+                        if (buildToDisplay.FinishTime.HasValue && buildToDisplay.FinishTime.Value >= CacheAzureDevOps.LastCall)
                         {
-                            CacheAzureDevOps.FinishedBuilds.Add(buildInfo);
-                            if (buildToDisplay.FinishTime.HasValue && buildToDisplay.FinishTime.Value >= CacheAzureDevOps.LastCall)
-                            {
-                                CacheAzureDevOps.LastCall = buildToDisplay.FinishTime.Value.AddSeconds(1);
-                            }
+                            CacheAzureDevOps.LastCall = buildToDisplay.FinishTime.Value.AddSeconds(1);
                         }
                     }
                 }
