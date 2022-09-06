@@ -50,20 +50,20 @@
             panel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             panel1.Controls.Add(this.labelPreview);
             panel1.Controls.Add(this.label1);
-            panel1.Location = new System.Drawing.Point(323, 77);
             panel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            panel1.Location = new System.Drawing.Point(615, 77);
             panel1.Margin = new System.Windows.Forms.Padding(2);
             panel1.Name = "panel1";
             panel1.Padding = new System.Windows.Forms.Padding(3);
-            panel1.Size = new System.Drawing.Size(317, 291);
+            panel1.Size = new System.Drawing.Size(610, 352);
             panel1.TabIndex = 0;
             // 
             // labelPreview
             // 
             this.labelPreview.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.labelPreview.Location = new System.Drawing.Point(0, 15);
+            this.labelPreview.Location = new System.Drawing.Point(3, 18);
             this.labelPreview.Name = "labelPreview";
-            this.labelPreview.Size = new System.Drawing.Size(317, 196);
+            this.labelPreview.Size = new System.Drawing.Size(604, 331);
             this.labelPreview.TabIndex = 1;
             this.labelPreview.Text = "...";
             // 
@@ -71,9 +71,9 @@
             // 
             this.label1.AutoSize = true;
             this.label1.Dock = System.Windows.Forms.DockStyle.Top;
-            this.label1.Location = new System.Drawing.Point(0, 0);
+            this.label1.Location = new System.Drawing.Point(3, 3);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(129, 15);
+            this.label1.Size = new System.Drawing.Size(130, 15);
             this.label1.TabIndex = 0;
             this.label1.Text = "Context menu preview:";
             // 
@@ -84,7 +84,7 @@
             this.lblMenuEntries.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lblMenuEntries.Location = new System.Drawing.Point(3, 45);
             this.lblMenuEntries.Name = "lblMenuEntries";
-            this.lblMenuEntries.Size = new System.Drawing.Size(636, 30);
+            this.lblMenuEntries.Size = new System.Drawing.Size(1221, 30);
             this.lblMenuEntries.TabIndex = 2;
             this.lblMenuEntries.Text = "Select items to be shown in the cascaded context menu.\r\n(Unchecked items will be " +
     "shown top level for direct access.)";
@@ -114,8 +114,9 @@
             "View changes"});
             this.chlMenuEntries.Location = new System.Drawing.Point(3, 78);
             this.chlMenuEntries.Name = "chlMenuEntries";
-            this.chlMenuEntries.Size = new System.Drawing.Size(315, 110);
+            this.chlMenuEntries.Size = new System.Drawing.Size(315, 94);
             this.chlMenuEntries.TabIndex = 3;
+            this.chlMenuEntries.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.chlMenuEntries_ItemCheck);
             this.chlMenuEntries.SelectedValueChanged += new System.EventHandler(this.chlMenuEntries_SelectedValueChanged);
             // 
             // cbAlwaysShowAllCommands
@@ -125,7 +126,7 @@
             this.cbAlwaysShowAllCommands.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cbAlwaysShowAllCommands.Location = new System.Drawing.Point(3, 3);
             this.cbAlwaysShowAllCommands.Name = "cbAlwaysShowAllCommands";
-            this.cbAlwaysShowAllCommands.Size = new System.Drawing.Size(636, 19);
+            this.cbAlwaysShowAllCommands.Size = new System.Drawing.Size(1221, 19);
             this.cbAlwaysShowAllCommands.TabIndex = 1;
             this.cbAlwaysShowAllCommands.Text = "Always show all commands";
             this.cbAlwaysShowAllCommands.UseVisualStyleBackColor = true;
@@ -142,8 +143,8 @@
             this.tlpnlMain.Name = "tlpnlMain";
             this.tlpnlMain.RowCount = 1;
             this.tlpnlMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpnlMain.Size = new System.Drawing.Size(664, 508);
             this.tlpnlMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 508F));
+            this.tlpnlMain.Size = new System.Drawing.Size(1249, 469);
             this.tlpnlMain.TabIndex = 0;
             // 
             // gbShellExtensions
@@ -155,7 +156,7 @@
             this.gbShellExtensions.Location = new System.Drawing.Point(3, 3);
             this.gbShellExtensions.Name = "gbShellExtensions";
             this.gbShellExtensions.Padding = new System.Windows.Forms.Padding(8);
-            this.gbShellExtensions.Size = new System.Drawing.Size(658, 502);
+            this.gbShellExtensions.Size = new System.Drawing.Size(1243, 463);
             this.gbShellExtensions.TabIndex = 0;
             this.gbShellExtensions.TabStop = false;
             this.gbShellExtensions.Text = "Cascaded Context Menu";
@@ -179,7 +180,7 @@
             this.tlpnlCascadingMenu.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tlpnlCascadingMenu.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpnlCascadingMenu.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpnlCascadingMenu.Size = new System.Drawing.Size(642, 470);
+            this.tlpnlCascadingMenu.Size = new System.Drawing.Size(1227, 431);
             this.tlpnlCascadingMenu.TabIndex = 0;
             // 
             // ShellExtensionSettingsPage
@@ -189,7 +190,7 @@
             this.Controls.Add(this.tlpnlMain);
             this.Name = "ShellExtensionSettingsPage";
             this.Padding = new System.Windows.Forms.Padding(8);
-            this.Size = new System.Drawing.Size(680, 524);
+            this.Size = new System.Drawing.Size(1265, 485);
             panel1.ResumeLayout(false);
             panel1.PerformLayout();
             this.tlpnlMain.ResumeLayout(false);

@@ -1,11 +1,19 @@
 ﻿using System;
 using System.Windows.Forms;
 using GitCommands;
+using ResourceManager;
 
 namespace GitUI.CommandsDialogs.SettingsDialog.Pages
 {
     public partial class ShellExtensionSettingsPage : SettingsPageWithHeader
     {
+        private const char Checked_InMenu = '0';
+        private const char Indeterminate_InSubMenu = '1';
+        private const char Unchecked_NotInMenu = '2';
+
+        private readonly TranslationString _noItems = new("no items");
+
+        private bool _isLoading = false;
         public ShellExtensionSettingsPage()
         {
             InitializeComponent();
@@ -18,10 +26,24 @@ namespace GitUI.CommandsDialogs.SettingsDialog.Pages
 
         protected override void SettingsToPage()
         {
+            _isLoading = true;
             for (int i = 0; i < AppSettings.CascadeShellMenuItems.Length; i++)
             {
-                chlMenuEntries.SetItemChecked(i, AppSettings.CascadeShellMenuItems[i] == '1');
+                switch (AppSettings.CascadeShellMenuItems[i])
+                {
+                    case Checked_InMenu:
+                        chlMenuEntries.SetItemCheckState(i, CheckState.Checked);
+                        break;
+                    case Indeterminate_InSubMenu:
+                        chlMenuEntries.SetItemCheckState(i, CheckState.Indeterminate);
+                        break;
+                    case Unchecked_NotInMenu:
+                        chlMenuEntries.SetItemCheckState(i, CheckState.Unchecked);
+                        break;
+                }
             }
+
+            _isLoading = false;
 
             cbAlwaysShowAllCommands.Checked = AppSettings.AlwaysShowAllCommands;
 
@@ -34,13 +56,17 @@ namespace GitUI.CommandsDialogs.SettingsDialog.Pages
 
             for (int i = 0; i < chlMenuEntries.Items.Count; i++)
             {
-                if (chlMenuEntries.GetItemChecked(i))
+                switch (chlMenuEntries.GetItemCheckState(i))
                 {
-                    l_CascadeShellMenuItems += "1";
-                }
-                else
-                {
-                    l_CascadeShellMenuItems += "0";
+                    case CheckState.Indeterminate:
+                        l_CascadeShellMenuItems += Indeterminate_InSubMenu;
+                        break;
+                    case CheckState.Checked:
+                        l_CascadeShellMenuItems += Checked_InMenu;
+                        break;
+                    case CheckState.Unchecked:
+                        l_CascadeShellMenuItems += Unchecked_NotInMenu;
+                        break;
                 }
             }
 
@@ -60,17 +86,49 @@ namespace GitUI.CommandsDialogs.SettingsDialog.Pages
 
             for (int i = 0; i < chlMenuEntries.Items.Count; i++)
             {
-                if (chlMenuEntries.GetItemChecked(i))
+                switch (chlMenuEntries.GetItemCheckState(i))
                 {
-                    cascaded += "       " + chlMenuEntries.Items[i] + "\r\n";
-                }
-                else
-                {
-                    topLevel += "GitExt " + chlMenuEntries.Items[i] + "\r\n";
+                    case CheckState.Checked:
+                        topLevel += "GitExt " + chlMenuEntries.Items[i] + "\r\n";
+                        break;
+                    case CheckState.Indeterminate:
+                        cascaded += "       " + chlMenuEntries.Items[i] + "\r\n";
+                        break;
                 }
             }
 
-            labelPreview.Text = topLevel + "Git Extensions > \r\n" + cascaded;
+            labelPreview.Text = topLevel;
+            if (!string.IsNullOrWhiteSpace(cascaded))
+            {
+                labelPreview.Text += "Git Extensions > \r\n" + cascaded;
+            }
+            else if (string.IsNullOrWhiteSpace(topLevel))
+            {
+                labelPreview.Text += $"({_noItems.Text})";
+            }
+        }
+
+        private void chlMenuEntries_ItemCheck(object sender, ItemCheckEventArgs e)
+        {
+            if (_isLoading)
+            {
+                return;
+            }
+
+            switch (e.CurrentValue)
+            {
+                case CheckState.Checked:
+                    e.NewValue = CheckState.Unchecked;
+                    break;
+
+                case CheckState.Indeterminate:
+                    e.NewValue = CheckState.Checked;
+                    break;
+
+                case CheckState.Unchecked:
+                    e.NewValue = CheckState.Indeterminate;
+                    break;
+            }
         }
     }
 }
