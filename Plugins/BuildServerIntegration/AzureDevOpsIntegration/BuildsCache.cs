@@ -1,3 +1,4 @@
+using GitUIPluginInterfaces;
 using GitUIPluginInterfaces.BuildServerIntegration;
 
 namespace AzureDevOpsIntegration
@@ -6,7 +7,7 @@ namespace AzureDevOpsIntegration
     {
         public string? Id { get; set; }
         public string? BuildDefinitions { get; init; }
-        public List<BuildInfo> FinishedBuilds { get; } = [];
+        public Dictionary<ObjectId, BuildInfo> FinishedBuilds { get; } = new Dictionary<ObjectId, BuildInfo>();
         public DateTime LastCall { get; set; } = DateTime.MinValue;
     }
 }

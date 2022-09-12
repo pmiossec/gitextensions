@@ -142,27 +142,24 @@ Detail of the error:");
             try
             {
                 bool isBuildDefinitionsInitializedSuccessfully = await EnsureBuildDefinitionsIsInitializedAsync(observer);
-                if (!isBuildDefinitionsInitializedSuccessfully)
+                if (!isBuildDefinitionsInitializedSuccessfully || _buildsCache == null)
                 {
                     return;
                 }
 
                 if (running)
                 {
-                    IEnumerable<Build> builds = FilterRunningBuilds(await _apiClient.QueryRunningBuildsAsync(_buildDefinitions));
-                    foreach (Build build in builds)
-                    {
-                        observer.OnNext(CreateBuildInfo(build));
-                    }
+                    IEnumerable<Build> builds = await _apiClient.QueryRunningBuildsAsync(_buildDefinitions);
+                    AggregateAndDisplayBuilds(builds, updateBuild: false);
                 }
                 else
                 {
                     // Display cached builds results
                     if (!sinceDate.HasValue && _buildsCache.FinishedBuilds.Any())
                     {
-                        foreach (BuildInfo buildInfo in _buildsCache.FinishedBuilds)
+                        foreach (KeyValuePair<ObjectId, BuildInfo> buildInfo in _buildsCache.FinishedBuilds)
                         {
-                            observer.OnNext(buildInfo);
+                            observer.OnNext(buildInfo.Value);
                         }
 
                         // Reduce the scope to query only the builds finished after the last one in the cache
@@ -170,18 +167,42 @@ Detail of the error:");
                     }
 
                     IEnumerable<Build> builds = await _apiClient.QueryFinishedBuildsAsync(_buildDefinitions, sinceDate);
+                    if (builds.Any())
+                    {
+                        _buildsCache.LastCall = builds.Max(b => b.FinishTime.Value).AddSeconds(1);
+                    }
+
+                    AggregateAndDisplayBuilds(builds, updateBuild: true);
+                }
+
+                void AggregateAndDisplayBuilds(IEnumerable<Build> builds, bool updateBuild)
+                {
                     IEnumerable<IGrouping<string, Build>> buildsByCommit = builds.GroupBy(b => b.SourceVersion);
 
                     foreach (IGrouping<string, Build> buildsForACommit in buildsByCommit)
                     {
-                        Build buildToDisplay = buildsForACommit.OrderByDescending(b => b.FinishTime).First();
+                        List<Build> buildsToDisplay = buildsForACommit.OrderByDescending(b => b.FinishTime).ToList();
+                        Build buildToDisplay = buildsToDisplay.First();
                         BuildInfo buildInfo = CreateBuildInfo(buildToDisplay);
-                        observer.OnNext(buildInfo);
-                        _buildsCache.FinishedBuilds.Add(buildInfo);
-                        if (buildToDisplay.FinishTime.HasValue && buildToDisplay.FinishTime.Value >= _buildsCache.LastCall)
+
+                        if (buildsToDisplay.Count > 1)
                         {
-                            _buildsCache.LastCall = buildToDisplay.FinishTime.Value.AddSeconds(1);
+                            buildInfo.Tooltip += Environment.NewLine + string.Join(Environment.NewLine, buildsToDisplay.Skip(1).Select(b => CreateBuildTooltip(b).tooltip));
                         }
+
+                        // Aggregate with previously finished builds results
+                        ObjectId? buildHash = buildInfo.CommitHashList.First();
+                        if (_buildsCache.FinishedBuilds.TryGetValue(buildHash, out BuildInfo finishedBuild))
+                        {
+                            buildInfo.Tooltip += Environment.NewLine + finishedBuild.Tooltip;
+                        }
+
+                        if (updateBuild)
+                        {
+                            _buildsCache.FinishedBuilds[buildHash] = buildInfo;
+                        }
+
+                        observer.OnNext(buildInfo);
                     }
                 }
             }
@@ -268,29 +289,7 @@ Detail of the error:");
             }
         }
 
-        private static IEnumerable<Build> FilterRunningBuilds(IList<Build> runningBuilds)
-        {
-            if (runningBuilds.Count < 2)
-            {
-                return runningBuilds;
-            }
-
-            IEnumerable<IGrouping<string, Build>> byCommitBuilds = runningBuilds.GroupBy(b => b.SourceVersion);
-            runningBuilds = new List<Build>();
-
-            // Filter running builds to display the best build as we can only display one build for a commit
-            // by selecting the first started or if none, one that is waiting to start
-            foreach (IGrouping<string, Build> commitBuilds in byCommitBuilds)
-            {
-                Build buildSelected = commitBuilds.Where(b => b.StartTime.HasValue).MinBy(b => b.StartTime)
-                                    ?? commitBuilds.First();
-                runningBuilds.Add(buildSelected);
-            }
-
-            return runningBuilds;
-        }
-
-        private static BuildInfo CreateBuildInfo(Build buildDetail)
+        private static (string duration, string tooltip) CreateBuildTooltip(Build buildDetail)
         {
             string duration = string.Empty;
 
@@ -310,6 +309,12 @@ Detail of the error:");
                 }
             }
 
+            return (duration, ConvertResult(buildDetail.IsInProgress ? buildDetail.Status : buildDetail.Result) + " " + buildDetail.BuildNumber + " " + duration);
+        }
+
+        private static BuildInfo CreateBuildInfo(Build buildDetail)
+        {
+            (string duration, string tooltip) = CreateBuildTooltip(buildDetail);
             Validates.NotNull(buildDetail.SourceVersion);
 
             BuildInfo buildInfo = new()
@@ -318,13 +323,29 @@ Detail of the error:");
                 StartDate = buildDetail.StartTime ?? DateTime.MinValue,
                 Status = buildDetail.IsInProgress ? BuildInfo.BuildStatus.InProgress : MapResult(buildDetail.Result),
                 Description = duration + " " + buildDetail.BuildNumber,
-                Tooltip = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(buildDetail.IsInProgress ? buildDetail.Status : buildDetail.Result) + Environment.NewLine + duration + Environment.NewLine + buildDetail.BuildNumber,
+                Tooltip = tooltip,
                 CommitHashList = new[] { ObjectId.Parse(buildDetail.SourceVersion) },
                 Url = buildDetail._links?.Web?.Href,
                 ShowInBuildReportTab = false
             };
 
             return buildInfo;
+        }
+
+        private static string ConvertResult(string? result)
+        {
+            return result switch
+            {
+                "failed" => "❌",
+                "canceled" => "🛑",
+                "succeeded" => "✔",
+                "partiallySucceeded" => "❗",
+                Build.StatusCancelling => "🛑",
+                Build.StatusInProgress => "⚙",
+                Build.StatusNotStarted => "⏸",
+                Build.StatusPostponed => "⏱",
+                _ => "❓"
+            };
         }
 
         private static BuildInfo.BuildStatus MapResult(string? status)
@@ -356,8 +377,6 @@ Detail of the error:");
             {
                 AzureDevOpsAdapter = azureDevOpsAdapter;
             }
-
-            public IEnumerable<Build> FilterRunningBuilds(IList<Build> runningBuilds) => AzureDevOpsAdapter.FilterRunningBuilds(runningBuilds);
         }
         #endregion
     }
