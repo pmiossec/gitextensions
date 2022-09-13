@@ -57,7 +57,7 @@ namespace GitUI.CommandsDialogs
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripFileExplorer = new System.Windows.Forms.ToolStripButton();
             this.userShell = new System.Windows.Forms.ToolStripSplitButton();
-            this.EditSettings = new System.Windows.Forms.ToolStripButton();
+            this.EditSettings = new System.Windows.Forms.ToolStripSplitButton();
             this.MainSplitContainer = new System.Windows.Forms.SplitContainer();
             this.repoObjectsTree = new GitUI.BranchTreePanel.RepoObjectsTree();
             this.RightSplitContainer = new System.Windows.Forms.SplitContainer();
@@ -183,6 +183,9 @@ namespace GitUI.CommandsDialogs
             this._addUpstreamRemoteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ToolStripFilters = new GitUI.UserControls.FilterToolBar();
             this.ToolStripScripts = new GitUI.ToolStripEx();
+            this.gitextSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.gitSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.pluginsSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
             toolStripMenuItem4 = new System.Windows.Forms.ToolStripMenuItem();
             toolStripSeparator14 = new System.Windows.Forms.ToolStripSeparator();
@@ -573,11 +576,15 @@ namespace GitUI.CommandsDialogs
             // EditSettings
             // 
             this.EditSettings.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.EditSettings.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+                this.gitextSettingsToolStripMenuItem,
+                this.gitSettingsToolStripMenuItem,
+                this.pluginsSettingsToolStripMenuItem});
             this.EditSettings.Image = global::GitUI.Properties.Images.Settings;
             this.EditSettings.Name = "EditSettings";
-            this.EditSettings.Size = new System.Drawing.Size(23, 22);
+            this.EditSettings.Size = new System.Drawing.Size(32, 22);
             this.EditSettings.ToolTipText = "Settings";
-            this.EditSettings.Click += new System.EventHandler(this.OnShowSettingsClick);
+            this.EditSettings.ButtonClick += new System.EventHandler(this.OnShowSettingsClick);
             // 
             // MainSplitContainer
             // 
@@ -1695,6 +1702,30 @@ namespace GitUI.CommandsDialogs
             this.ToolStripScripts.TabIndex = 2;
             this.ToolStripScripts.Text = "Scripts";
             // 
+            // gitextSettingsToolStripMenuItem
+            // 
+            this.gitextSettingsToolStripMenuItem.Image = global::GitUI.Properties.Images.GitExtensionsLogo16;
+            this.gitextSettingsToolStripMenuItem.Name = "gitextSettingsToolStripMenuItem";
+            this.gitextSettingsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.gitextSettingsToolStripMenuItem.Text = "Git Extensions &settings";
+            this.gitextSettingsToolStripMenuItem.Click += new System.EventHandler(this.GitextSettingsToolStripMenuItem_Click);
+            // 
+            // gitSettingsToolStripMenuItem
+            // 
+            this.gitSettingsToolStripMenuItem.Image = global::GitUI.Properties.Images.GitLogo16;
+            this.gitSettingsToolStripMenuItem.Name = "gitSettingsToolStripMenuItem";
+            this.gitSettingsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.gitSettingsToolStripMenuItem.Text = "&Git settings";
+            this.gitSettingsToolStripMenuItem.Click += new System.EventHandler(this.gitSettingsToolStripMenuItem_Click);
+            // 
+            // pluginsSettingsToolStripMenuItem
+            // 
+            this.pluginsSettingsToolStripMenuItem.Image = global::GitUI.Properties.Images.Plugin;
+            this.pluginsSettingsToolStripMenuItem.Name = "pluginsSettingsToolStripMenuItem";
+            this.pluginsSettingsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.pluginsSettingsToolStripMenuItem.Text = "&Plugins settings";
+            this.pluginsSettingsToolStripMenuItem.Click += new System.EventHandler(this.pluginsSettingsToolStripMenuItem_Click);
+            // 
             // FormBrowse
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
@@ -1740,7 +1771,6 @@ namespace GitUI.CommandsDialogs
             this.ResumeLayout(false);
             this.PerformLayout();
         }
-
         #endregion
 
         internal SplitContainer MainSplitContainer;
@@ -1775,7 +1805,7 @@ namespace GitUI.CommandsDialogs
         private ToolStripSeparator toolStripSeparator1;
         private ToolStripSplitButton userShell;
         private ToolStripSeparator toolStripSeparator2;
-        private ToolStripButton EditSettings;
+        private ToolStripSplitButton EditSettings;
         private ToolStripButton RefreshButton;
         private ToolStripPushButton toolStripButtonPush;
         private ToolStripSplitButton toolStripSplitStash;
@@ -1907,5 +1937,8 @@ namespace GitUI.CommandsDialogs
         private Panel RevisionGridContainer;
         private UserControls.InteractiveGitActionControl notificationBarBisectInProgress;
         private UserControls.InteractiveGitActionControl notificationBarGitActionInProgress;
+        private ToolStripMenuItem gitextSettingsToolStripMenuItem;
+        private ToolStripMenuItem gitSettingsToolStripMenuItem;
+        private ToolStripMenuItem pluginsSettingsToolStripMenuItem;
     }
 }
