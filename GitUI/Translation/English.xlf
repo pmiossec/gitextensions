@@ -9079,6 +9079,10 @@ See the changes in the commit form.</source>
         <source>Commits</source>
         <target />
       </trans-unit>
+      <trans-unit id="FindInFileTree.Text">
+        <source>Find in file tree</source>
+        <target />
+      </trans-unit>
       <trans-unit id="GotoChildCommit.Text">
         <source>Go to c&amp;hild commit</source>
         <target />

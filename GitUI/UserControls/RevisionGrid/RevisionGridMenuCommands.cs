@@ -176,6 +176,14 @@ namespace GitUI.UserControls.RevisionGrid
                     Text = "Quick search &next",
                     ShortcutKeyDisplayString = GetShortcutKeyDisplayStringFromRevisionGridIfAvailable(RevisionGridControl.Command.NextQuickSearch),
                     ExecuteAction = () => _revisionGrid.ExecuteCommand(RevisionGridControl.Command.NextQuickSearch)
+                },
+                MenuCommand.CreateSeparator(),
+                new MenuCommand
+                {
+                    Name = "FindInFileTree",
+                    Text = "Find in file tree",
+                    ShortcutKeyDisplayString = (Keys.Control | Keys.Shift | Keys.F).ToText(),
+                    ExecuteAction = () => SendKeys.Send("^+F")
                 }
             };
         }
