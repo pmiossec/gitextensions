@@ -20,6 +20,7 @@ using GitExtUtils.GitUI.Theming;
 using GitUI.BranchTreePanel;
 using GitUI.CommandsDialogs.BrowseDialog;
 using GitUI.CommandsDialogs.BrowseDialog.DashboardControl;
+using GitUI.CommandsDialogs.SettingsDialog;
 using GitUI.CommandsDialogs.WorktreeDialog;
 using GitUI.HelperDialogs;
 using GitUI.Hotkey;
@@ -1374,10 +1375,16 @@ namespace GitUI.CommandsDialogs
 
         private void OnShowSettingsClick(object sender, EventArgs e)
         {
+            // Open settings on the last opened page
+            OpenSettings();
+        }
+
+        private void OpenSettings(SettingsPageReference? initialPage = null)
+        {
             var translation = AppSettings.Translation;
             var commitInfoPosition = AppSettings.CommitInfoPosition;
 
-            UICommands.StartSettingsDialog(this);
+            UICommands.StartSettingsDialog(this, initialPage);
 
             if (translation != AppSettings.Translation)
             {
@@ -1419,6 +1426,21 @@ namespace GitUI.CommandsDialogs
             _gitStatusMonitor.Active = NeedsGitStatusMonitor() && Module.IsValidGitWorkingDir();
 
             RefreshDefaultPullAction();
+        }
+
+        private void GitextSettingsToolStripMenuItem_Click(object sender, System.EventArgs e)
+        {
+            OpenSettings(SettingsDialog.Pages.GeneralSettingsPage.GetPageReference());
+        }
+
+        private void gitSettingsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            UICommands.StartRepoSettingsDialog(this);
+        }
+
+        private void pluginsSettingsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            UICommands.StartPluginSettingsDialog(this);
         }
 
         private void TagToolStripMenuItemClick(object sender, EventArgs e)
