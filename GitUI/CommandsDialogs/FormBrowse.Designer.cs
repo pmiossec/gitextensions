@@ -56,7 +56,7 @@ namespace GitUI.CommandsDialogs
             toolStripSeparator2 = new ToolStripSeparator();
             toolStripFileExplorer = new ToolStripButton();
             userShell = new ToolStripSplitButton();
-            EditSettings = new ToolStripButton();
+            EditSettings = new ToolStripSplitButton();
             MainSplitContainer = new SplitContainer();
             repoObjectsTree = new GitUI.LeftPanel.RepoObjectsTree();
             RightSplitContainer = new SplitContainer();
@@ -151,6 +151,9 @@ namespace GitUI.CommandsDialogs
             _addUpstreamRemoteToolStripMenuItem = new ToolStripMenuItem();
             ToolStripFilters = new GitUI.UserControls.FilterToolBar();
             ToolStripScripts = new GitUI.ToolStripEx();
+            gitextSettingsToolStripMenuItem = new ToolStripMenuItem();
+            gitSettingsToolStripMenuItem = new ToolStripMenuItem();
+            pluginsSettingsToolStripMenuItem = new ToolStripMenuItem();
             toolStripSeparator14 = new ToolStripSeparator();
             toolStripSeparator11 = new ToolStripSeparator();
             ToolStripMain.SuspendLayout();
@@ -527,11 +530,15 @@ namespace GitUI.CommandsDialogs
             // EditSettings
             // 
             EditSettings.DisplayStyle = ToolStripItemDisplayStyle.Image;
+            EditSettings.DropDownItems.AddRange(new ToolStripItem[] {
+                gitextSettingsToolStripMenuItem,
+                gitSettingsToolStripMenuItem,
+                pluginsSettingsToolStripMenuItem});
             EditSettings.Image = Properties.Images.Settings;
             EditSettings.Name = "EditSettings";
-            EditSettings.Size = new Size(23, 22);
+            EditSettings.Size = new Size(32, 22);
             EditSettings.ToolTipText = "Settings";
-            EditSettings.Click += OnShowSettingsClick;
+            EditSettings.ButtonClick += OnShowSettingsClick;
             // 
             // MainSplitContainer
             // 
@@ -1297,7 +1304,7 @@ namespace GitUI.CommandsDialogs
             pluginSettingsToolStripMenuItem.Image = Properties.Images.Settings;
             pluginSettingsToolStripMenuItem.Name = "pluginSettingsToolStripMenuItem";
             pluginSettingsToolStripMenuItem.Size = new Size(153, 22);
-            pluginSettingsToolStripMenuItem.Text = "Plugin &Settings";
+            pluginSettingsToolStripMenuItem.Text = "Plugins &settings";
             pluginSettingsToolStripMenuItem.Click += PluginSettingsToolStripMenuItemClick;
             // 
             // helpToolStripMenuItem
@@ -1386,6 +1393,30 @@ namespace GitUI.CommandsDialogs
             ToolStripScripts.TabIndex = 2;
             ToolStripScripts.Text = "Scripts";
             // 
+            // gitextSettingsToolStripMenuItem
+            // 
+            gitextSettingsToolStripMenuItem.Image = Properties.Images.GitExtensionsLogo16;
+            gitextSettingsToolStripMenuItem.Name = "gitextSettingsToolStripMenuItem";
+            gitextSettingsToolStripMenuItem.Size = new Size(180, 22);
+            gitextSettingsToolStripMenuItem.Text = "Git Extensions &settings";
+            gitextSettingsToolStripMenuItem.Click += GitextSettingsToolStripMenuItem_Click;
+            // 
+            // gitSettingsToolStripMenuItem
+            // 
+            gitSettingsToolStripMenuItem.Image = Properties.Images.GitLogo16;
+            gitSettingsToolStripMenuItem.Name = "gitSettingsToolStripMenuItem";
+            gitSettingsToolStripMenuItem.Size = new Size(180, 22);
+            gitSettingsToolStripMenuItem.Text = "&Git settings";
+            gitSettingsToolStripMenuItem.Click += gitSettingsToolStripMenuItem_Click;
+            // 
+            // pluginsSettingsToolStripMenuItem
+            // 
+            this.pluginsSettingsToolStripMenuItem.Image = Properties.Images.Plugin;
+            this.pluginsSettingsToolStripMenuItem.Name = "pluginsSettingsToolStripMenuItem";
+            this.pluginsSettingsToolStripMenuItem.Size = new Size(180, 22);
+            this.pluginsSettingsToolStripMenuItem.Text = "&Plugins settings";
+            this.pluginsSettingsToolStripMenuItem.Click += pluginsSettingsToolStripMenuItem_Click;
+            // 
             // FormBrowse
             // 
             AutoScaleDimensions = new SizeF(96F, 96F);
@@ -1431,7 +1462,6 @@ namespace GitUI.CommandsDialogs
             ResumeLayout(false);
             PerformLayout();
         }
-
         #endregion
 
         internal SplitContainer MainSplitContainer;
@@ -1466,7 +1496,7 @@ namespace GitUI.CommandsDialogs
         private ToolStripSeparator toolStripSeparator1;
         private ToolStripSplitButton userShell;
         private ToolStripSeparator toolStripSeparator2;
-        private ToolStripButton EditSettings;
+        private ToolStripSplitButton EditSettings;
         private ToolStripButton RefreshButton;
         private ToolStripPushButton toolStripButtonPush;
         private ToolStripSplitButton toolStripSplitStash;
@@ -1567,5 +1597,8 @@ namespace GitUI.CommandsDialogs
         private Panel RevisionGridContainer;
         private UserControls.InteractiveGitActionControl notificationBarBisectInProgress;
         private UserControls.InteractiveGitActionControl notificationBarGitActionInProgress;
+        private ToolStripMenuItem gitextSettingsToolStripMenuItem;
+        private ToolStripMenuItem gitSettingsToolStripMenuItem;
+        private ToolStripMenuItem pluginsSettingsToolStripMenuItem;
     }
 }
