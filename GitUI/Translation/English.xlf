@@ -2983,8 +2983,16 @@ Do you want to continue?</source>
         <source>&amp;Git maintenance</source>
         <target />
       </trans-unit>
+      <trans-unit id="gitSettingsToolStripMenuItem.Text">
+        <source>Git Settings</source>
+        <target />
+      </trans-unit>
       <trans-unit id="gitcommandLogToolStripMenuItem.Text">
         <source>Git &amp;command log</source>
+        <target />
+      </trans-unit>
+      <trans-unit id="gitextSettingsToolStripMenuItem.Text">
+        <source>Settings</source>
         <target />
       </trans-unit>
       <trans-unit id="helpToolStripMenuItem.Text">
@@ -3049,6 +3057,10 @@ Do you want to continue?</source>
       </trans-unit>
       <trans-unit id="pluginSettingsToolStripMenuItem.Text">
         <source>Plugin &amp;Settings</source>
+        <target />
+      </trans-unit>
+      <trans-unit id="pluginsSettingsToolStripMenuItem.Text">
+        <source>Plugins Settings</source>
         <target />
       </trans-unit>
       <trans-unit id="pluginsToolStripMenuItem.Text">
