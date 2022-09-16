@@ -3112,15 +3112,22 @@ namespace GitUI.CommandsDialogs
         {
             using FormCreateWorktree formCreateWorktree = new(UICommands);
             DialogResult dialogResult = formCreateWorktree.ShowDialog(this);
-            if (dialogResult != DialogResult.OK || !formCreateWorktree.OpenWorktree)
+            if (dialogResult != DialogResult.OK)
             {
                 return;
             }
 
-            GitModule newModule = new(formCreateWorktree.WorktreeDirectory);
-            if (newModule.IsValidGitWorkingDir())
+            if (formCreateWorktree.OpenWorktree)
             {
-                SetGitModule(this, new GitModuleEventArgs(newModule));
+                GitModule newModule = new(formCreateWorktree.WorktreeDirectory);
+                if (newModule.IsValidGitWorkingDir())
+                {
+                    SetGitModule(this, new GitModuleEventArgs(newModule));
+                }
+            }
+            else
+            {
+                RefreshRevisions();
             }
         }
 
