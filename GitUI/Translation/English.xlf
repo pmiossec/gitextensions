@@ -5687,18 +5687,6 @@ command "git help shortlog"</source>
         <source>Branch</source>
         <target />
       </trans-unit>
-      <trans-unit id="Delete.HeaderText">
-        <source>Delete</source>
-        <target />
-      </trans-unit>
-      <trans-unit id="IsDeleted.HeaderText">
-        <source>Deleted</source>
-        <target />
-      </trans-unit>
-      <trans-unit id="Open.HeaderText">
-        <source>Open</source>
-        <target />
-      </trans-unit>
       <trans-unit id="Path.HeaderText">
         <source>Path</source>
         <target />
@@ -5731,8 +5719,16 @@ command "git help shortlog"</source>
         <source>Open a worktree</source>
         <target />
       </trans-unit>
+      <trans-unit id="buttonDeleteSelectedWorktree.Text">
+        <source>Delete selected worktree</source>
+        <target />
+      </trans-unit>
+      <trans-unit id="buttonOpenSelectedWorktree.Text">
+        <source>Open selected worktree</source>
+        <target />
+      </trans-unit>
       <trans-unit id="buttonPruneWorktrees.Text">
-        <source>Prune the deleted worktrees</source>
+        <source>Prune deleted worktrees</source>
         <target />
       </trans-unit>
     </body>
