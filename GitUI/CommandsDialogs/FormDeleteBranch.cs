@@ -23,6 +23,7 @@ namespace GitUI.CommandsDialogs
         private readonly IEnumerable<string> _defaultBranches;
         private string? _currentBranch;
         private HashSet<string>? _mergedBranches;
+        private IReadOnlyList<string> _reflogHashes;
 
         [Obsolete("For VS designer and translation test only. Do not remove.")]
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
@@ -47,6 +48,8 @@ namespace GitUI.CommandsDialogs
         protected override void OnRuntimeLoad(EventArgs e)
         {
             base.OnRuntimeLoad(e);
+
+            _reflogHashes = Module.GetReflogHashes();
 
             Branches.BranchesToSelect = Module.GetRefs(RefsFilter.Heads).ToList();
             if (AppSettings.DontConfirmDeleteUnmergedBranch)
@@ -95,6 +98,29 @@ namespace GitUI.CommandsDialogs
             if (!AppSettings.DontConfirmDeleteUnmergedBranch)
             {
                 Validates.NotNull(_mergedBranches);
+
+                foreach (IGitRef selectedBranch in selectedBranches)
+                {
+                    if (!_reflogHashes.Contains(selectedBranch.ObjectId.ToString()))
+                    {
+                        TaskDialogPage page = new()
+                        {
+                            Text = "The selected branch(es) are not in the reflog and you won't be able to recover.\r\nProceed?",
+                            Caption = _deleteBranchConfirmTitle.Text,
+                            Icon = TaskDialogIcon.Warning,
+                            Buttons = { TaskDialogButton.Yes, TaskDialogButton.No },
+                            DefaultButton = TaskDialogButton.No,
+                            Footnote = _useReflogHint.Text,
+                            SizeToContent = true,
+                        };
+
+                        bool isConfirmed = TaskDialog.ShowDialog(Handle, page) == TaskDialogButton.Yes;
+                        if (!isConfirmed)
+                        {
+                            return;
+                        }
+                    }
+                }
 
                 // always treat branches as unmerged if there is no current branch (HEAD is detached)
                 bool hasUnmergedBranches = _currentBranch is null || DetachedHeadParser.IsDetachedHead(_currentBranch)
