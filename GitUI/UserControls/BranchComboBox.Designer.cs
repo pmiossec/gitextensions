@@ -43,6 +43,8 @@
             this.branches.Location = new System.Drawing.Point(0, 3);
             this.branches.Name = "branches";
             this.branches.Size = new System.Drawing.Size(304, 23);
+            this.branches.TabIndex = 0;
+            this.branches.SelectedValueChanged += new System.EventHandler(this.branches_SelectedValueChanged);
             // 
             // selectMultipleBranchesButton
             // 
@@ -53,6 +55,7 @@
             this.selectMultipleBranchesButton.Margin = new System.Windows.Forms.Padding(0);
             this.selectMultipleBranchesButton.Name = "selectMultipleBranchesButton";
             this.selectMultipleBranchesButton.Size = new System.Drawing.Size(23, 23);
+            this.selectMultipleBranchesButton.TabIndex = 1;
             this.selectMultipleBranchesButton.UseVisualStyleBackColor = true;
             this.selectMultipleBranchesButton.Click += new System.EventHandler(this.selectMultipleBranchesButton_Click);
             // 

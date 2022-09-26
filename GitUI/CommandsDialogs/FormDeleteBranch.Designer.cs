@@ -32,6 +32,7 @@
             this.labelSelectBranches = new System.Windows.Forms.Label();
             this.Branches = new GitUI.BranchComboBox();
             this.tlpnlMain = new System.Windows.Forms.TableLayoutPanel();
+            this.labelWarning = new System.Windows.Forms.Label();
             this.MainPanel.SuspendLayout();
             this.ControlsPanel.SuspendLayout();
             this.tlpnlMain.SuspendLayout();
@@ -46,6 +47,7 @@
             // ControlsPanel
             // 
             this.ControlsPanel.Controls.Add(this.Delete);
+            this.ControlsPanel.Controls.Add(this.labelWarning);
             this.ControlsPanel.Location = new System.Drawing.Point(0, 50);
             this.ControlsPanel.Size = new System.Drawing.Size(412, 41);
             // 
@@ -85,6 +87,7 @@
             this.Branches.Name = "Branches";
             this.Branches.Size = new System.Drawing.Size(299, 28);
             this.Branches.TabIndex = 1;
+            this.Branches.SelectedValueChanged += new System.EventHandler(this.Branches_SelectedValueChanged);
             // 
             // tlpnlMain
             // 
@@ -104,6 +107,19 @@
             this.tlpnlMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tlpnlMain.Size = new System.Drawing.Size(394, 32);
             this.tlpnlMain.TabIndex = 0;
+            // 
+            // labelWarning
+            // 
+            this.labelWarning.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
+            this.labelWarning.AutoSize = true;
+            this.labelWarning.ForeColor = System.Drawing.Color.Red;
+            this.labelWarning.Location = new System.Drawing.Point(272, 5);
+            this.labelWarning.Name = "labelWarning";
+            this.labelWarning.Size = new System.Drawing.Size(46, 31);
+            this.labelWarning.TabIndex = 3;
+            this.labelWarning.Text = "             ";
+            this.labelWarning.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // FormDeleteBranch
             // 
@@ -138,5 +154,6 @@
         private System.Windows.Forms.Label labelSelectBranches;
         private BranchComboBox Branches;
         private System.Windows.Forms.TableLayoutPanel tlpnlMain;
+        private Label labelWarning;
     }
 }
