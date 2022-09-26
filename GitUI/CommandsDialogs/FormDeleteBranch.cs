@@ -14,10 +14,13 @@ namespace GitUI.CommandsDialogs
         private readonly TranslationString _deleteBranchConfirmTitle = new("Delete Confirmation");
         private readonly TranslationString _deleteBranchQuestion = new("The selected branch(es) have not been merged into HEAD.\r\nProceed?");
         private readonly TranslationString _useReflogHint = new("Did you know you can use reflog to restore deleted branches?");
+        private readonly TranslationString _restoreUsingReflogAvailable = new("This branch can be restored using the reflog");
+        private readonly TranslationString _warningNotInReflog = new("Warning! This branch is not in the reflog!");
 
         private readonly IEnumerable<string> _defaultBranches;
         private string? _currentBranch;
         private HashSet<string>? _mergedBranches;
+        private IReadOnlyList<string> _reflogHashes;
 
         [Obsolete("For VS designer and translation test only. Do not remove.")]
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
@@ -42,6 +45,8 @@ namespace GitUI.CommandsDialogs
         protected override void OnRuntimeLoad(EventArgs e)
         {
             base.OnRuntimeLoad(e);
+
+            _reflogHashes = Module.GetReflogHashes();
 
             Branches.BranchesToSelect = Module.GetRefs(RefsFilter.Heads).ToList();
             if (AppSettings.DontConfirmDeleteUnmergedBranch)
@@ -71,6 +76,8 @@ namespace GitUI.CommandsDialogs
             }
 
             Branches.Focus();
+
+            CheckSelectedBranches();
         }
 
         private void Delete_Click(object sender, EventArgs e)
@@ -90,6 +97,29 @@ namespace GitUI.CommandsDialogs
             if (!AppSettings.DontConfirmDeleteUnmergedBranch)
             {
                 Validates.NotNull(_mergedBranches);
+
+                foreach (IGitRef selectedBranch in selectedBranches)
+                {
+                    if (!_reflogHashes.Contains(selectedBranch.ObjectId.ToString()))
+                    {
+                        TaskDialogPage page = new()
+                        {
+                            Text = "The selected branch(es) are not in the reflog and you won't be able to recover.\r\nProceed?",
+                            Caption = _deleteBranchConfirmTitle.Text,
+                            Icon = TaskDialogIcon.Warning,
+                            Buttons = { TaskDialogButton.Yes, TaskDialogButton.No },
+                            DefaultButton = TaskDialogButton.No,
+                            Footnote = _useReflogHint.Text,
+                            SizeToContent = true,
+                        };
+
+                        bool isConfirmed = TaskDialog.ShowDialog(Handle, page) == TaskDialogButton.Yes;
+                        if (!isConfirmed)
+                        {
+                            return;
+                        }
+                    }
+                }
 
                 // always treat branches as unmerged if there is no current branch (HEAD is detached)
                 bool hasUnmergedBranches = _currentBranch is null || DetachedHeadParser.IsDetachedHead(_currentBranch)
@@ -121,6 +151,33 @@ namespace GitUI.CommandsDialogs
             {
                 Close();
             }
+        }
+
+        private void Branches_SelectedValueChanged(object sender, EventArgs e)
+        {
+            CheckSelectedBranches();
+        }
+
+        private void CheckSelectedBranches()
+        {
+            var selectedBranches = Branches.GetSelectedBranches().ToArray();
+            if (!selectedBranches.Any())
+            {
+                return;
+            }
+
+            foreach (IGitRef selectedBranch in selectedBranches)
+            {
+                if (!_reflogHashes.Contains(selectedBranch.ObjectId.ToString()))
+                {
+                    labelWarning.Text = _warningNotInReflog.Text;
+                    labelWarning.ForeColor = Color.Red;
+                    return;
+                }
+            }
+
+            labelWarning.Text = _restoreUsingReflogAvailable.Text;
+            labelWarning.ForeColor = Color.Black;
         }
     }
 }
