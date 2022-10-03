@@ -1,4 +1,5 @@
 using GitExtensions.Extensibility.BuildServerIntegration;
+using GitExtensions.Extensibility.Git;
 
 namespace AzureDevOpsIntegration
 {
@@ -6,7 +7,7 @@ namespace AzureDevOpsIntegration
     {
         public string? Id { get; set; }
         public string? BuildDefinitions { get; init; }
-        public List<BuildInfo> FinishedBuilds { get; } = [];
+        public Dictionary<ObjectId, BuildInfo> FinishedBuilds { get; } = [];
         public DateTime LastCall { get; set; } = DateTime.MinValue;
     }
 }
