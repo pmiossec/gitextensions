@@ -281,16 +281,13 @@ namespace GitUI.BuildServerIntegration
                     continue;
                 }
 
-                if (revision.BuildStatus is null || buildInfo.StartDate >= revision.BuildStatus.StartDate)
-                {
-                    revision.BuildStatus = buildInfo;
+                revision.BuildStatus = buildInfo;
 
-                    if (index.Value < _revisionGridView.RowCount)
+                if (index.Value < _revisionGridView.RowCount)
+                {
+                    if (_revisionGridView.Rows[index.Value].Cells[ColumnProvider.Index].Displayed)
                     {
-                        if (_revisionGridView.Rows[index.Value].Cells[ColumnProvider.Index].Displayed)
-                        {
-                            _revisionGridView.UpdateCellValue(ColumnProvider.Index, index.Value);
-                        }
+                        _revisionGridView.UpdateCellValue(ColumnProvider.Index, index.Value);
                     }
                 }
             }
