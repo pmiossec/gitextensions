@@ -52,13 +52,13 @@
             // MainPanel
             // 
             this.MainPanel.Controls.Add(this.tpnlMain);
-            this.MainPanel.Size = new System.Drawing.Size(647, 310);
+            this.MainPanel.Size = new System.Drawing.Size(647, 318);
             // 
             // ControlsPanel
             // 
             this.ControlsPanel.Controls.Add(this.Ok);
             this.ControlsPanel.Controls.Add(this.LoadSSHKey);
-            this.ControlsPanel.Location = new System.Drawing.Point(0, 310);
+            this.ControlsPanel.Location = new System.Drawing.Point(0, 318);
             this.ControlsPanel.Size = new System.Drawing.Size(647, 41);
             // 
             // Central
@@ -152,6 +152,8 @@
             // FromBrowse
             // 
             this.FromBrowse.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.FromBrowse.Image = global::GitUI.Properties.Images.BrowseFileExplorer;
+            this.FromBrowse.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.FromBrowse.Location = new System.Drawing.Point(526, 3);
             this.FromBrowse.Name = "FromBrowse";
             this.FromBrowse.Size = new System.Drawing.Size(94, 24);
@@ -188,6 +190,8 @@
             // ToBrowse
             // 
             this.ToBrowse.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.ToBrowse.Image = global::GitUI.Properties.Images.BrowseFileExplorer;
+            this.ToBrowse.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.ToBrowse.Location = new System.Drawing.Point(526, 34);
             this.ToBrowse.Name = "ToBrowse";
             this.ToBrowse.Size = new System.Drawing.Size(94, 24);
@@ -351,7 +355,7 @@
             this.tpnlMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tpnlMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tpnlMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tpnlMain.Size = new System.Drawing.Size(623, 286);
+            this.tpnlMain.Size = new System.Drawing.Size(623, 294);
             this.tpnlMain.TabIndex = 0;
             // 
             // optionsPanel
@@ -371,13 +375,13 @@
             this.AcceptButton = this.Ok;
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
-            this.ClientSize = new System.Drawing.Size(647, 351);
+            this.ClientSize = new System.Drawing.Size(647, 359);
             this.HelpButton = true;
             this.ManualSectionAnchorName = "clone-repository";
             this.ManualSectionSubfolder = "getting_started";
             this.MaximizeBox = false;
-            this.MinimizeBox = false;
             this.MaximumSize = new System.Drawing.Size(950, 398);
+            this.MinimizeBox = false;
             this.MinimumSize = new System.Drawing.Size(450, 398);
             this.Name = "FormClone";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
