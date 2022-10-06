@@ -20,7 +20,8 @@ namespace GitUI.CommandsDialogs.SettingsDialog.Pages
                 new("pull.rebase", checkBoxPullRebase),
                 new("fetch.prune", checkBoxFetchPrune),
                 new("rebase.autoStash", checkBoxRebaseAutostash),
-                new("rebase.autosquash", checkBoxRebaseAutosquash)
+                new("rebase.autosquash", checkBoxRebaseAutosquash),
+                new("rebase.updateRefs", checkBoxUpdateRefs)
             };
             Load += GitConfigAdvancedSettingsPage_Load;
         }
