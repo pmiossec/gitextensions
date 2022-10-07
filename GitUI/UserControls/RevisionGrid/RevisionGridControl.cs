@@ -750,7 +750,7 @@ namespace GitUI
             return index >= 0 && index < _gridView.RowCount;
         }
 
-        private GitRevision? GetRevision(int row)
+        public GitRevision? GetRevision(int row)
         {
             return _gridView.GetRevision(row);
         }

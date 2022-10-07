@@ -5,6 +5,7 @@ namespace GitUI.HelperDialogs
 {
     public partial class FormChooseCommit : GitModuleForm
     {
+        private bool _selectParentRowAsDefault = false;
         [Obsolete("For VS designer and translation test only. Do not remove.")]
         private FormChooseCommit()
         {
@@ -35,6 +36,10 @@ namespace GitUI.HelperDialogs
                 {
                     revisionGrid.SelectedId = objectId;
                 }
+            }
+            else
+            {
+                _selectParentRowAsDefault = true;
             }
         }
 
@@ -92,6 +97,17 @@ namespace GitUI.HelperDialogs
             if (revisions.Count != 1)
             {
                 return;
+            }
+
+            if (_selectParentRowAsDefault)
+            {
+                _selectParentRowAsDefault = false;
+                GitRevision? parent = revisionGrid.GetRevision(1);
+                if (parent != null)
+                {
+                    revisionGrid.SetSelectedRevision(parent.ObjectId);
+                    return;
+                }
             }
 
             SelectedRevision = revisions[0];
