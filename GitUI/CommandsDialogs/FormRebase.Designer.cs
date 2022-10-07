@@ -193,6 +193,7 @@ namespace GitUI.CommandsDialogs
             // 
             this.Currentbranch.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.Currentbranch.AutoSize = true;
+            this.Currentbranch.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.Currentbranch.Location = new System.Drawing.Point(99, 5);
             this.Currentbranch.Name = "Currentbranch";
             this.Currentbranch.Size = new System.Drawing.Size(0, 15);
