@@ -68,24 +68,14 @@ namespace GitUI.CommandsDialogs
         {
             _defaultBranch = defaultBranch;
             InitializeComponent();
-            SolveMergeconflicts.BackColor = OtherColors.MergeConflictsColor;
-            SolveMergeconflicts.SetForeColorForBackColor();
             PanelLeftImage.Image1 = Properties.Images.HelpCommandRebase.AdaptLightness();
             InitializeComplete();
             PanelLeftImage.Visible = !AppSettings.DontShowHelpImages;
             PanelLeftImage.IsOnHoverShowImage2NoticeText = _hoverShowImageLabelText.Text;
-            PatchGrid.SetSkipped(Skipped);
             if (AppSettings.AlwaysShowAdvOpt)
             {
                 ShowOptions_LinkClicked(this, null!);
             }
-
-            Shown += FormRebase_Shown;
-        }
-
-        private void FormRebase_Shown(object sender, EventArgs e)
-        {
-            PatchGrid.SelectCurrentlyApplyingPatch();
         }
 
         public FormRebase(GitUICommands commands, string? from, string? to, string? defaultBranch, bool interactive = false, bool startRebaseImmediately = true)
@@ -155,51 +145,12 @@ namespace GitUI.CommandsDialogs
                 Branches.Enabled = false;
                 Ok.Enabled = false;
                 chkStash.Enabled = false;
-
-                AddFiles.Enabled = true;
-                Commit.Enabled = true;
-                Resolved.Enabled = !Module.InTheMiddleOfConflictedMerge();
-                Mergetool.Enabled = Module.InTheMiddleOfConflictedMerge();
-                Skip.Enabled = true;
-                Abort.Enabled = true;
             }
             else
             {
                 Branches.Enabled = true;
                 Ok.Enabled = true;
-                AddFiles.Enabled = false;
-                Commit.Enabled = false;
-                Resolved.Enabled = false;
-                Mergetool.Enabled = false;
-                Skip.Enabled = false;
-                Abort.Enabled = false;
                 chkStash.Enabled = Module.IsDirtyDir();
-            }
-
-            SolveMergeconflicts.Visible = Module.InTheMiddleOfConflictedMerge();
-
-            Resolved.Text = _continueRebaseText.Text;
-            Mergetool.Text = _solveConflictsText.Text;
-            Resolved.ForeColor = SystemColors.ControlText;
-            Mergetool.ForeColor = SystemColors.ControlText;
-            ContinuePanel.BackColor = Color.Transparent;
-            MergeToolPanel.BackColor = Color.Transparent;
-
-            var highlightColor = Color.Yellow.AdaptBackColor();
-
-            if (Module.InTheMiddleOfConflictedMerge())
-            {
-                AcceptButton = Mergetool;
-                Mergetool.Focus();
-                Mergetool.Text = _solveConflictsText2.Text;
-                MergeToolPanel.BackColor = highlightColor;
-            }
-            else if (Module.InTheMiddleOfRebase())
-            {
-                AcceptButton = Resolved;
-                Resolved.Focus();
-                Resolved.Text = _continueRebaseText2.Text;
-                ContinuePanel.BackColor = highlightColor;
             }
         }
 
@@ -250,48 +201,6 @@ namespace GitUI.CommandsDialogs
                 }
 
                 EnableButtons();
-                PatchGrid.Initialize();
-            }
-        }
-
-        private void SkipClick(object sender, EventArgs e)
-        {
-            using (WaitCursorScope.Enter())
-            {
-                var applyingPatch = PatchGrid.PatchFiles.FirstOrDefault(p => p.IsNext);
-                if (applyingPatch is not null)
-                {
-                    applyingPatch.IsSkipped = true;
-                    Skipped.Add(applyingPatch);
-                }
-
-                FormProcess.ShowDialog(this, arguments: GitCommandHelpers.SkipRebaseCmd(), Module.WorkingDir, input: null, useDialogSettings: true);
-
-                if (!Module.InTheMiddleOfRebase())
-                {
-                    Close();
-                }
-
-                EnableButtons();
-
-                PatchGrid.RefreshGrid();
-            }
-        }
-
-        private void AbortClick(object sender, EventArgs e)
-        {
-            using (WaitCursorScope.Enter())
-            {
-                FormProcess.ShowDialog(this, arguments: GitCommandHelpers.AbortRebaseCmd(), Module.WorkingDir, input: null, useDialogSettings: true);
-
-                if (!Module.InTheMiddleOfRebase())
-                {
-                    Skipped.Clear();
-                    Close();
-                }
-
-                EnableButtons();
-                PatchGrid.Initialize();
             }
         }
 
@@ -336,13 +245,7 @@ namespace GitUI.CommandsDialogs
                 }
 
                 EnableButtons();
-                PatchGrid.Initialize();
             }
-        }
-
-        private void SolveMergeConflictsClick(object sender, EventArgs e)
-        {
-            MergetoolClick(sender, e);
         }
 
         private void ShowOptions_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
