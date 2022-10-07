@@ -48,6 +48,7 @@ namespace GitUI.CommandsDialogs
             this.chkStash = new System.Windows.Forms.CheckBox();
             this.chkIgnoreDate = new System.Windows.Forms.CheckBox();
             this.chkCommitterDateIsAuthorDate = new System.Windows.Forms.CheckBox();
+            this.checkBoxUpdateRefs = new System.Windows.Forms.CheckBox();
             this.OptionsPanelBottom = new System.Windows.Forms.FlowLayoutPanel();
             this.chkSpecificRange = new System.Windows.Forms.CheckBox();
             this.lblRangeFrom = new System.Windows.Forms.Label();
@@ -185,7 +186,7 @@ namespace GitUI.CommandsDialogs
             this.PanelCurrentBranch.Margin = new System.Windows.Forms.Padding(0);
             this.PanelCurrentBranch.Name = "PanelCurrentBranch";
             this.PanelCurrentBranch.Padding = new System.Windows.Forms.Padding(0, 5, 0, 5);
-            this.PanelCurrentBranch.Size = new System.Drawing.Size(684, 25);
+            this.PanelCurrentBranch.Size = new System.Drawing.Size(878, 25);
             this.PanelCurrentBranch.TabIndex = 4;
             this.PanelCurrentBranch.WrapContents = false;
             // 
@@ -210,7 +211,7 @@ namespace GitUI.CommandsDialogs
             this.OptionsPanel.RowCount = 2;
             this.OptionsPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.OptionsPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.OptionsPanel.Size = new System.Drawing.Size(678, 72);
+            this.OptionsPanel.Size = new System.Drawing.Size(872, 72);
             this.OptionsPanel.TabIndex = 10;
             this.OptionsPanel.Visible = false;
             // 
@@ -222,10 +223,11 @@ namespace GitUI.CommandsDialogs
             this.OptionsPanelTop.Controls.Add(this.chkStash);
             this.OptionsPanelTop.Controls.Add(this.chkIgnoreDate);
             this.OptionsPanelTop.Controls.Add(this.chkCommitterDateIsAuthorDate);
+            this.OptionsPanelTop.Controls.Add(this.checkBoxUpdateRefs);
             this.OptionsPanelTop.Dock = System.Windows.Forms.DockStyle.Fill;
             this.OptionsPanelTop.Location = new System.Drawing.Point(3, 3);
             this.OptionsPanelTop.Name = "OptionsPanelTop";
-            this.OptionsPanelTop.Size = new System.Drawing.Size(672, 25);
+            this.OptionsPanelTop.Size = new System.Drawing.Size(866, 25);
             this.OptionsPanelTop.TabIndex = 11;
             this.OptionsPanelTop.WrapContents = false;
             // 
@@ -285,7 +287,8 @@ namespace GitUI.CommandsDialogs
             this.chkIgnoreDate.Size = new System.Drawing.Size(86, 19);
             this.chkIgnoreDate.TabIndex = 16;
             this.chkIgnoreDate.Text = "Ignore &date";
-            this.toolTip1.SetToolTip(this.chkIgnoreDate, "Sets the author date to the current date (same as\r\ncommit date), ignoring the original author date.");
+            this.toolTip1.SetToolTip(this.chkIgnoreDate, "Sets the author date to the current date (same as\r\ncommit date), ignoring the ori" +
+        "ginal author date.");
             this.chkIgnoreDate.UseVisualStyleBackColor = true;
             this.chkIgnoreDate.CheckedChanged += new System.EventHandler(this.chkIgnoreDate_CheckedChanged);
             // 
@@ -302,6 +305,16 @@ namespace GitUI.CommandsDialogs
             this.chkCommitterDateIsAuthorDate.UseVisualStyleBackColor = true;
             this.chkCommitterDateIsAuthorDate.CheckedChanged += new System.EventHandler(this.chkCommitterDateIsAuthorDate_CheckedChanged);
             // 
+            // checkBoxUpdateRefs
+            // 
+            this.checkBoxUpdateRefs.AutoSize = true;
+            this.checkBoxUpdateRefs.Location = new System.Drawing.Point(714, 3);
+            this.checkBoxUpdateRefs.Name = "checkBoxUpdateRefs";
+            this.checkBoxUpdateRefs.Size = new System.Drawing.Size(146, 19);
+            this.checkBoxUpdateRefs.TabIndex = 18;
+            this.checkBoxUpdateRefs.Text = "Update dependent refs";
+            this.checkBoxUpdateRefs.UseVisualStyleBackColor = true;
+            // 
             // OptionsPanelBottom
             // 
             this.OptionsPanelBottom.AutoSize = true;
@@ -314,7 +327,7 @@ namespace GitUI.CommandsDialogs
             this.OptionsPanelBottom.Dock = System.Windows.Forms.DockStyle.Fill;
             this.OptionsPanelBottom.Location = new System.Drawing.Point(3, 34);
             this.OptionsPanelBottom.Name = "OptionsPanelBottom";
-            this.OptionsPanelBottom.Size = new System.Drawing.Size(672, 35);
+            this.OptionsPanelBottom.Size = new System.Drawing.Size(866, 35);
             this.OptionsPanelBottom.TabIndex = 18;
             this.OptionsPanelBottom.WrapContents = false;
             // 
@@ -402,7 +415,7 @@ namespace GitUI.CommandsDialogs
             this.PatchGrid.Location = new System.Drawing.Point(3, 180);
             this.PatchGrid.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.PatchGrid.Name = "PatchGrid";
-            this.PatchGrid.Size = new System.Drawing.Size(678, 284);
+            this.PatchGrid.Size = new System.Drawing.Size(872, 284);
             this.PatchGrid.TabIndex = 26;
             // 
             // lblCommitsToReapply
@@ -461,7 +474,7 @@ namespace GitUI.CommandsDialogs
             this.MainLayout.RowCount = 1;
             this.MainLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.MainLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 472F));
-            this.MainLayout.Size = new System.Drawing.Size(1159, 472);
+            this.MainLayout.Size = new System.Drawing.Size(1353, 472);
             this.MainLayout.TabIndex = 0;
             // 
             // PanelLeftImage
@@ -500,7 +513,7 @@ namespace GitUI.CommandsDialogs
             this.PanelRight.Controls.Add(this.SolveMergeconflicts);
             this.PanelRight.Dock = System.Windows.Forms.DockStyle.Fill;
             this.PanelRight.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.PanelRight.Location = new System.Drawing.Point(988, 3);
+            this.PanelRight.Location = new System.Drawing.Point(1182, 3);
             this.PanelRight.Name = "PanelRight";
             this.PanelRight.Size = new System.Drawing.Size(168, 466);
             this.PanelRight.TabIndex = 27;
@@ -574,7 +587,7 @@ namespace GitUI.CommandsDialogs
             this.PanelMiddle.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.PanelMiddle.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.PanelMiddle.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.PanelMiddle.Size = new System.Drawing.Size(684, 466);
+            this.PanelMiddle.Size = new System.Drawing.Size(878, 466);
             this.PanelMiddle.TabIndex = 2;
             // 
             // rebasePanel
@@ -586,7 +599,7 @@ namespace GitUI.CommandsDialogs
             this.rebasePanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.rebasePanel.Location = new System.Drawing.Point(3, 43);
             this.rebasePanel.Name = "rebasePanel";
-            this.rebasePanel.Size = new System.Drawing.Size(678, 29);
+            this.rebasePanel.Size = new System.Drawing.Size(872, 29);
             this.rebasePanel.TabIndex = 6;
             // 
             // FormRebase
@@ -595,7 +608,7 @@ namespace GitUI.CommandsDialogs
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.ClientSize = new System.Drawing.Size(1159, 472);
+            this.ClientSize = new System.Drawing.Size(1353, 472);
             this.Controls.Add(this.MainLayout);
             this.MinimumSize = new System.Drawing.Size(1175, 510);
             this.Name = "FormRebase";
@@ -668,5 +681,6 @@ namespace GitUI.CommandsDialogs
         private System.Windows.Forms.CheckBox chkIgnoreDate;
         private System.Windows.Forms.ToolTip toolTip1;
         private System.Windows.Forms.CheckBox chkCommitterDateIsAuthorDate;
+        private System.Windows.Forms.CheckBox checkBoxUpdateRefs;
     }
 }
