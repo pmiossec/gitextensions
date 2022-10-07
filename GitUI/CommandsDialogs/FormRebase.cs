@@ -376,7 +376,9 @@ namespace GitUI.CommandsDialogs
             try
             {
                 AppSettings.ShowStashes = false;
-                using FormChooseCommit chooseForm = new(UICommands, txtFrom.Text, showCurrentBranchOnly: true);
+                ObjectId firstParent = UICommands.GitModule.RevParse(Currentbranch.Text + "~");
+                var preSelectedCommit = string.IsNullOrEmpty(txtFrom.Text) ? firstParent?.ToString() ?? string.Empty : txtFrom.Text;
+                using FormChooseCommit chooseForm = new(UICommands, preSelectedCommit, showCurrentBranchOnly: true);
                 if (chooseForm.ShowDialog(this) == DialogResult.OK && chooseForm.SelectedRevision is not null)
                 {
                     txtFrom.Text = chooseForm.SelectedRevision.ObjectId.ToShortString();
