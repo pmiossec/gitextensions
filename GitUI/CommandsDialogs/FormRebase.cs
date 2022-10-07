@@ -151,8 +151,11 @@ namespace GitUI.CommandsDialogs
                     Height = 500;
                 }
 
+                PanelRight.Visible = true;
+                PatchGrid.Visible = true;
+                lblCommitsToReapply.Visible = true;
                 Branches.Enabled = false;
-                Ok.Enabled = false;
+                Ok.Visible = false;
                 chkStash.Enabled = false;
 
                 AddFiles.Enabled = true;
@@ -164,8 +167,11 @@ namespace GitUI.CommandsDialogs
             }
             else
             {
+                PanelRight.Visible = false;
+                PatchGrid.Visible = false;
+                lblCommitsToReapply.Visible = false;
                 Branches.Enabled = true;
-                Ok.Enabled = true;
+                Ok.Visible = true;
                 AddFiles.Enabled = false;
                 Commit.Enabled = false;
                 Resolved.Enabled = false;
