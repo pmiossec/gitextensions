@@ -45,7 +45,6 @@ namespace GitUI.CommandsDialogs
             this.ContinuePanel = new System.Windows.Forms.Panel();
             this.MergeToolPanel = new System.Windows.Forms.Panel();
             this.MainLayout = new System.Windows.Forms.TableLayoutPanel();
-            this.Ok = new System.Windows.Forms.Button();
             this.PatchGrid = new GitUI.PatchGrid();
             this.PanelLeftImage = new GitUI.Help.HelpImageDisplayUserControl();
             this.PanelRight = new System.Windows.Forms.FlowLayoutPanel();
@@ -70,6 +69,7 @@ namespace GitUI.CommandsDialogs
             this.cboTo = new System.Windows.Forms.ComboBox();
             this.rebasePanel = new System.Windows.Forms.FlowLayoutPanel();
             this.lblCommitsToReapply = new System.Windows.Forms.Label();
+            this.Ok = new System.Windows.Forms.Button();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.PanelCurrentBranch.SuspendLayout();
             this.ContinuePanel.SuspendLayout();
@@ -110,7 +110,7 @@ namespace GitUI.CommandsDialogs
             this.Branches.FormattingEnabled = true;
             this.Branches.Location = new System.Drawing.Point(70, 3);
             this.Branches.Name = "Branches";
-            this.Branches.Size = new System.Drawing.Size(218, 23);
+            this.Branches.Size = new System.Drawing.Size(300, 23);
             this.Branches.TabIndex = 8;
             // 
             // label2
@@ -201,7 +201,7 @@ namespace GitUI.CommandsDialogs
             // 
             this.ShowOptions.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.ShowOptions.AutoSize = true;
-            this.ShowOptions.Location = new System.Drawing.Point(294, 7);
+            this.ShowOptions.Location = new System.Drawing.Point(376, 7);
             this.ShowOptions.Name = "ShowOptions";
             this.ShowOptions.Size = new System.Drawing.Size(79, 15);
             this.ShowOptions.TabIndex = 9;
@@ -252,7 +252,7 @@ namespace GitUI.CommandsDialogs
             this.MainLayout.Controls.Add(this.PanelRight, 2, 3);
             this.MainLayout.Controls.Add(this.PanelMiddle, 1, 0);
             this.MainLayout.Controls.Add(this.lblCommitsToReapply, 1, 2);
-            this.MainLayout.Controls.Add(this.Ok, 1, 1);
+            this.MainLayout.Controls.Add(this.Ok, 2, 3);
             this.MainLayout.Dock = System.Windows.Forms.DockStyle.Fill;
             this.MainLayout.Location = new System.Drawing.Point(0, 0);
             this.MainLayout.Name = "MainLayout";
@@ -265,27 +265,14 @@ namespace GitUI.CommandsDialogs
             this.MainLayout.Size = new System.Drawing.Size(1159, 472);
             this.MainLayout.TabIndex = 0;
             // 
-            // Ok
-            // 
-            this.Ok.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.MainLayout.SetColumnSpan(this.Ok, 2);
-            this.Ok.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.Ok.Location = new System.Drawing.Point(646, 162);
-            this.Ok.Name = "Ok";
-            this.Ok.Size = new System.Drawing.Size(162, 25);
-            this.Ok.TabIndex = 29;
-            this.Ok.Text = "Rebase";
-            this.Ok.UseVisualStyleBackColor = true;
-            this.Ok.Click += new System.EventHandler(this.OkClick);
-            // 
             // PatchGrid
             // 
             this.PatchGrid.Dock = System.Windows.Forms.DockStyle.Fill;
             this.PatchGrid.IsManagingRebase = false;
-            this.PatchGrid.Location = new System.Drawing.Point(298, 217);
+            this.PatchGrid.Location = new System.Drawing.Point(298, 186);
             this.PatchGrid.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.PatchGrid.Name = "PatchGrid";
-            this.PatchGrid.Size = new System.Drawing.Size(684, 253);
+            this.PatchGrid.Size = new System.Drawing.Size(690, 264);
             this.PatchGrid.TabIndex = 29;
             // 
             // PanelLeftImage
@@ -304,7 +291,7 @@ namespace GitUI.CommandsDialogs
             this.PanelLeftImage.MinimumSize = new System.Drawing.Size(289, 418);
             this.PanelLeftImage.Name = "PanelLeftImage";
             this.MainLayout.SetRowSpan(this.PanelLeftImage, 4);
-            this.PanelLeftImage.Size = new System.Drawing.Size(289, 466);
+            this.PanelLeftImage.Size = new System.Drawing.Size(289, 446);
             this.PanelLeftImage.TabIndex = 1;
             this.PanelLeftImage.UniqueIsExpandedSettingsId = "Rebase";
             // 
@@ -322,9 +309,9 @@ namespace GitUI.CommandsDialogs
             this.PanelRight.Controls.Add(this.SolveMergeconflicts);
             this.PanelRight.Dock = System.Windows.Forms.DockStyle.Fill;
             this.PanelRight.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.PanelRight.Location = new System.Drawing.Point(988, 218);
+            this.PanelRight.Location = new System.Drawing.Point(3, 455);
             this.PanelRight.Name = "PanelRight";
-            this.PanelRight.Size = new System.Drawing.Size(168, 251);
+            this.PanelRight.Size = new System.Drawing.Size(289, 14);
             this.PanelRight.TabIndex = 27;
             this.PanelRight.WrapContents = false;
             // 
@@ -575,12 +562,24 @@ namespace GitUI.CommandsDialogs
             // lblCommitsToReapply
             // 
             this.lblCommitsToReapply.AutoSize = true;
-            this.lblCommitsToReapply.Location = new System.Drawing.Point(298, 190);
+            this.lblCommitsToReapply.Location = new System.Drawing.Point(298, 159);
             this.lblCommitsToReapply.Name = "lblCommitsToReapply";
             this.lblCommitsToReapply.Padding = new System.Windows.Forms.Padding(0, 10, 0, 0);
             this.lblCommitsToReapply.Size = new System.Drawing.Size(120, 25);
             this.lblCommitsToReapply.TabIndex = 28;
             this.lblCommitsToReapply.Text = "Commits to re-apply:";
+            // 
+            // Ok
+            // 
+            this.Ok.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.Ok.DialogResult = System.Windows.Forms.DialogResult.OK;
+            this.Ok.Location = new System.Drawing.Point(994, 424);
+            this.Ok.Name = "Ok";
+            this.Ok.Size = new System.Drawing.Size(162, 25);
+            this.Ok.TabIndex = 29;
+            this.Ok.Text = "Rebase";
+            this.Ok.UseVisualStyleBackColor = true;
+            this.Ok.Click += new System.EventHandler(this.OkClick);
             // 
             // FormRebase
             // 
