@@ -2925,7 +2925,7 @@ namespace GitUI
 
             string rebaseCmd = GitCommandHelpers.RebaseCmd(
                 GetActualRevision(LatestSelectedRevision)?.FirstParentId?.ToString(), interactive: true, preserveMerges: false,
-                autosquash: false, autoStash: true, ignoreDate: false, committerDateIsAuthorDate: false, supportRebaseMerges: Module.GitVersion.SupportRebaseMerges);
+                autosquash: false, autoStash: true, ignoreDate: false, committerDateIsAuthorDate: false, supportRebaseMerges: Module.GitVersion.SupportRebaseMerges, updateRefs: false);
 
             using FormProcess formProcess = new(UICommands, arguments: rebaseCmd, Module.WorkingDir, input: null, useDialogSettings: true);
             formProcess.ProcessEnvVariables.Add("GIT_SEQUENCE_EDITOR", string.Format("sed -i -re '0,/pick/s//{0}/'", command));

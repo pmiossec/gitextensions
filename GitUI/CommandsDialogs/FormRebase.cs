@@ -77,6 +77,11 @@ namespace GitUI.CommandsDialogs
 
             Currentbranch.Font = new Font(Currentbranch.Font.FontFamily, Currentbranch.Font.Size, FontStyle.Bold);
 
+            if (!Module.GitVersion.SupportUpdateRefs)
+            {
+                OptionsPanelTop.Controls.Remove(checkBoxUpdateRefs);
+            }
+
             Shown += FormRebase_Shown;
         }
 
@@ -127,6 +132,13 @@ namespace GitUI.CommandsDialogs
 
             // Honor the rebase.autosquash configuration.
             chkAutosquash.Checked = Module.IsEffectiveSettingEnabled("rebase.autosquash");
+            if (Module.IsEffectiveSettingEnabled("rebase.updateRefs"))
+            {
+                checkBoxUpdateRefs.Checked = true;
+
+                // Disable the checkbox because there is no way to disable it in the command line and so the setting will apply
+                checkBoxUpdateRefs.Enabled = false;
+            }
 
             chkStash.Checked = AppSettings.RebaseAutoStash;
             if (_startRebaseImmediately)
@@ -310,13 +322,13 @@ namespace GitUI.CommandsDialogs
                 {
                     rebaseCmd = GitCommandHelpers.RebaseCmd(
                         cboTo.Text, chkInteractive.Checked, chkPreserveMerges.Checked,
-                        chkAutosquash.Checked, chkStash.Checked, chkIgnoreDate.Checked, chkCommitterDateIsAuthorDate.Checked, txtFrom.Text, Branches.Text);
+                        chkAutosquash.Checked, chkStash.Checked, chkIgnoreDate.Checked, chkCommitterDateIsAuthorDate.Checked, checkBoxUpdateRefs.Checked, txtFrom.Text, Branches.Text);
                 }
                 else
                 {
                     rebaseCmd = GitCommandHelpers.RebaseCmd(
                         Branches.Text, chkInteractive.Checked,
-                        chkPreserveMerges.Checked, chkAutosquash.Checked, chkStash.Checked, chkIgnoreDate.Checked, chkCommitterDateIsAuthorDate.Checked);
+                        chkPreserveMerges.Checked, chkAutosquash.Checked, chkStash.Checked, chkIgnoreDate.Checked, chkCommitterDateIsAuthorDate.Checked, checkBoxUpdateRefs.Checked);
                 }
 
                 string cmdOutput = FormProcess.ReadDialog(this, arguments: rebaseCmd, Module.WorkingDir, input: null, useDialogSettings: true);

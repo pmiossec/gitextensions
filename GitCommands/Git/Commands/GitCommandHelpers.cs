@@ -391,7 +391,7 @@ namespace GitCommands.Git.Commands
         }
 
         public static ArgumentString RebaseCmd(
-            string? branch, bool interactive, bool preserveMerges, bool autosquash, bool autoStash, bool ignoreDate, bool committerDateIsAuthorDate, string? from = null, string? onto = null, bool supportRebaseMerges = true)
+            string? branch, bool interactive, bool preserveMerges, bool autosquash, bool autoStash, bool ignoreDate, bool committerDateIsAuthorDate, bool updateRefs, string? from = null, string? onto = null, bool supportRebaseMerges = true)
         {
             // TODO-NULLABLE does it make sense for 'branch' to be null here?
 
@@ -424,6 +424,7 @@ namespace GitCommands.Git.Commands
             }
 
             builder.Add(autoStash, "--autostash");
+            builder.Add(updateRefs, "--update-refs");
             builder.Add(from.QuoteNE());
             builder.Add(branch.Quote());
             builder.Add(onto is not null, $"--onto {onto}");
