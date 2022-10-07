@@ -70,15 +70,11 @@ namespace GitCommands.Settings
                 ConfigFileSettingsCache.Create(configPath, false, allowCache), SettingLevel.SystemWide);
         }
 
-        public new string GetValue(string setting)
-        {
-            return GetString(setting, string.Empty);
-        }
+        public new string GetValue(string setting) => GetString(setting, string.Empty);
 
-        public IReadOnlyList<string> GetValues(string setting)
-        {
-            return SettingsCache.GetValues(setting);
-        }
+        public bool IsEnabled(string setting) => GetValue(setting).Trim().ToLower() == "true";
+
+        public IReadOnlyList<string> GetValues(string setting) => SettingsCache.GetValues(setting);
 
         public new void SetValue(string setting, string? value)
         {

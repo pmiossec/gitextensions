@@ -2306,15 +2306,10 @@ namespace GitCommands
             return LocalConfigFile.GetValues(setting);
         }
 
-        public string GetSetting(string setting)
-        {
-            return LocalConfigFile.GetValue(setting);
-        }
+        public string GetSetting(string setting) => LocalConfigFile.GetValue(setting);
 
-        public string GetEffectiveSetting(string setting)
-        {
-            return EffectiveConfigFile.GetValue(setting);
-        }
+        public string GetEffectiveSetting(string setting) => EffectiveConfigFile.GetValue(setting);
+        public bool IsEffectiveSettingEnabled(string setting) => EffectiveConfigFile.IsEnabled(setting);
 
         public void UnsetSetting(string setting)
         {

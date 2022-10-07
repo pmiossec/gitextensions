@@ -39,7 +39,7 @@ namespace GitUI.CommandsDialogs.SettingsDialog.Pages
             Validates.NotNull(CurrentSettings);
             foreach (GitSettingUiMapping gitSetting in _gitSettings)
             {
-                gitSetting.MappedCheckbox.Checked = CurrentSettings.GetValue(gitSetting.GitSettingKey) == "true";
+                gitSetting.MappedCheckbox.Checked = CurrentSettings.IsEnabled(gitSetting.GitSettingKey);
             }
         }
 
