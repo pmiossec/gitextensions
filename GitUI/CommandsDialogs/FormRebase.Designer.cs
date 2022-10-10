@@ -31,7 +31,6 @@ namespace GitUI.CommandsDialogs
             this.components = new System.ComponentModel.Container();
             System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
             System.Windows.Forms.FlowLayoutPanel flowLayoutPanel2;
-            System.Windows.Forms.FlowLayoutPanel PanelCurrentBranch;
             this.btnAddFiles = new System.Windows.Forms.Button();
             this.btnCommit = new System.Windows.Forms.Button();
             this.btnSkip = new System.Windows.Forms.Button();
@@ -72,12 +71,10 @@ namespace GitUI.CommandsDialogs
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
-            PanelCurrentBranch = new System.Windows.Forms.FlowLayoutPanel();
             this.MainPanel.SuspendLayout();
             this.ControlsPanel.SuspendLayout();
             flowLayoutPanel1.SuspendLayout();
             flowLayoutPanel2.SuspendLayout();
-            PanelCurrentBranch.SuspendLayout();
             this.groupBoxRebaseOnto.SuspendLayout();
             this.MergeToolPanel.SuspendLayout();
             this.MainLayout.SuspendLayout();
@@ -166,25 +163,10 @@ namespace GitUI.CommandsDialogs
             this.btnSkip.UseVisualStyleBackColor = true;
             this.btnSkip.Click += new System.EventHandler(this.SkipClick);
             // 
-            // PanelCurrentBranch
-            // 
-            PanelCurrentBranch.AutoSize = true;
-            PanelCurrentBranch.Controls.Add(this.lblCurrent);
-            PanelCurrentBranch.Controls.Add(this.Currentbranch);
-            PanelCurrentBranch.Dock = System.Windows.Forms.DockStyle.Fill;
-            PanelCurrentBranch.Location = new System.Drawing.Point(0, 15);
-            PanelCurrentBranch.Margin = new System.Windows.Forms.Padding(0);
-            PanelCurrentBranch.Name = "PanelCurrentBranch";
-            PanelCurrentBranch.Padding = new System.Windows.Forms.Padding(0, 5, 0, 5);
-            PanelCurrentBranch.Size = new System.Drawing.Size(715, 25);
-            PanelCurrentBranch.TabIndex = 4;
-            PanelCurrentBranch.WrapContents = false;
-            // 
             // lblCurrent
             // 
             this.lblCurrent.AutoSize = true;
-            this.lblCurrent.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblCurrent.Location = new System.Drawing.Point(3, 5);
+            this.lblCurrent.Location = new System.Drawing.Point(3, 7);
             this.lblCurrent.Name = "lblCurrent";
             this.lblCurrent.Size = new System.Drawing.Size(90, 15);
             this.lblCurrent.TabIndex = 5;
@@ -194,7 +176,7 @@ namespace GitUI.CommandsDialogs
             // 
             this.Currentbranch.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.Currentbranch.AutoSize = true;
-            this.Currentbranch.Location = new System.Drawing.Point(99, 5);
+            this.Currentbranch.Location = new System.Drawing.Point(121, 7);
             this.Currentbranch.Name = "Currentbranch";
             this.Currentbranch.Size = new System.Drawing.Size(0, 15);
             this.Currentbranch.TabIndex = 3;
@@ -214,7 +196,7 @@ namespace GitUI.CommandsDialogs
             this.cboBranches.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
             this.cboBranches.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
             this.cboBranches.FormattingEnabled = true;
-            this.cboBranches.Location = new System.Drawing.Point(70, 4);
+            this.cboBranches.Location = new System.Drawing.Point(70, 25);
             this.cboBranches.Name = "cboBranches";
             this.cboBranches.Size = new System.Drawing.Size(270, 23);
             this.cboBranches.TabIndex = 8;
@@ -222,7 +204,7 @@ namespace GitUI.CommandsDialogs
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(3, 8);
+            this.label2.Location = new System.Drawing.Point(3, 29);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(61, 15);
             this.label2.TabIndex = 7;
@@ -341,7 +323,7 @@ namespace GitUI.CommandsDialogs
             this.groupBoxRebaseOnto.Controls.Add(this.lblRangeTo);
             this.groupBoxRebaseOnto.Controls.Add(this.txtFrom);
             this.groupBoxRebaseOnto.Controls.Add(this.btnChooseFromRevision);
-            this.groupBoxRebaseOnto.Location = new System.Drawing.Point(3, 132);
+            this.groupBoxRebaseOnto.Location = new System.Drawing.Point(3, 153);
             this.groupBoxRebaseOnto.Name = "groupBoxRebaseOnto";
             this.groupBoxRebaseOnto.Size = new System.Drawing.Size(700, 52);
             this.groupBoxRebaseOnto.TabIndex = 25;
@@ -410,7 +392,7 @@ namespace GitUI.CommandsDialogs
             // llblShowOptions
             // 
             this.llblShowOptions.AutoSize = true;
-            this.llblShowOptions.Location = new System.Drawing.Point(346, 8);
+            this.llblShowOptions.Location = new System.Drawing.Point(346, 29);
             this.llblShowOptions.Name = "llblShowOptions";
             this.llblShowOptions.Size = new System.Drawing.Size(79, 15);
             this.llblShowOptions.TabIndex = 9;
@@ -423,17 +405,17 @@ namespace GitUI.CommandsDialogs
             this.PatchGrid.AutoSize = true;
             this.PatchGrid.Dock = System.Windows.Forms.DockStyle.Fill;
             this.PatchGrid.IsManagingRebase = true;
-            this.PatchGrid.Location = new System.Drawing.Point(3, 268);
+            this.PatchGrid.Location = new System.Drawing.Point(3, 264);
             this.PatchGrid.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.PatchGrid.MinimumSize = new System.Drawing.Size(0, 100);
             this.PatchGrid.Name = "PatchGrid";
-            this.PatchGrid.Size = new System.Drawing.Size(709, 145);
+            this.PatchGrid.Size = new System.Drawing.Size(709, 149);
             this.PatchGrid.TabIndex = 26;
             // 
             // lblCommitsToReapply
             // 
             this.lblCommitsToReapply.AutoSize = true;
-            this.lblCommitsToReapply.Location = new System.Drawing.Point(3, 241);
+            this.lblCommitsToReapply.Location = new System.Drawing.Point(3, 237);
             this.lblCommitsToReapply.Name = "lblCommitsToReapply";
             this.lblCommitsToReapply.Padding = new System.Windows.Forms.Padding(0, 10, 0, 0);
             this.lblCommitsToReapply.Size = new System.Drawing.Size(120, 25);
@@ -508,7 +490,6 @@ namespace GitUI.CommandsDialogs
             this.PanelMiddle.ColumnCount = 1;
             this.PanelMiddle.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.PanelMiddle.Controls.Add(this.lblRebase, 0, 0);
-            this.PanelMiddle.Controls.Add(PanelCurrentBranch, 0, 1);
             this.PanelMiddle.Controls.Add(this.rebasePanel, 0, 2);
             this.PanelMiddle.Controls.Add(this.lblCommitsToReapply, 0, 6);
             this.PanelMiddle.Controls.Add(this.PatchGrid, 0, 7);
@@ -533,16 +514,18 @@ namespace GitUI.CommandsDialogs
             // rebasePanel
             // 
             this.rebasePanel.AutoSize = true;
+            this.rebasePanel.Controls.Add(this.lblCurrent);
             this.rebasePanel.Controls.Add(this.label2);
+            this.rebasePanel.Controls.Add(this.Currentbranch);
             this.rebasePanel.Controls.Add(this.cboBranches);
             this.rebasePanel.Controls.Add(this.llblShowOptions);
             this.rebasePanel.Controls.Add(this.groupBoxRebaseOnto);
             this.rebasePanel.Controls.Add(this.groupBoxRebaseOptions);
             this.rebasePanel.Controls.Add(this.groupBoxInteractiveRebase);
             this.rebasePanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.rebasePanel.Location = new System.Drawing.Point(3, 43);
+            this.rebasePanel.Location = new System.Drawing.Point(3, 18);
             this.rebasePanel.Name = "rebasePanel";
-            this.rebasePanel.Size = new System.Drawing.Size(709, 187);
+            this.rebasePanel.Size = new System.Drawing.Size(709, 208);
             this.rebasePanel.TabIndex = 6;
             // 
             // groupBoxRebaseOptions
@@ -553,7 +536,7 @@ namespace GitUI.CommandsDialogs
             this.groupBoxRebaseOptions.Controls.Add(this.chkPreserveMerges);
             this.groupBoxRebaseOptions.Controls.Add(this.chkIgnoreDate);
             this.groupBoxRebaseOptions.Controls.Add(this.chkStash);
-            this.groupBoxRebaseOptions.Location = new System.Drawing.Point(3, 32);
+            this.groupBoxRebaseOptions.Location = new System.Drawing.Point(3, 53);
             this.groupBoxRebaseOptions.Name = "groupBoxRebaseOptions";
             this.groupBoxRebaseOptions.Size = new System.Drawing.Size(700, 50);
             this.groupBoxRebaseOptions.TabIndex = 10;
@@ -566,7 +549,7 @@ namespace GitUI.CommandsDialogs
             | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBoxInteractiveRebase.Controls.Add(this.chkInteractive);
             this.groupBoxInteractiveRebase.Controls.Add(this.chkAutosquash);
-            this.groupBoxInteractiveRebase.Location = new System.Drawing.Point(3, 82);
+            this.groupBoxInteractiveRebase.Location = new System.Drawing.Point(3, 103);
             this.groupBoxInteractiveRebase.Name = "groupBoxInteractiveRebase";
             this.groupBoxInteractiveRebase.Size = new System.Drawing.Size(700, 49);
             this.groupBoxInteractiveRebase.TabIndex = 11;
@@ -627,8 +610,6 @@ namespace GitUI.CommandsDialogs
             flowLayoutPanel1.PerformLayout();
             flowLayoutPanel2.ResumeLayout(false);
             flowLayoutPanel2.PerformLayout();
-            PanelCurrentBranch.ResumeLayout(false);
-            PanelCurrentBranch.PerformLayout();
             this.groupBoxRebaseOnto.ResumeLayout(false);
             this.groupBoxRebaseOnto.PerformLayout();
             this.MergeToolPanel.ResumeLayout(false);
