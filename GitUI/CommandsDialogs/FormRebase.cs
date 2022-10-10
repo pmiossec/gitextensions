@@ -345,7 +345,8 @@ namespace GitUI.CommandsDialogs
         private void ShowOptions_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             llblShowOptions.Visible = false;
-            flpnlOptionsPanelTop.Visible = true;
+            groupBoxRebaseOptions.Visible = true;
+            groupBoxInteractiveRebase.Visible = true;
             flpnlOptionsPanelBottom.Visible = true;
         }
 
