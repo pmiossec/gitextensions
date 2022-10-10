@@ -161,6 +161,7 @@ namespace GitUI.CommandsDialogs
                 btnSolveConflicts.Visible = Module.InTheMiddleOfConflictedMerge();
                 btnSkip.Visible = true;
                 btnAbort.Visible = true;
+                rebasePanel.Visible = false;
             }
             else
             {
@@ -173,6 +174,7 @@ namespace GitUI.CommandsDialogs
                 btnSkip.Visible = false;
                 btnAbort.Visible = false;
                 chkStash.Enabled = Module.IsDirtyDir();
+                rebasePanel.Visible = true;
             }
 
             btnSolveMergeconflicts.Visible = Module.InTheMiddleOfConflictedMerge();
