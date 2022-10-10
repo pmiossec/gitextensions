@@ -64,7 +64,7 @@ namespace GitUI.CommandsDialogs
             this.MainLayout = new System.Windows.Forms.TableLayoutPanel();
             this.PanelLeftImage = new GitUI.Help.HelpImageDisplayUserControl();
             this.PanelMiddle = new System.Windows.Forms.TableLayoutPanel();
-            this.rebasePanel = new System.Windows.Forms.FlowLayoutPanel();
+            this.rebasePanel = new System.Windows.Forms.Panel();
             this.groupBoxRebaseOptions = new System.Windows.Forms.GroupBox();
             this.groupBoxInteractiveRebase = new System.Windows.Forms.GroupBox();
             this.tlpnlSecondaryControls = new System.Windows.Forms.TableLayoutPanel();
@@ -211,20 +211,18 @@ namespace GitUI.CommandsDialogs
             // 
             // cboBranches
             // 
-            this.cboBranches.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.cboBranches.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
             this.cboBranches.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
             this.cboBranches.FormattingEnabled = true;
-            this.cboBranches.Location = new System.Drawing.Point(70, 3);
+            this.cboBranches.Location = new System.Drawing.Point(70, 4);
             this.cboBranches.Name = "cboBranches";
             this.cboBranches.Size = new System.Drawing.Size(270, 23);
             this.cboBranches.TabIndex = 8;
             // 
             // label2
             // 
-            this.label2.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(3, 7);
+            this.label2.Location = new System.Drawing.Point(3, 8);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(61, 15);
             this.label2.TabIndex = 7;
@@ -343,9 +341,9 @@ namespace GitUI.CommandsDialogs
             this.groupBoxRebaseOnto.Controls.Add(this.lblRangeTo);
             this.groupBoxRebaseOnto.Controls.Add(this.txtFrom);
             this.groupBoxRebaseOnto.Controls.Add(this.btnChooseFromRevision);
-            this.groupBoxRebaseOnto.Location = new System.Drawing.Point(3, 189);
+            this.groupBoxRebaseOnto.Location = new System.Drawing.Point(3, 132);
             this.groupBoxRebaseOnto.Name = "groupBoxRebaseOnto";
-            this.groupBoxRebaseOnto.Size = new System.Drawing.Size(709, 52);
+            this.groupBoxRebaseOnto.Size = new System.Drawing.Size(700, 52);
             this.groupBoxRebaseOnto.TabIndex = 25;
             this.groupBoxRebaseOnto.TabStop = false;
             this.groupBoxRebaseOnto.Text = "Rebase Onto";
@@ -411,9 +409,8 @@ namespace GitUI.CommandsDialogs
             // 
             // llblShowOptions
             // 
-            this.llblShowOptions.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.llblShowOptions.AutoSize = true;
-            this.llblShowOptions.Location = new System.Drawing.Point(346, 7);
+            this.llblShowOptions.Location = new System.Drawing.Point(346, 8);
             this.llblShowOptions.Name = "llblShowOptions";
             this.llblShowOptions.Size = new System.Drawing.Size(79, 15);
             this.llblShowOptions.TabIndex = 9;
@@ -426,17 +423,17 @@ namespace GitUI.CommandsDialogs
             this.PatchGrid.AutoSize = true;
             this.PatchGrid.Dock = System.Windows.Forms.DockStyle.Fill;
             this.PatchGrid.IsManagingRebase = true;
-            this.PatchGrid.Location = new System.Drawing.Point(3, 279);
+            this.PatchGrid.Location = new System.Drawing.Point(3, 268);
             this.PatchGrid.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.PatchGrid.MinimumSize = new System.Drawing.Size(0, 100);
             this.PatchGrid.Name = "PatchGrid";
-            this.PatchGrid.Size = new System.Drawing.Size(709, 134);
+            this.PatchGrid.Size = new System.Drawing.Size(709, 145);
             this.PatchGrid.TabIndex = 26;
             // 
             // lblCommitsToReapply
             // 
             this.lblCommitsToReapply.AutoSize = true;
-            this.lblCommitsToReapply.Location = new System.Drawing.Point(3, 252);
+            this.lblCommitsToReapply.Location = new System.Drawing.Point(3, 241);
             this.lblCommitsToReapply.Name = "lblCommitsToReapply";
             this.lblCommitsToReapply.Padding = new System.Windows.Forms.Padding(0, 10, 0, 0);
             this.lblCommitsToReapply.Size = new System.Drawing.Size(120, 25);
@@ -513,7 +510,6 @@ namespace GitUI.CommandsDialogs
             this.PanelMiddle.Controls.Add(this.lblRebase, 0, 0);
             this.PanelMiddle.Controls.Add(PanelCurrentBranch, 0, 1);
             this.PanelMiddle.Controls.Add(this.rebasePanel, 0, 2);
-            this.PanelMiddle.Controls.Add(this.groupBoxRebaseOnto, 0, 4);
             this.PanelMiddle.Controls.Add(this.lblCommitsToReapply, 0, 6);
             this.PanelMiddle.Controls.Add(this.PatchGrid, 0, 7);
             this.PanelMiddle.Controls.Add(this.tlpnlSecondaryControls, 0, 8);
@@ -540,12 +536,13 @@ namespace GitUI.CommandsDialogs
             this.rebasePanel.Controls.Add(this.label2);
             this.rebasePanel.Controls.Add(this.cboBranches);
             this.rebasePanel.Controls.Add(this.llblShowOptions);
+            this.rebasePanel.Controls.Add(this.groupBoxRebaseOnto);
             this.rebasePanel.Controls.Add(this.groupBoxRebaseOptions);
             this.rebasePanel.Controls.Add(this.groupBoxInteractiveRebase);
             this.rebasePanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.rebasePanel.Location = new System.Drawing.Point(3, 43);
             this.rebasePanel.Name = "rebasePanel";
-            this.rebasePanel.Size = new System.Drawing.Size(709, 140);
+            this.rebasePanel.Size = new System.Drawing.Size(709, 187);
             this.rebasePanel.TabIndex = 6;
             // 
             // groupBoxRebaseOptions
@@ -569,7 +566,7 @@ namespace GitUI.CommandsDialogs
             | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBoxInteractiveRebase.Controls.Add(this.chkInteractive);
             this.groupBoxInteractiveRebase.Controls.Add(this.chkAutosquash);
-            this.groupBoxInteractiveRebase.Location = new System.Drawing.Point(3, 88);
+            this.groupBoxInteractiveRebase.Location = new System.Drawing.Point(3, 82);
             this.groupBoxInteractiveRebase.Name = "groupBoxInteractiveRebase";
             this.groupBoxInteractiveRebase.Size = new System.Drawing.Size(700, 49);
             this.groupBoxInteractiveRebase.TabIndex = 11;
@@ -682,7 +679,7 @@ namespace GitUI.CommandsDialogs
         private System.Windows.Forms.Button btnRebase;
         private System.Windows.Forms.Label Currentbranch;
         private System.Windows.Forms.TableLayoutPanel PanelMiddle;
-        private System.Windows.Forms.FlowLayoutPanel rebasePanel;
+        private System.Windows.Forms.Panel rebasePanel;
         private Help.HelpImageDisplayUserControl PanelLeftImage;
         private System.Windows.Forms.CheckBox chkStash;
         private System.Windows.Forms.Button btnCommit;

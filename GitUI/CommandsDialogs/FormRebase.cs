@@ -347,7 +347,7 @@ namespace GitUI.CommandsDialogs
             llblShowOptions.Visible = false;
             groupBoxRebaseOptions.Visible = true;
             groupBoxInteractiveRebase.Visible = true;
-            flpnlOptionsPanelBottom.Visible = true;
+            groupBoxRebaseOnto.Visible = true;
         }
 
         private void chkUseFromOnto_CheckedChanged(object sender, EventArgs e)
