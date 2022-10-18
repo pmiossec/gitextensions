@@ -313,6 +313,11 @@ namespace GitUI.CommandsDialogs
 
             // Show blame by default if not started from command line
             fileTree.Bind(RevisionGrid, RefreshGitStatusMonitor, _isFileBlameHistory);
+            if (_isFileBlameHistory)
+            {
+                revisionDiff.FilterOnFile(args.PathFilter);
+            }
+
             RevisionGrid.ResumeRefreshRevisions();
 
             // Application is init, the repo related operations are triggered in OnLoad()
