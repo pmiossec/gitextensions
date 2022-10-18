@@ -1458,6 +1458,11 @@ namespace GitUI.CommandsDialogs
             BlameControl.ConfigureRepositoryHostPlugin(PluginRegistry.TryGetGitHosterForModule(Module));
         }
 
+        public void FilterOnFile(string filePath)
+        {
+            DiffFiles.SetFilter(filePath);
+        }
+
         internal TestAccessor GetTestAccessor()
             => new(this);
 
