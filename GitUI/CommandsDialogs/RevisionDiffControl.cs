@@ -1409,6 +1409,11 @@ namespace GitUI.CommandsDialogs
             return true;
         }
 
+        public void FilterOnFile(string filePath)
+        {
+            DiffFiles.SetFilter(filePath);
+        }
+
         internal TestAccessor GetTestAccessor()
             => new(this);
 

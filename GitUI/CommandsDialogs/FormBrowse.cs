@@ -316,6 +316,12 @@ namespace GitUI.CommandsDialogs
             repoObjectsTree.Initialize(_aheadBehindDataProvider, filterRevisionGridBySpaceSeparatedRefs: ToolStripFilters.SetBranchFilter, RevisionGrid, RevisionGrid, RevisionGrid);
             revisionDiff.Bind(RevisionGrid, fileTree, RefreshGitStatusMonitor);
             fileTree.Bind(RevisionGrid, RefreshGitStatusMonitor);
+
+            if (_isFileBlameHistory)
+            {
+                revisionDiff.FilterOnFile(args.PathFilter);
+            }
+
             RevisionGrid.ResumeRefreshRevisions();
 
             // Application is init, the repo related operations are triggered in OnLoad()
