@@ -43,12 +43,12 @@
             // 
             this.MainPanel.Controls.Add(this.tlpnlMain);
             this.MainPanel.Padding = new System.Windows.Forms.Padding(9);
-            this.MainPanel.Size = new System.Drawing.Size(394, 73);
+            this.MainPanel.Size = new System.Drawing.Size(394, 259);
             // 
             // ControlsPanel
             // 
             this.ControlsPanel.Controls.Add(this.Delete);
-            this.ControlsPanel.Location = new System.Drawing.Point(0, 73);
+            this.ControlsPanel.Location = new System.Drawing.Point(0, 259);
             this.ControlsPanel.Size = new System.Drawing.Size(394, 41);
             // 
             // Delete
@@ -92,10 +92,9 @@
             // DeleteLocalTrackingBranch
             // 
             this.DeleteLocalTrackingBranch.AutoSize = true;
-            this.DeleteLocalTrackingBranch.Location = new System.Drawing.Point(6, 118);
-            this.DeleteLocalTrackingBranch.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.DeleteLocalTrackingBranch.Location = new System.Drawing.Point(98, 56);
             this.DeleteLocalTrackingBranch.Name = "DeleteLocalTrackingBranch";
-            this.DeleteLocalTrackingBranch.Size = new System.Drawing.Size(393, 36);
+            this.DeleteLocalTrackingBranch.Size = new System.Drawing.Size(197, 19);
             this.DeleteLocalTrackingBranch.TabIndex = 3;
             this.DeleteLocalTrackingBranch.Text = "Delete also local tracking branch";
             this.DeleteLocalTrackingBranch.UseVisualStyleBackColor = true;
@@ -106,10 +105,10 @@
             this.tlpnlMain.ColumnCount = 2;
             this.tlpnlMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpnlMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpnlMain.Controls.Add(this.DeleteLocalTrackingBranch, 1, 2);
             this.tlpnlMain.Controls.Add(this.labelSelectBranches, 0, 0);
             this.tlpnlMain.Controls.Add(this.Branches, 1, 0);
             this.tlpnlMain.Controls.Add(this.DeleteRemote, 1, 1);
+            this.tlpnlMain.Controls.Add(this.DeleteLocalTrackingBranch, 1, 2);
             this.tlpnlMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpnlMain.Location = new System.Drawing.Point(9, 9);
             this.tlpnlMain.Margin = new System.Windows.Forms.Padding(0);
@@ -118,7 +117,8 @@
             this.tlpnlMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpnlMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpnlMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpnlMain.Size = new System.Drawing.Size(376, 55);
+            this.tlpnlMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tlpnlMain.Size = new System.Drawing.Size(376, 241);
             this.tlpnlMain.TabIndex = 0;
             // 
             // DeleteRemote
