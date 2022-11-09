@@ -1,3 +1,5 @@
+using System.Collections;
+using System.Reflection;
 using GitCommands;
 using GitExtUtils.GitUI.Theming;
 
@@ -22,7 +24,7 @@ namespace GitUI.Theming
             Win32ThemeHooks.ThemeSettings = Settings;
         }
 
-#if SUPPORT_THEME_HOOKS
+#if !SUPPORT_THEME_HOOKS
         private static void InstallHooks(Theme theme)
         {
             Win32ThemeHooks.WindowCreated += Handle_WindowCreated;
@@ -90,7 +92,7 @@ namespace GitUI.Theming
             {
                 try
                 {
-#if SUPPORT_THEME_HOOKS
+#if !SUPPORT_THEME_HOOKS
                     InstallHooks(theme);
 #endif
                 }
@@ -104,7 +106,7 @@ namespace GitUI.Theming
             return new ThemeSettings(theme, invariantTheme, AppSettings.ThemeVariations, AppSettings.UseSystemVisualStyle);
         }
 
-#if SUPPORT_THEME_HOOKS
+#if !SUPPORT_THEME_HOOKS
         private static void ResetGdiCaches()
         {
             var systemDrawingAssembly = typeof(Color).Assembly;

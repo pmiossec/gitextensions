@@ -1,5 +1,4 @@
 using System.Runtime.InteropServices;
-using EasyHook;
 using GitExtUtils.GitUI.Theming;
 using GitUI.UserControls;
 using Microsoft;
@@ -19,14 +18,14 @@ namespace GitUI.Theming
         private static DrawThemeTextExDelegate? _drawThemeTextExBypass;
         private static CreateWindowExDelegate? _createWindowExBypass;
 
-        private static LocalHook? _getSysColorHook;
-        private static LocalHook? _getSysColorBrushHook;
-        private static LocalHook? _drawThemeBackgroundHook;
-        private static LocalHook? _drawThemeBackgroundExHook;
-        private static LocalHook? _getThemeColorHook;
-        private static LocalHook? _drawThemeTextHook;
-        private static LocalHook? _drawThemeTextExHook;
-        private static LocalHook? _createWindowExHook;
+        private static CoreHook.LocalHook? _getSysColorHook;
+        private static CoreHook.LocalHook? _getSysColorBrushHook;
+        private static CoreHook.LocalHook? _drawThemeBackgroundHook;
+        private static CoreHook.LocalHook? _drawThemeBackgroundExHook;
+        private static CoreHook.LocalHook? _getThemeColorHook;
+        private static CoreHook.LocalHook? _drawThemeTextHook;
+        private static CoreHook.LocalHook? _drawThemeTextExHook;
+        private static CoreHook.LocalHook? _createWindowExHook;
 
         private static ThemeRenderer[]? _renderers;
         private static SystemDialogDetector? _systemDialogDetector;
@@ -173,13 +172,13 @@ namespace GitUI.Theming
             InitializingListViews.Clear();
         }
 
-        private static (LocalHook hook, TDelegate original) InstallHook<TDelegate>(string dll, string method,
+        private static (CoreHook.LocalHook hook, TDelegate original) InstallHook<TDelegate>(string dll, string method,
             TDelegate hookImpl)
             where TDelegate : Delegate
         {
-            var addr = LocalHook.GetProcAddress(dll, method);
+            var addr = CoreHook.LocalHook.GetProcAddress(dll, method);
             var original = Marshal.GetDelegateForFunctionPointer<TDelegate>(addr);
-            var hook = LocalHook.Create(addr, hookImpl, null);
+            var hook = CoreHook.LocalHook.Create(addr, hookImpl, null);
 
             try
             {

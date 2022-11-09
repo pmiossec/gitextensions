@@ -11,6 +11,8 @@ using GitUI.NBugReports;
 using GitUI.Theming;
 using GitUIPluginInterfaces;
 using Microsoft.VisualStudio.Threading;
+using Microsoft.Win32;
+using OpenFileDialog = System.Windows.Forms.OpenFileDialog;
 
 namespace GitExtensions
 {
@@ -42,7 +44,7 @@ namespace GitExtensions
             AppSettings.SetDocumentationBaseUrl(ThisAssembly.Git.Branch);
 
             ThemeModule.Load();
-#if SUPPORT_THEME_HOOKS
+#if !SUPPORT_THEME_HOOKS
             Application.ApplicationExit += (s, e) => ThemeModule.Unload();
 
             SystemEvents.UserPreferenceChanged += (s, e) =>
