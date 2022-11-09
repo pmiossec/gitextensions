@@ -14,7 +14,7 @@ namespace GitUI.CommandsDialogs
             /// <summary>
             ///  Gets the path filter to apply to browse.
             /// </summary>
-            public string? PathFilter { get; init; }
+            public string PathFilter { get; init; }
 
             /// <summary>
             ///  Gets the currently (last) selected commit id.

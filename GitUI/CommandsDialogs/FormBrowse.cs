@@ -287,7 +287,8 @@ namespace GitUI.CommandsDialogs
             RevisionGrid.SuspendRefreshRevisions();
 
             ToolStripFilters.Bind(() => Module, RevisionGrid);
-            InitMenusAndToolbars(args.RevFilter, args.PathFilter.ToPosixPath());
+            string pathFilter = args.PathFilter.ToPosixPath();
+            InitMenusAndToolbars(args.RevFilter, pathFilter);
 
             InitRevisionGrid(args.SelectedId, args.FirstId, args.IsFileHistoryMode);
             InitCommitDetails();
@@ -323,7 +324,7 @@ namespace GitUI.CommandsDialogs
             fileTree.Bind(revisionGridInfo: RevisionGrid, revisionGridUpdate: RevisionGrid, RefreshGitStatusMonitor, _isFileHistoryMode);
             if (_isFileHistory)
             {
-                revisionDiff.FilterOnFile(args.PathFilter);
+                revisionDiff.FilterOnFile(pathFilter);
             }
 
             RevisionGrid.ResumeRefreshRevisions();
