@@ -1,3 +1,4 @@
+using System.Linq;
 using GitCommands.Git;
 using GitCommands.Git.Commands;
 using GitExtUtils.GitUI;
@@ -62,11 +63,22 @@ namespace GitUI.HelperDialogs
 
             var selectedRevisionRemotes = _revision.Refs.Where(r => r.IsRemote).ToList();
 
-            return Module.GetRefs(RefsFilter.Heads)
+            var resetableLocalRefs = Module.GetRefs(RefsFilter.Heads)
                 .Where(r => r.IsHead)
                 .Where(r => isDetachedHead || r.LocalName != currentBranch)
                 .OrderByDescending(r => selectedRevisionRemotes.Any(r.IsTrackingRemote)) // Put local branches that track these remotes first
                 .ToArray();
+
+            if (selectedRevisionRemotes.Count == 1)
+            {
+                var defaultCandidateRefs = resetableLocalRefs.Where(r => r.IsTrackingRemote(selectedRevisionRemotes[0])).ToArray();
+                if (defaultCandidateRefs.Length == 1)
+                {
+                    Branches.Text = defaultCandidateRefs.First().Name;
+                }
+            }
+
+            return resetableLocalRefs;
         }
 
         private void FormResetAnotherBranch_Load(object sender, EventArgs e)
