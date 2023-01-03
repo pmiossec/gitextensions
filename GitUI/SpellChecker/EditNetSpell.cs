@@ -706,6 +706,8 @@ namespace GitUI.SpellChecker
                 return;
             }
 
+            // TODO build a list of keys that should close the AutoComplete. (At least "()"
+            // Maybe all not [^a-Z\d]
             // handle paste from clipboard (Ctrl+V, Shift+Ins)
             if ((e.Control && e.KeyCode == Keys.V) || (e.Shift && e.KeyCode == Keys.Insert))
             {
