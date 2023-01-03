@@ -1663,7 +1663,7 @@ namespace GitUI
                 new BrowseArguments
                 {
                     RevFilter = GetParameterOrEmptyStringAsDefault(args, "-filter"),
-                    PathFilter = GetParameterOrEmptyStringAsDefault(args, PathFilterArg)
+                    PathFilter = NormalizeFileName(GetParameterOrEmptyStringAsDefault(args, PathFilterArg))
                 });
         }
 
