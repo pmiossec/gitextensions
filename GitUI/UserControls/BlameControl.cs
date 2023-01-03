@@ -626,7 +626,11 @@ namespace GitUI.Blame
                 return;
             }
 
+            var lineSelected = BlameFile.CurrentFileLine;
             BlameRevision(blameInfo.selectedRevision.ObjectId, blameInfo.filename);
+
+            // TODO Select lines
+            BlameFile.GoToLine(lineSelected);
         }
 
         private void blamePreviousRevisionToolStripMenuItem_Click(object sender, EventArgs e)
