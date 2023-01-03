@@ -13,6 +13,15 @@
     "FileHistory": {
       "commandName": "Project",
       "commandLineArgs": "filehistory GitExtensions.settings"
+    },
+    "Browse file": {
+      "commandName": "Project",
+      "commandLineArgs": "browse --pathFilter=\"src\\Dependencies\\Taliance.Crypto\\Properties\\app.manifest\" -commit=77eda195ee5cb7931d1390ec2ae3e9853872afa9",
+      "workingDirectory": "C:\\Taliance\\Dev\\ArgusTaliance\\"
+    },
+    "Browse GitEx file": {
+      "commandName": "Project",
+      "commandLineArgs": "browse --pathFilter=\"TranslationApp\\Program.cs\" -commit=1c10e6e3f7f3418a3cb266f5742e48bcb3ad81e9"
     }
   }
 }
