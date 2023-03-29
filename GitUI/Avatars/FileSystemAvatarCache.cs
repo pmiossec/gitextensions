@@ -52,7 +52,19 @@ namespace GitUI.Avatars
                 }
                 catch
                 {
-                    // do nothing
+                    // Workaround to avoid the "A generic error occurred in GDI+." exception when saving
+                    // where copying the image in a new one allows the save on disk to be successful...
+                    try
+                    {
+                        using (Bitmap newImage = new(image))
+                        {
+                            using var output = _fileSystem.File.OpenWrite(path);
+                            newImage.Save(output, ImageFormat.Png);
+                        }
+                    }
+                    catch
+                    {
+                    }
                 }
             }
 
