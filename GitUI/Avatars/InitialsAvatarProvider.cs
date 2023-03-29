@@ -123,10 +123,11 @@ namespace GitUI.Avatars
         private readonly Color[] _avatarColors =
         {
             Color.RoyalBlue,
-            Color.DarkRed,
+            Color.SlateGray,
             Color.Purple,
-            Color.ForestGreen,
-            Color.DarkOrange
+            Color.OrangeRed,
+            Color.Teal,
+            Color.OliveDrab,
         };
 
         private Image DrawText(string? text, Color backColor, int size)
