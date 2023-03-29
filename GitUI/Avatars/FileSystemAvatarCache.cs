@@ -90,14 +90,24 @@ namespace GitUI.Avatars
                 {
                     var info = _fileSystem.FileInfo.FromFileName(path);
 
+                    if (!info.Exists)
+                    {
+                        return true;
+                    }
+
+                    if (AppSettings.AvatarProvider == AvatarProvider.None)
+                    {
+                        // No need to refresh because the image returned is always the same.
+                        return false;
+                    }
+
                     var cacheDays = AppSettings.AvatarImageCacheDays;
                     if (cacheDays < 1)
                     {
                         cacheDays = DefaultCacheDays;
                     }
 
-                    return !info.Exists ||
-                           info.LastWriteTime < DateTime.Now.AddDays(-cacheDays);
+                    return info.LastWriteTime < DateTime.Now.AddDays(-cacheDays);
                 }
 
                 void TryDelete()
