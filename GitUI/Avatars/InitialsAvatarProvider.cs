@@ -50,7 +50,7 @@ namespace GitUI.Avatars
             var nameParts = selectedName.Split(separator);
             var initials = GetInitialsFromNames(nameParts);
 
-            return (initials, GetDeterministicHashCode(selectedName));
+            return (initials, GetDeterministicHashCode(email));
         }
 
         private static (string? name, char[]? separator) NameSelector(string? name, string? email)
@@ -79,22 +79,42 @@ namespace GitUI.Avatars
                 return null;
             }
 
+            string name = names[0];
+
             // If only a single valid name-element is found ...
             if (names.Length == 1)
             {
                 // ... and that name-element is only a single character long ...
-                if (names[0].Length == 1)
+                if (name.Length == 1)
                 {
                     // ... return that character as uppercase
-                    return names[0][0].ToString().ToUpper();
+                    return name[0].ToString().ToUpper();
+                }
+
+                if (char.IsUpper(name[1]))
+                {
+                    return $"{char.ToUpper(name[0])}{name[1]}";
+                }
+
+                var splitNames = name.Split(_emailInitialSeparator);
+
+                if (splitNames.Length > 1)
+                {
+                    return GetInitialsFromNames(splitNames);
+                }
+
+                var upperChars = name.Where(char.IsUpper).ToArray();
+                if (upperChars.Length > 1)
+                {
+                    return $"{upperChars[0]}{upperChars[upperChars.Length - 1]}";
                 }
 
                 // return first letter upper-case and second letter original/lower case.
-                return $"{char.ToUpper(names[0][0])}{names[0][1]}";
+                return $"{char.ToUpper(name[0])}{name[1]}";
             }
 
             // Return initials from first and last name-element as uppercase
-            return $"{names[0][0]}{names[names.Length - 1][0]}".ToUpper();
+            return $"{name[0]}{names[names.Length - 1][0]}".ToUpper();
         }
 
         private readonly Graphics _graphics = Graphics.FromImage(new Bitmap(1, 1));

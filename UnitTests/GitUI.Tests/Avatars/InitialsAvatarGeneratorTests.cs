@@ -18,6 +18,10 @@ namespace GitUITests.Avatars
         [TestCase("albert.bose-einstein@noreply.com", null, "AE")]
         [TestCase("albert", "", "Al")]
         [TestCase("albert.einstein", "", "AE")]
+        [TestCase("", "albert.einstein", "AE")]
+        [TestCase("", "AlbertEinstein", "AE")]
+        [TestCase("", "A-Einstein", "AE")]
+        [TestCase("", "Alb-Einstein", "AE")]
         [TestCase(null, null, "?")]
         public void GetInitialsAndHashCode_return_initials_of_a_user(string email, string name, string expected)
         {
