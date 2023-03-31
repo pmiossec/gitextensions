@@ -1,4 +1,5 @@
 ﻿using GitExtUtils.GitUI;
+using GitUI.Properties;
 using ICSharpCode.TextEditor;
 
 namespace GitUI.Editor
@@ -9,11 +10,13 @@ namespace GitUI.Editor
     public class BlameAuthorMargin : AbstractMargin
     {
         private static readonly int AgeBucketMarkerWidth = Convert.ToInt32(4 * DpiUtil.ScaleX);
-        private List<Image?>? _avatars;
+        private Task<Image?>[]? _avatars;
+        private Image?[] _avatarsToDisplay;
         private readonly Color _backgroundColor;
         private List<GitBlameEntry>? _blameLines;
         private readonly Dictionary<int, SolidBrush> _brushs = new();
         private bool _isVisible = true;
+        private Image _noAuthorImage;
 
         public BlameAuthorMargin(TextArea textArea) : base(textArea)
         {
@@ -27,17 +30,10 @@ namespace GitUI.Editor
 
         public void Initialize(IEnumerable<GitBlameEntry> blameLines)
         {
+            _noAuthorImage = (Image)new Bitmap(Images.User80, LineHeight, LineHeight);
             _blameLines = blameLines.ToList();
-            _avatars = _blameLines.Select(a => a.Avatar).ToList();
-
-            // Update the resolution otherwise the image is not drawn at the good size :(
-            foreach (var avatar in _avatars)
-            {
-                if (avatar is Bitmap bitmapAvatar)
-                {
-                    bitmapAvatar.SetResolution(DpiUtil.DpiX, DpiUtil.DpiY);
-                }
-            }
+            _avatars = _blameLines.Select(a => a.Avatar).ToArray();
+            _avatarsToDisplay = new Image?[_avatars.Length];
 
             // Build brushes
             foreach (var blameLine in _blameLines)
@@ -47,6 +43,51 @@ namespace GitUI.Editor
                     _brushs.Add(blameLine.AgeBucketIndex, new SolidBrush(blameLine.AgeBucketColor));
                 }
             }
+
+            Task.Run(async () =>
+            {
+                bool stillAvatarToProcess;
+
+                do
+                {
+                    stillAvatarToProcess = false;
+                    for (int i = 0; i < _avatarsToDisplay.Length; i++)
+                    {
+                        Task<Image?> avatarTask = _avatars[i];
+                        if (_avatarsToDisplay[i] == null && avatarTask != null)
+                        {
+                            if (avatarTask.IsCompleted)
+                            {
+                                var avatar = await avatarTask.ConfigureAwait(true);
+                                if (avatar is Bitmap bitmapAvatar)
+                                {
+                                    bitmapAvatar.SetResolution(DpiUtil.DpiX, DpiUtil.DpiY);
+                                }
+
+                                _avatarsToDisplay[i] = avatar;
+                            }
+                            else
+                            {
+                                stillAvatarToProcess = true;
+                            }
+                        }
+                    }
+
+                    await Task.Delay(200).ConfigureAwait(true);
+                }
+                while (stillAvatarToProcess);
+            }).FileAndForget();
+
+            ////var firstLineAvatar = _avatars.First();
+
+            // Update the resolution otherwise the image is not drawn at the good size :(
+            ////foreach (var avatar in _avatars)
+            ////{
+            ////    if (avatar is Bitmap bitmapAvatar)
+            ////    {
+            ////        bitmapAvatar.SetResolution(DpiUtil.DpiX, DpiUtil.DpiY);
+            ////    }
+            ////}
         }
 
         public void SetVisiblity(bool isVisible)
@@ -63,7 +104,7 @@ namespace GitUI.Editor
 
             g.Clear(_backgroundColor);
 
-            if (_avatars is null || _avatars.Count == 0)
+            if (_avatars is null || _avatars.Length == 0)
             {
                 return;
             }
@@ -75,7 +116,7 @@ namespace GitUI.Editor
 
             for (int i = 0; i < lineCount; i++)
             {
-                if (lineStart + i >= _avatars.Count)
+                if (lineStart + i >= _avatars.Length)
                 {
                     break;
                 }
@@ -85,7 +126,7 @@ namespace GitUI.Editor
 
                 if (_avatars[lineStart + i] is not null)
                 {
-                    g.DrawImage(_avatars[lineStart + i], new Point(AgeBucketMarkerWidth, y));
+                    g.DrawImage(_avatarsToDisplay[lineStart + i] ?? _noAuthorImage, new Point(AgeBucketMarkerWidth, y));
                 }
             }
 

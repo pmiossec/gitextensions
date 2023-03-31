@@ -363,8 +363,8 @@ namespace GitUI.Blame
             StringBuilder lineBuilder = new(lineLength + 2);
             StringBuilder gutter = new(capacity: lineBuilder.Capacity * _blame.Lines.Count);
             string emptyLine = new(' ', lineLength);
-            Dictionary<string, Image?> cacheAvatars = new();
-            var noAuthorImage = (Image)new Bitmap(Images.User80, avatarSize, avatarSize);
+            Dictionary<string, Task<Image?>> cacheAvatars = new();
+            var noAuthorImage = Task.FromResult((Image)new Bitmap(Images.User80, avatarSize, avatarSize));
             for (var index = 0; index < _blame.Lines.Count; index++)
             {
                 var line = _blame.Lines[index];
@@ -385,9 +385,7 @@ namespace GitUI.Blame
                             }
                             else
                             {
-                                var avatar = ThreadHelper.JoinableTaskFactory.Run(() =>
-                                    AvatarService.DefaultProvider.GetAvatarAsync(authorEmail, line.Commit.Author,
-                                        avatarSize));
+                                Task<Image?> avatar = AvatarService.DefaultProvider.GetAvatarAsync(authorEmail, line.Commit.Author, avatarSize);
                                 cacheAvatars.Add(authorEmail, avatar);
                                 gitBlameDisplays[index].Avatar = avatar;
                             }
