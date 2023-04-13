@@ -115,15 +115,6 @@ namespace GitUI.UserControls.RevisionGrid.Columns
         }
 
         public override bool TryGetToolTip(DataGridViewCellMouseEventArgs e, GitRevision revision, [NotNullWhen(returnValue: true)] out string? toolTip)
-        {
-            if (revision.ObjectId.IsArtificial)
-            {
-                toolTip = default;
-                return false;
-            }
-
-            toolTip = AuthorNameColumnProvider.GetAuthorAndCommiterToolTip(revision);
-            return true;
-        }
+            => AuthorNameColumnProvider.TryGetAuthorAndCommitterToolTip(revision, out toolTip);
     }
 }

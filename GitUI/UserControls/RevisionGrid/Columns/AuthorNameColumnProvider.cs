@@ -46,6 +46,9 @@ namespace GitUI.UserControls.RevisionGrid.Columns
         }
 
         public override bool TryGetToolTip(DataGridViewCellMouseEventArgs e, GitRevision revision, [NotNullWhen(returnValue: true)] out string? toolTip)
+            => TryGetAuthorAndCommitterToolTip(revision, out toolTip);
+
+        public static bool TryGetAuthorAndCommitterToolTip(GitRevision revision, out string? toolTip)
         {
             if (revision.ObjectId.IsArtificial)
             {
@@ -53,26 +56,18 @@ namespace GitUI.UserControls.RevisionGrid.Columns
                 return false;
             }
 
-            toolTip = GetAuthorAndCommiterToolTip(revision);
-
-            return true;
-        }
-
-        public static string GetAuthorAndCommiterToolTip(GitRevision revision)
-        {
-            string toolTip;
-            if (revision.Author == revision.Committer && revision.AuthorEmail == revision.CommitterEmail)
+            if (revision.AuthorDate == revision.CommitDate && revision.Author == revision.Committer && revision.AuthorEmail == revision.CommitterEmail)
             {
-                toolTip = $"{revision.Author} <{revision.AuthorEmail}> {TranslatedStrings.AuthoredAndCommitted}";
+                toolTip = $"{revision.AuthorDate:g} {revision.Author} <{revision.AuthorEmail}> {TranslatedStrings.AuthoredAndCommitted}";
             }
             else
             {
                 toolTip =
-                    $"{revision.Author} <{revision.AuthorEmail}> {TranslatedStrings.Authored}\n" +
-                    $"{revision.Committer} <{revision.CommitterEmail}> {TranslatedStrings.Committed}";
+                    $"{revision.AuthorDate:g} {revision.Author} <{revision.AuthorEmail}> {TranslatedStrings.Authored}\n" +
+                    $"{revision.CommitDate:g} {revision.Committer} <{revision.CommitterEmail}> {TranslatedStrings.Committed}";
             }
 
-            return toolTip;
+            return true;
         }
     }
 }
