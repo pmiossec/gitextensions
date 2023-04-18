@@ -360,24 +360,18 @@ namespace AppVeyorIntegration
             string status = buildDescription["status"].ToObject<string>();
             buildDetails.Status = ParseBuildStatus(status);
 
-            buildDetails.ChangeProgressCounter();
             if (!buildDetails.IsRunning)
             {
                 buildDetails.Duration = GetBuildDuration(buildData);
             }
 
-            int testCount = buildDescription["testsCount"].ToObject<int>();
-            if (testCount != 0)
+            int runTests = buildDescription["passedTestsCount"].ToObject<int>();
+            if (runTests != 0)
             {
                 int failedTestCount = buildDescription["failedTestsCount"].ToObject<int>();
-                int skippedTestCount = testCount - buildDescription["passedTestsCount"].ToObject<int>();
-                string testResults = testCount + " tests";
-                if (failedTestCount != 0 || skippedTestCount != 0)
-                {
-                    testResults += $" ( {failedTestCount} failed, {skippedTestCount} skipped )";
-                }
-
-                buildDetails.TestsResultText = testResults;
+                buildDetails.TestsResultText = failedTestCount != 0
+                    ? $"{failedTestCount} failed / {runTests} tests run"
+                    : $"{runTests} tests run";
             }
         }
 
