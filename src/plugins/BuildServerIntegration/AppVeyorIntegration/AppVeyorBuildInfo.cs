@@ -8,8 +8,6 @@ namespace AppVeyorIntegration
     {
         private static readonly IBuildDurationFormatter _buildDurationFormatter = new BuildDurationFormatter();
 
-        private int _buildProgressCount;
-
         public string? BuildId { get; set; }
         public ObjectId? CommitId { get; set; }
         public string? AppVeyorBuildReportUrl { get; set; }
@@ -22,32 +20,14 @@ namespace AppVeyorIntegration
 
         public bool IsRunning => Status == BuildStatus.InProgress;
 
-        public void ChangeProgressCounter()
-        {
-            _buildProgressCount = (_buildProgressCount % 3) + 1;
-        }
-
         public void UpdateDescription()
         {
             Description = _buildDurationFormatter.Format(Duration) + " " + TestsResultText + (!string.IsNullOrWhiteSpace(PullRequestText) ? " " + PullRequestText : string.Empty) + " " + Id;
-            Tooltip = DisplayStatus + Environment.NewLine
-                                    + (Duration.HasValue ? _buildDurationFormatter.Format(Duration) + Environment.NewLine : string.Empty)
+            Tooltip = $"{Id} {StatusSymbol} ({DisplayStatus})" + (Duration.HasValue ? " - " + _buildDurationFormatter.Format(Duration, false) : string.Empty) + Environment.NewLine
                                     + (!string.IsNullOrWhiteSpace(TestsResultText) ? TestsResultText + Environment.NewLine : string.Empty)
-                                    + (!string.IsNullOrWhiteSpace(PullRequestText) ? PullRequestText + ": " + PullRequestTitle + Environment.NewLine : string.Empty)
-                                    + Id;
+                                    + (!string.IsNullOrWhiteSpace(PullRequestText) ? PullRequestText + ": " + PullRequestTitle + Environment.NewLine : string.Empty);
         }
 
-        private string DisplayStatus
-        {
-            get
-            {
-                if (Status != BuildStatus.InProgress)
-                {
-                    return Status.ToString("G");
-                }
-
-                return "In progress" + new string('.', _buildProgressCount) + new string(' ', 3 - _buildProgressCount);
-            }
-        }
+        private string DisplayStatus => Status != BuildStatus.InProgress ? Status.ToString("G") : "In progress";
     }
 }
