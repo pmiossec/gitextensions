@@ -1,4 +1,4 @@
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using GitCommands;
 using GitCommands.Settings;
 using GitExtUtils.GitUI;
@@ -79,7 +79,7 @@ namespace GitUI.UserControls.RevisionGrid.Columns
                 return;
             }
 
-            string text = (AppSettings.ShowBuildStatusIconColumn ? revision.BuildStatus.StatusSymbol : string.Empty)
+            string text = (AppSettings.ShowBuildStatusIconColumn ? (AppSettings.BuildStatusTrafficLightIcon ? "⚫" : revision.BuildStatus.StatusSymbol) : string.Empty)
                 + (AppSettings.ShowBuildStatusTextColumn ? (string)e.FormattedValue : string.Empty);
 
             if (_fontWithUnicodeCache?.Size != style.NormalFont.Size)

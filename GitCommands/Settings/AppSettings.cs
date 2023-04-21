@@ -1241,6 +1241,12 @@ namespace GitCommands
             set => SetBool("showbuildstatusiconcolumn", value);
         }
 
+        public static bool BuildStatusTrafficLightIcon
+        {
+            get => GetBool("buildStatusTrafficLightIcon", false);
+            set => SetBool("buildStatusTrafficLightIcon", value);
+        }
+
         public static bool ShowBuildStatusTextColumn
         {
             get => GetBool("showbuildstatustextcolumn", false);
