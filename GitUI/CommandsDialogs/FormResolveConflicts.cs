@@ -65,11 +65,11 @@ namespace GitUI.CommandsDialogs
         private readonly TranslationString _openMergeToolItemText = new("Open in");
         private readonly TranslationString _button1Text = new("Open in");
 
-        private readonly TranslationString _contextChooseLocalRebaseText = new("Choose local (theirs)");
-        private readonly TranslationString _contextChooseRemoteRebaseText = new("Choose remote (ours)");
+        private readonly TranslationString _contextChooseLocalRebaseText = new("Choose local/current (theirs)");
+        private readonly TranslationString _contextChooseRemoteRebaseText = new("Choose remote/incoming (ours)");
 
-        private readonly TranslationString _contextChooseLocalMergeText = new("Choose local (ours)");
-        private readonly TranslationString _contextChooseRemoteMergeText = new("Choose remote (theirs)");
+        private readonly TranslationString _contextChooseLocalMergeText = new("Choose local/current (ours)");
+        private readonly TranslationString _contextChooseRemoteMergeText = new("Choose remote/incoming (theirs)");
 
         private readonly TranslationString _noBaseFileMergeCaption = new("Merge");
 
@@ -239,13 +239,19 @@ namespace GitUI.CommandsDialogs
                 if (Module.InTheMiddleOfRebase())
                 {
                     ContextChooseLocal.Text = _contextChooseLocalRebaseText.Text;
+                    ContextChooseLocal.ToolTipText = "Take only the changes from the branch you are rebasing";
                     ContextChooseRemote.Text = _contextChooseRemoteRebaseText.Text;
+                    ContextChooseRemote.ToolTipText = "Take only the changes from the branch you are rebasing onto";
                 }
                 else
                 {
                     ContextChooseLocal.Text = _contextChooseLocalMergeText.Text;
+                    ContextChooseLocal.ToolTipText = "Take only the changes from the current branch";
                     ContextChooseRemote.Text = _contextChooseRemoteMergeText.Text;
+                    ContextChooseRemote.ToolTipText = "Take only the changes from the branch you are merging";
                 }
+
+                ContextChooseBase.ToolTipText = "Take no changes and revert to base content!";
 
                 if (!Module.InTheMiddleOfConflictedMerge() && _thereWhereMergeConflicts)
                 {

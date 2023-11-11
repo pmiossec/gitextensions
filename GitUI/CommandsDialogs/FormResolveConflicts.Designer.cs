@@ -303,6 +303,7 @@ namespace GitUI.CommandsDialogs
             // 
             tableLayoutPanel1.AutoSize = true;
             tableLayoutPanel1.ColumnCount = 2;
+            tableLayoutPanel4.SetColumnSpan(tableLayoutPanel1, 2);
             tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle());
             tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
             tableLayoutPanel1.Controls.Add(label7, 0, 0);
