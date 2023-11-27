@@ -9227,6 +9227,10 @@ See the changes in the commit form.</source>
         <source>Show a&amp;uthor name column</source>
         <target />
       </trans-unit>
+      <trans-unit id="showBuildStatusIconAsTrafficLightToolStripMenuItem.Text">
+        <source>Show build status &amp;icon as traffic light</source>
+        <target />
+      </trans-unit>
       <trans-unit id="showBuildStatusIconToolStripMenuItem.Text">
         <source>Show build status &amp;icon</source>
         <target />

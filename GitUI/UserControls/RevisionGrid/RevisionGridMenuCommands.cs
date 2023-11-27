@@ -375,6 +375,13 @@ namespace GitUI.UserControls.RevisionGrid
                 },
                 new MenuCommand
                 {
+                    Name = "showBuildStatusIconAsTrafficLightToolStripMenuItem",
+                    Text = "Show build status &icon as traffic light",
+                    ExecuteAction = () => _revisionGrid.ToggleBuildStatusIconStyle(),
+                    IsCheckedFunc = () => AppSettings.BuildStatusTrafficLightIcon
+                },
+                new MenuCommand
+                {
                     Name = "showBuildStatusTextToolStripMenuItem",
                     Text = "Show build status te&xt",
                     ExecuteAction = () => _revisionGrid.ToggleBuildStatusTextColumn(),

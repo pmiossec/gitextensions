@@ -2653,6 +2653,13 @@ namespace GitUI
             Refresh();
         }
 
+        internal void ToggleBuildStatusIconStyle()
+        {
+            AppSettings.BuildStatusTrafficLightIcon = !AppSettings.BuildStatusTrafficLightIcon;
+            MenuCommands.TriggerMenuChanged();
+            Refresh();
+        }
+
         internal void ToggleBuildStatusTextColumn()
         {
             ////Module.EffectiveSettings.BuildServer.ShowBuildSummaryInGrid.Value = !Module.EffectiveSettings.BuildServer.ShowBuildSummaryInGrid.Value;
