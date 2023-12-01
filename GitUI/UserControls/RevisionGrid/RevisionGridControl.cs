@@ -232,6 +232,7 @@ namespace GitUI
             _gridView.MouseDoubleClick += OnGridViewDoubleClick;
             _gridView.MouseClick += OnGridViewMouseClick;
             _gridView.CellMouseMove += (_, e) => _toolTipProvider.OnCellMouseMove(e);
+            _gridView.CellMouseEnter += _gridView_CellMouseEnter;
 
             // Allow to drop patch file on revision grid
             _gridView.AllowDrop = true;
@@ -1742,10 +1743,36 @@ namespace GitUI
             }
         }
 
+        private void _gridView_CellMouseEnter(object? sender, DataGridViewCellEventArgs e)
+        {
+            if (e.ColumnIndex == _buildServerWatcher.ColumnProvider.Index)
+            {
+                GitRevision revision = GetRevision(e.RowIndex);
+                if (!string.IsNullOrWhiteSpace(revision?.BuildStatus?.Url))
+                {
+                    _gridView.Cursor = Cursors.Hand;
+                }
+                else
+                {
+                    _gridView.Cursor = Cursors.Default;
+                }
+            }
+            else
+            {
+                _gridView.Cursor = Cursors.Default;
+            }
+        }
+
         private void OnGridViewCellMouseDown(object sender, DataGridViewCellMouseEventArgs e)
         {
             try
             {
+                if (e.Button == MouseButtons.Left && e.ColumnIndex == _buildServerWatcher.ColumnProvider.Index)
+                {
+                    OpenBuildReport(GetRevision(e.RowIndex));
+                    return;
+                }
+
                 if (e.Button != MouseButtons.Right)
                 {
                     return;
@@ -2990,7 +3017,11 @@ namespace GitUI
 
         private void openBuildReportToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            GitRevision? revision = GetSelectedRevisionOrDefault();
+            OpenBuildReport(GetSelectedRevisionOrDefault());
+        }
+
+        private void OpenBuildReport(GitRevision? revision)
+        {
             if (string.IsNullOrWhiteSpace(revision?.BuildStatus?.Url))
             {
                 return;
