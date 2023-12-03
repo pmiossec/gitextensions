@@ -1,3 +1,4 @@
+using GitCommands;
 using GitCommands.Git;
 using GitExtUtils.GitUI;
 using GitExtUtils.GitUI.Theming;
@@ -96,7 +97,7 @@ namespace GitUI.HelperDialogs
                 return;
             }
 
-            GitExtUtils.ArgumentString command = Commands.PushLocal(gitRefToReset.CompleteName, _revision.ObjectId, Module.WorkingDir, Module.GetPathForGitExecution, ForceReset.Checked);
+            GitExtUtils.ArgumentString command = Commands.PushLocal(gitRefToReset.CompleteName, _revision.ObjectId, Module.WorkingDir.ToPosixPath(), Module.GetPathForGitExecution, ForceReset.Checked);
             bool success = FormProcess.ShowDialog(this, UICommands, arguments: command, Module.WorkingDir, input: null, useDialogSettings: true);
             if (success)
             {
