@@ -287,8 +287,6 @@ namespace GitUI.CommandsDialogs
             RevisionGrid.SuspendRefreshRevisions();
 
             ToolStripFilters.Bind(() => Module, RevisionGrid);
-            string pathFilter = args.PathFilter.ToPosixPath();
-            InitMenusAndToolbars(args.RevFilter, pathFilter);
 
             InitRevisionGrid(args.SelectedId, args.FirstId, args.IsFileHistoryMode);
             InitCommitDetails();
@@ -297,6 +295,11 @@ namespace GitUI.CommandsDialogs
 
             HotkeysEnabled = true;
             LoadHotkeys(HotkeySettingsName);
+
+            SetShortcutKeyDisplayStringsFromHotkeySettings();
+
+            string pathFilter = args.PathFilter.ToPosixPath();
+            InitMenusAndToolbars(args.RevFilter, pathFilter);
 
             UICommands.PostRepositoryChanged += UICommands_PostRepositoryChanged;
             UICommands.BrowseRepo = this;
@@ -941,8 +944,6 @@ namespace GitUI.CommandsDialogs
 
                 toolsToolStripMenuItem.RefreshState(bareRepository);
 
-                SetShortcutKeyDisplayStringsFromHotkeySettings();
-
                 RefreshWorkingDirComboText();
 
                 OnActivate();
@@ -1026,6 +1027,8 @@ namespace GitUI.CommandsDialogs
                         DisplayStyle = ToolStripItemDisplayStyle.ImageAndText
                     };
 
+                    UpdateTooltipWithShortcut(button, (Command)script.HotkeyCommandIdentifier);
+
                     button.Click += (s, e) => ExecuteCommand(script.HotkeyCommandIdentifier);
 
                     // add to toolstrip
@@ -1059,6 +1062,16 @@ namespace GitUI.CommandsDialogs
             RevisionGrid.SetFilterShortcutKeys(ToolStripFilters);
 
             // TODO: add more
+            UpdateTooltipWithShortcut(toggleLeftPanel, Command.ToggleLeftPanel);
+            UpdateTooltipWithShortcut(toolStripButtonCommit, Command.Commit);
+            UpdateTooltipWithShortcut(EditSettings, Command.OpenSettings);
+            UpdateTooltipWithShortcut(branchSelect, Command.CheckoutBranch);
+            UpdateTooltipWithShortcut(toolStripFileExplorer, fileExplorerToolStripMenuItem.ShortcutKeys);
+            UpdateTooltipWithShortcut(RefreshButton, Keys.F5);
+            UpdateTooltipWithShortcut(userShell, Command.GitBash);
+
+            UpdateTooltipWithShortcut(ToolStripFilters.GetTestAccessor().tslblRevisionFilter, Command.FocusFilter);
+            UpdateTooltipWithShortcut(ToolStripFilters.GetTestAccessor().tsbShowReflog, RevisionGrid.MenuCommands.GetShortcutKeyTooltipStringFromRevisionGridIfAvailable(RevisionGridControl.Command.ShowReflogReferences));
         }
 
         private void OnActivate()
@@ -1738,6 +1751,8 @@ namespace GitUI.CommandsDialogs
                 RevisionGrid.ResumeRefreshRevisions();
 
                 RefreshRevisions();
+
+                SetShortcutKeyDisplayStringsFromHotkeySettings();
             }
             else
             {

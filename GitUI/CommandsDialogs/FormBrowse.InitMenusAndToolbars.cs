@@ -46,8 +46,6 @@ namespace GitUI.CommandsDialogs
                 branchToolStripMenuItem,
             }.ForEach(ColorHelper.AdaptImageLightness);
 
-            InsertFetchPullShortcuts();
-
             pullToolStripMenuItem1.Tag = AppSettings.PullAction.None;
             mergeToolStripMenuItem.Tag = AppSettings.PullAction.Merge;
             rebaseToolStripMenuItem1.Tag = AppSettings.PullAction.Rebase;
@@ -67,6 +65,8 @@ namespace GitUI.CommandsDialogs
             RefreshDefaultPullAction();
 
             FillUserShells(defaultShell: BashShell.ShellName);
+
+            InsertFetchPullShortcuts();
 
             WorkaroundToolbarLocationBug();
 
@@ -135,6 +135,28 @@ namespace GitUI.CommandsDialogs
                 }
 #endif
             }
+        }
+
+        private void UpdateTooltipWithShortcut(ToolStripItem button, Command command)
+        {
+            UpdateTooltipWithShortcut(button, GetShortcutKeys(command));
+        }
+
+        private void UpdateTooltipWithShortcut(ToolStripItem button, Keys keys)
+        {
+            UpdateTooltipWithShortcut(button, keys.ToShortcutKeyToolTipString());
+        }
+
+        private void UpdateTooltipWithShortcut(ToolStripItem button, string shortcut)
+        {
+            if (string.IsNullOrWhiteSpace(shortcut))
+            {
+                return;
+            }
+
+            int indexShortcut = button.ToolTipText.LastIndexOf('(');
+            string toolTip = indexShortcut == -1 ? button.ToolTipText : button.ToolTipText.Substring(0, indexShortcut);
+            button.ToolTipText = toolTip.Trim() + shortcut;
         }
 
         private void InsertFetchPullShortcuts()
