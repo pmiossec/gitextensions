@@ -1,11 +1,11 @@
 ﻿using GitCommands;
 using GitExtUtils;
 using GitExtUtils.GitUI.Theming;
-using GitUI.Hotkey;
 using GitUI.Properties;
 using GitUI.Shells;
 using GitUI.UserControls;
 using GitUIPluginInterfaces;
+using ResourceManager.Hotkey;
 
 namespace GitUI.CommandsDialogs
 {

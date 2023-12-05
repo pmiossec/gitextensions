@@ -2,10 +2,10 @@
 using GitCommands;
 using GitCommands.Settings;
 using GitUI.CommandsDialogs.BrowseDialog;
-using GitUI.Hotkey;
 using GitUI.Properties;
 using GitUIPluginInterfaces;
 using ResourceManager;
+using ResourceManager.Hotkey;
 
 namespace GitUI.UserControls.RevisionGrid
 {

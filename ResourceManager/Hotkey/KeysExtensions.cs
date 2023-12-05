@@ -1,6 +1,6 @@
 ﻿using System.Globalization;
 
-namespace GitUI.Hotkey
+namespace ResourceManager.Hotkey
 {
     public static class KeysExtensions
     {

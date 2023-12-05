@@ -695,7 +695,7 @@ namespace GitUI.CommandsDialogs
 
         private string GetShortcutKeyDisplayString(Command cmd)
         {
-            return GetShortcutKeys((int)cmd).ToShortcutKeyDisplayString();
+            return GetShortcutKeyDisplay((int)cmd);
         }
 
         private bool AddSelectionToCommitMessage()
@@ -3436,10 +3436,10 @@ namespace GitUI.CommandsDialogs
 
             try
             {
-                List<string> allLines = new List<string>();
+                List<string> allLines = new();
 
                 using (FileStream stream = File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-                using (StreamReader reader = new StreamReader(stream, Module.FilesEncoding))
+                using (StreamReader reader = new(stream, Module.FilesEncoding))
                 {
                     string line;
                     while ((line = reader.ReadLine()) != null)
@@ -3455,10 +3455,10 @@ namespace GitUI.CommandsDialogs
                     }
                     else
                     {
-                        using (MemoryStream bytes = new MemoryStream())
+                        using (MemoryStream bytes = new())
                         {
                             bytes.Write(filePreamble, 0, filePreamble.Length);
-                            using (StreamWriter writer = new StreamWriter(bytes, Module.FilesEncoding))
+                            using (StreamWriter writer = new(bytes, Module.FilesEncoding))
                             {
                                 writer.Write(string.Join(eol, allLines));
                             }

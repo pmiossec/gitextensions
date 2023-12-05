@@ -27,10 +27,10 @@ namespace GitUI.CommandsDialogs.Menus
 
         public override void RefreshShortcutKeys(IEnumerable<HotkeyCommand>? hotkeys)
         {
-            gitBashToolStripMenuItem.ShortcutKeyDisplayString = GetShortcutKey(hotkeys, (int)FormBrowse.Command.GitBash);
-            gitGUIToolStripMenuItem.ShortcutKeyDisplayString = GetShortcutKey(hotkeys, (int)FormBrowse.Command.GitGui);
-            kGitToolStripMenuItem.ShortcutKeyDisplayString = GetShortcutKey(hotkeys, (int)FormBrowse.Command.GitGitK);
-            settingsToolStripMenuItem.ShortcutKeyDisplayString = GetShortcutKey(hotkeys, (int)FormBrowse.Command.OpenSettings);
+            gitBashToolStripMenuItem.ShortcutKeyDisplayString = GetShortcutKeyDisplay(hotkeys, (int)FormBrowse.Command.GitBash);
+            gitGUIToolStripMenuItem.ShortcutKeyDisplayString = GetShortcutKeyDisplay(hotkeys, (int)FormBrowse.Command.GitGui);
+            kGitToolStripMenuItem.ShortcutKeyDisplayString = GetShortcutKeyDisplay(hotkeys, (int)FormBrowse.Command.GitGitK);
+            settingsToolStripMenuItem.ShortcutKeyDisplayString = GetShortcutKeyDisplay(hotkeys, (int)FormBrowse.Command.OpenSettings);
 
             base.RefreshShortcutKeys(hotkeys);
         }

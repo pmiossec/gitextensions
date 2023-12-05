@@ -1,7 +1,12 @@
 ﻿using GitCommands;
 using GitExtUtils;
+using GitUI.CommandsDialogs;
+using GitUI.CommandsDialogs.Menus;
+using GitUI.Hotkey;
 using GitUI.UserControls.RevisionGrid;
 using GitUIPluginInterfaces;
+using ResourceManager;
+using ResourceManager.Hotkey;
 
 namespace GitUI.UserControls
 {
@@ -479,6 +484,14 @@ namespace GitUI.UserControls
 
         internal TestAccessor GetTestAccessor()
             => new(this);
+
+        internal void RefreshShortcutKeys(IReadOnlyList<HotkeyCommand> hotkeys)
+        {
+            // TODO: fix
+            tslblRevisionFilter.ToolTipText += ShortcutHelper.GetShortcutToolTip(hotkeys, (int)FormBrowse.Command.FocusFilter);
+            tsbShowReflog.ToolTipText = TranslatedStrings.ShowReflogTooltip + ShortcutHelper.GetShortcutToolTip(hotkeys, (int)RevisionGridControl.Command.ShowReflogReferences);
+            tsmiShowOnlyFirstParent.ToolTipText = TranslatedStrings.ShowOnlyFirstParent + ShortcutHelper.GetShortcutToolTip(hotkeys, (int)RevisionGridControl.Command.ShowCurrentBranchOnly);
+        }
 
         internal readonly struct TestAccessor
         {

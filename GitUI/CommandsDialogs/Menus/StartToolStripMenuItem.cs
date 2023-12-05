@@ -42,7 +42,7 @@ namespace GitUI.CommandsDialogs.Menus
 
         public override void RefreshShortcutKeys(IEnumerable<HotkeyCommand>? hotkeys)
         {
-            openToolStripMenuItem.ShortcutKeyDisplayString = GetShortcutKey(hotkeys, (int)FormBrowse.Command.OpenRepo);
+            openToolStripMenuItem.ShortcutKeyDisplayString = GetShortcutKeyDisplay(hotkeys, (int)FormBrowse.Command.OpenRepo);
 
             base.RefreshShortcutKeys(hotkeys);
         }

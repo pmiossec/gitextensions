@@ -2,6 +2,7 @@
 using GitUI.Hotkey;
 using GitUIPluginInterfaces;
 using ResourceManager;
+using ResourceManager.Hotkey;
 
 namespace GitUI.CommandsDialogs.Menus
 {
@@ -43,10 +44,8 @@ namespace GitUI.CommandsDialogs.Menus
         /// <param name="hotkeys">The collection of configured shortcut keys.</param>
         /// <param name="commandCode">The required shortcut identifier.</param>
         /// <returns>The string representation of the shortcut, if exists; otherwise, the string representation of <see cref="Keys.None"/>.</returns>
-        protected static string GetShortcutKey(IEnumerable<HotkeyCommand>? hotkeys, int commandCode)
-        {
-            return (hotkeys?.FirstOrDefault(h => h.CommandCode == commandCode)?.KeyData ?? Keys.None).ToShortcutKeyDisplayString();
-        }
+        protected static string GetShortcutKeyDisplay(IEnumerable<HotkeyCommand>? hotkeys, int commandCode)
+            => ShortcutHelper.GetShortcutDisplay(hotkeys, commandCode);
 
         /// <summary>
         ///  Allows reloading/reassigning the configured shortcut key.

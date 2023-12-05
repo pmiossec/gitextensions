@@ -5,6 +5,7 @@ using GitExtUtils;
 using GitExtUtils.GitUI.Theming;
 using GitUI;
 using GitUIPluginInterfaces;
+using ResourceManager.Hotkey;
 using ResourceManager.Properties;
 
 namespace ResourceManager
@@ -99,14 +100,10 @@ namespace ResourceManager
         }
 
         protected Keys GetShortcutKeys(int commandCode)
-        {
-            return GetHotkeyCommand(commandCode)?.KeyData ?? Keys.None;
-        }
+            => ShortcutHelper.GetShortcutKey(_hotkeys, commandCode);
 
-        protected HotkeyCommand? GetHotkeyCommand(int commandCode)
-        {
-            return _hotkeys?.FirstOrDefault(h => h.CommandCode == commandCode);
-        }
+        protected string GetShortcutKeyDisplay(int commandCode)
+            => ShortcutHelper.GetShortcutDisplay(_hotkeys, commandCode);
 
         /// <summary>Override this method to handle form-specific Hotkey commands.</summary>
         protected virtual bool ExecuteCommand(int command)

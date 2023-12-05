@@ -19,7 +19,6 @@ using GitUI.CommandsDialogs.BrowseDialog.DashboardControl;
 using GitUI.CommandsDialogs.SettingsDialog;
 using GitUI.CommandsDialogs.WorktreeDialog;
 using GitUI.HelperDialogs;
-using GitUI.Hotkey;
 using GitUI.Infrastructure.Telemetry;
 using GitUI.LeftPanel;
 using GitUI.NBugReports;
@@ -34,6 +33,7 @@ using Microsoft;
 using Microsoft.Win32;
 using Microsoft.WindowsAPICodePack.Taskbar;
 using ResourceManager;
+using ResourceManager.Hotkey;
 
 namespace GitUI.CommandsDialogs
 {
@@ -1040,23 +1040,24 @@ namespace GitUI.CommandsDialogs
         private void SetShortcutKeyDisplayStringsFromHotkeySettings()
         {
             // Add shortcuts to the menu items
-            commitToolStripMenuItem.ShortcutKeyDisplayString = GetShortcutKeys(Command.Commit).ToShortcutKeyDisplayString();
-            stashChangesToolStripMenuItem.ShortcutKeyDisplayString = GetShortcutKeys(Command.Stash).ToShortcutKeyDisplayString();
-            stashStagedToolStripMenuItem.ShortcutKeyDisplayString = GetShortcutKeys(Command.StashStaged).ToShortcutKeyDisplayString();
-            stashPopToolStripMenuItem.ShortcutKeyDisplayString = GetShortcutKeys(Command.StashPop).ToShortcutKeyDisplayString();
-            closeToolStripMenuItem.ShortcutKeyDisplayString = GetShortcutKeys(Command.CloseRepository).ToShortcutKeyDisplayString();
-            checkoutBranchToolStripMenuItem.ShortcutKeyDisplayString = GetShortcutKeys(Command.CheckoutBranch).ToShortcutKeyDisplayString();
-            branchToolStripMenuItem.ShortcutKeyDisplayString = GetShortcutKeys(Command.CreateBranch).ToShortcutKeyDisplayString();
-            tagToolStripMenuItem.ShortcutKeyDisplayString = GetShortcutKeys(Command.CreateTag).ToShortcutKeyDisplayString();
-            mergeBranchToolStripMenuItem.ShortcutKeyDisplayString = GetShortcutKeys(Command.MergeBranches).ToShortcutKeyDisplayString();
-            pullToolStripMenuItem.ShortcutKeyDisplayString = GetShortcutKeys(Command.PullOrFetch).ToShortcutKeyDisplayString();
-            pullToolStripMenuItem1.ShortcutKeyDisplayString = GetShortcutKeys(Command.PullOrFetch).ToShortcutKeyDisplayString();
-            pushToolStripMenuItem.ShortcutKeyDisplayString = GetShortcutKeys(Command.Push).ToShortcutKeyDisplayString();
-            rebaseToolStripMenuItem.ShortcutKeyDisplayString = GetShortcutKeys(Command.Rebase).ToShortcutKeyDisplayString();
+            commitToolStripMenuItem.ShortcutKeyDisplayString = GetShortcutKeyDisplay((int)Command.Commit);
+            stashChangesToolStripMenuItem.ShortcutKeyDisplayString = GetShortcutKeyDisplay((int)Command.Stash);
+            stashStagedToolStripMenuItem.ShortcutKeyDisplayString = GetShortcutKeyDisplay((int)Command.StashStaged);
+            stashPopToolStripMenuItem.ShortcutKeyDisplayString = GetShortcutKeyDisplay((int)Command.StashPop);
+            closeToolStripMenuItem.ShortcutKeyDisplayString = GetShortcutKeyDisplay((int)Command.CloseRepository);
+            checkoutBranchToolStripMenuItem.ShortcutKeyDisplayString = GetShortcutKeyDisplay((int)Command.CheckoutBranch);
+            branchToolStripMenuItem.ShortcutKeyDisplayString = GetShortcutKeyDisplay((int)Command.CreateBranch);
+            tagToolStripMenuItem.ShortcutKeyDisplayString = GetShortcutKeyDisplay((int)Command.CreateTag);
+            mergeBranchToolStripMenuItem.ShortcutKeyDisplayString = GetShortcutKeyDisplay((int)Command.MergeBranches);
+            pullToolStripMenuItem.ShortcutKeyDisplayString = GetShortcutKeyDisplay((int)Command.PullOrFetch);
+            pullToolStripMenuItem1.ShortcutKeyDisplayString = GetShortcutKeyDisplay((int)Command.PullOrFetch);
+            pushToolStripMenuItem.ShortcutKeyDisplayString = GetShortcutKeyDisplay((int)Command.Push);
+            rebaseToolStripMenuItem.ShortcutKeyDisplayString = GetShortcutKeyDisplay((int)Command.Rebase);
 
             fileToolStripMenuItem.RefreshShortcutKeys(Hotkeys);
             helpToolStripMenuItem.RefreshShortcutKeys(Hotkeys);
             toolsToolStripMenuItem.RefreshShortcutKeys(Hotkeys);
+            ToolStripFilters.RefreshShortcutKeys(Hotkeys);
 
             // Set shortcuts on the Browse toolbar with commands in RevGrid
             RevisionGrid.SetFilterShortcutKeys(ToolStripFilters);
@@ -1069,9 +1070,6 @@ namespace GitUI.CommandsDialogs
             UpdateTooltipWithShortcut(toolStripFileExplorer, fileExplorerToolStripMenuItem.ShortcutKeys);
             UpdateTooltipWithShortcut(RefreshButton, Keys.F5);
             UpdateTooltipWithShortcut(userShell, Command.GitBash);
-
-            UpdateTooltipWithShortcut(ToolStripFilters.GetTestAccessor().tslblRevisionFilter, Command.FocusFilter);
-            UpdateTooltipWithShortcut(ToolStripFilters.GetTestAccessor().tsbShowReflog, RevisionGrid.MenuCommands.GetShortcutKeyTooltipStringFromRevisionGridIfAvailable(RevisionGridControl.Command.ShowReflogReferences));
         }
 
         private void OnActivate()
@@ -1823,7 +1821,7 @@ namespace GitUI.CommandsDialogs
                 ToolStripMenuItem checkoutBranchItem = new(checkoutBranchToolStripMenuItem.Text, Images.BranchCheckout)
                 {
                     ShortcutKeys = GetShortcutKeys(Command.CheckoutBranch),
-                    ShortcutKeyDisplayString = GetShortcutKeys(Command.CheckoutBranch).ToShortcutKeyDisplayString()
+                    ShortcutKeyDisplayString = GetShortcutKeyDisplay((int)Command.CheckoutBranch)
                 };
 
                 branchSelect.DropDownItems.Add(checkoutBranchItem);
@@ -1999,10 +1997,7 @@ namespace GitUI.CommandsDialogs
             /* deprecated: RotateApplicationIcon = 14, */
         }
 
-        internal Keys GetShortcutKeys(Command cmd)
-        {
-            return GetShortcutKeys((int)cmd);
-        }
+        internal Keys GetShortcutKeys(Command cmd) => GetShortcutKeys((int)cmd);
 
         private void AddNotes()
         {
