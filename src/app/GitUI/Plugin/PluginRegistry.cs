@@ -10,13 +10,13 @@ namespace GitUI;
 public static class PluginRegistry
 {
     private const int _initialPluginCapacity = 20;
+
+    private static bool _isLoaded = false;
     public static List<IGitPlugin> Plugins { get; } = new(_initialPluginCapacity);
 
     public static List<IRepositoryHostPlugin> GitHosters { get; } = [];
 
     public static bool PluginsRegistered { get; private set; }
-
-    private static bool _isLoaded = false;
 
     public static void InitializeGitHostersOnly()
     {
@@ -62,7 +62,6 @@ public static class PluginRegistry
                         catch (Exception ex)
                         {
                             FailedPluginWrapper wrapper = new(ex);
-                            DebugHelpers.Fail($"{wrapper.Name}. Error: {ex.Demystify()}");
                             return wrapper;
                         }
                     })];
