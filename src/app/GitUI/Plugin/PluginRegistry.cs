@@ -62,7 +62,6 @@ namespace GitUI
                             catch (Exception ex)
                             {
                                 FailedPluginWrapper wrapper = new(ex);
-                                DebugHelpers.Fail($"{wrapper.Name}. Error: {ex.Demystify()}");
                                 return wrapper;
                             }
                         }).ToArray();
