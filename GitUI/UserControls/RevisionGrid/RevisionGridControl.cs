@@ -1921,6 +1921,15 @@ namespace GitUI
             PerformRefreshRevisions();
         }
 
+        public int NumberOfCommits
+        {
+            set
+            {
+                _filterInfo.CommitsLimit = value;
+                _filterInfo.ByCommitsLimit = true;
+            }
+        }
+
         public void ShowRevisionFilterDialog()
         {
             using FormRevisionFilter form = new(UICommands, _filterInfo);

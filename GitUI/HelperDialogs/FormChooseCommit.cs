@@ -12,11 +12,16 @@ namespace GitUI.HelperDialogs
             InitializeComplete();
         }
 
-        public FormChooseCommit(GitUICommands commands, string? preselectCommit, bool showArtificial = false, bool showCurrentBranchOnly = false)
+        public FormChooseCommit(GitUICommands commands, string? preselectCommit, bool showArtificial = false, bool showCurrentBranchOnly = false, int? commitCount = null)
             : this(commands)
         {
             revisionGrid.MultiSelect = false;
             revisionGrid.ShowUncommittedChangesIfPossible = showArtificial;
+            if (commitCount != null)
+            {
+                revisionGrid.NumberOfCommits = commitCount.Value;
+            }
+
             if (showCurrentBranchOnly)
             {
                 revisionGrid.ShowCurrentBranchOnly();

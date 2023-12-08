@@ -1,7 +1,9 @@
 ﻿using GitCommands;
 using GitCommands.Git;
+using GitExtUtils;
 using GitExtUtils.GitUI.Theming;
 using GitUI.HelperDialogs;
+using GitUI.UserControls.RevisionGrid.Graph;
 using GitUIPluginInterfaces;
 using ResourceManager;
 
@@ -408,7 +410,14 @@ namespace GitUI.CommandsDialogs
                 AppSettings.ShowStashes = false;
                 ObjectId firstParent = UICommands.Module.RevParse("HEAD~");
                 string preSelectedCommit = !string.IsNullOrWhiteSpace(txtFrom.Text) ? txtFrom.Text : firstParent?.ToString() ?? string.Empty;
-                using FormChooseCommit chooseForm = new(UICommands, preSelectedCommit, showCurrentBranchOnly: true);
+
+                // TODO: try catch and better handle distant branches
+                GitArgumentBuilder gitCmd = new("rev-list") { "--count", $"{cboBranches.Text}..HEAD" };
+                ExecutionResult executionResult = UICommands.Module.GitExecutable.Execute(gitCmd);
+
+                int commitCount = int.Parse(executionResult.StandardOutput) + 1;
+
+                using FormChooseCommit chooseForm = new(UICommands, preSelectedCommit, showCurrentBranchOnly: true, commitCount: commitCount);
                 if (chooseForm.ShowDialog(this) == DialogResult.OK && chooseForm.SelectedRevision is not null)
                 {
                     txtFrom.Text = chooseForm.SelectedRevision.ObjectId.ToShortString();
