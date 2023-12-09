@@ -66,11 +66,15 @@
             FullHistoryCheck = new CheckBox();
             SimplifyMergesCheck = new CheckBox();
             tableLayoutPanel1 = new TableLayoutPanel();
+            _NO_TRANSLATE_DaysCount = new NumericUpDown();
+            DaysCountCheck = new CheckBox();
+            _NO_TRANSLATE_lblDaysCount = new Label();
             toolTip = new ToolTip(components);
             MainPanel.SuspendLayout();
             ControlsPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(_NO_TRANSLATE_CommitsLimit)).BeginInit();
             tableLayoutPanel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)_NO_TRANSLATE_DaysCount).BeginInit();
             SuspendLayout();
             // 
             // MainPanel
@@ -105,6 +109,14 @@
             _NO_TRANSLATE_lblSince.TabIndex = 0;
             _NO_TRANSLATE_lblSince.Text = "Since";
             _NO_TRANSLATE_lblSince.TextAlign = ContentAlignment.MiddleLeft;
+            // 
+            // Since
+            // 
+            Since.Anchor = AnchorStyles.Left;
+            Since.Location = new Point(118, 32);
+            Since.Name = "Since";
+            Since.Size = new Size(200, 23);
+            Since.TabIndex = 2;
             // 
             // SinceCheck
             // 
@@ -486,46 +498,50 @@
             tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle());
             tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 20F));
             tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
-            tableLayoutPanel1.Controls.Add(_NO_TRANSLATE_lblSince, 0, 0);
-            tableLayoutPanel1.Controls.Add(SinceCheck, 1, 0);
-            tableLayoutPanel1.Controls.Add(Since, 2, 0);
-            tableLayoutPanel1.Controls.Add(_NO_TRANSLATE_lblUntil, 0, 1);
-            tableLayoutPanel1.Controls.Add(CheckUntil, 1, 1);
-            tableLayoutPanel1.Controls.Add(Until, 2, 1);
-            tableLayoutPanel1.Controls.Add(_NO_TRANSLATE_lblAuthor, 0, 2);
-            tableLayoutPanel1.Controls.Add(AuthorCheck, 1, 2);
-            tableLayoutPanel1.Controls.Add(Author, 2, 2);
-            tableLayoutPanel1.Controls.Add(_NO_TRANSLATE_lblCommitter, 0, 3);
-            tableLayoutPanel1.Controls.Add(CommitterCheck, 1, 3);
-            tableLayoutPanel1.Controls.Add(Committer, 2, 3);
-            tableLayoutPanel1.Controls.Add(_NO_TRANSLATE_lblMessage, 0, 4);
-            tableLayoutPanel1.Controls.Add(MessageCheck, 1, 4);
-            tableLayoutPanel1.Controls.Add(Message, 2, 4);
-            tableLayoutPanel1.Controls.Add(_NO_TRANSLATE_lblDiffContent, 0, 5);
-            tableLayoutPanel1.Controls.Add(DiffContentCheck, 1, 5);
-            tableLayoutPanel1.Controls.Add(DiffContent, 2, 5);
-            tableLayoutPanel1.Controls.Add(IgnoreCase, 1, 6);
-            tableLayoutPanel1.Controls.Add(_NO_TRANSLATE_lblLimit, 0, 7);
-            tableLayoutPanel1.Controls.Add(CommitsLimitCheck, 1, 7);
-            tableLayoutPanel1.Controls.Add(_NO_TRANSLATE_CommitsLimit, 2, 7);
-            tableLayoutPanel1.Controls.Add(_NO_TRANSLATE_lblPathFilter, 0, 8);
-            tableLayoutPanel1.Controls.Add(PathFilterCheck, 1, 8);
-            tableLayoutPanel1.Controls.Add(PathFilter, 2, 8);
-            tableLayoutPanel1.Controls.Add(_NO_TRANSLATE_lblBranches, 0, 9);
-            tableLayoutPanel1.Controls.Add(BranchFilterCheck, 1, 9);
-            tableLayoutPanel1.Controls.Add(BranchFilter, 2, 9);
-            tableLayoutPanel1.Controls.Add(CurrentBranchOnlyCheck, 1, 10);
-            tableLayoutPanel1.Controls.Add(ReflogCheck, 1, 11);
-            tableLayoutPanel1.Controls.Add(OnlyFirstParentCheck, 1, 12);
-            tableLayoutPanel1.Controls.Add(HideMergeCommitsCheck, 1, 13);
-            tableLayoutPanel1.Controls.Add(SimplifyByDecorationCheck, 1, 14);
-            tableLayoutPanel1.Controls.Add(FullHistoryCheck, 1, 15);
-            tableLayoutPanel1.Controls.Add(SimplifyMergesCheck, 1, 16);
+            tableLayoutPanel1.Controls.Add(_NO_TRANSLATE_DaysCount, 2, 0);
+            tableLayoutPanel1.Controls.Add(DaysCountCheck, 0, 0);
+            tableLayoutPanel1.Controls.Add(_NO_TRANSLATE_lblDaysCount, 0, 0);
+            tableLayoutPanel1.Controls.Add(_NO_TRANSLATE_lblSince, 0, 1);
+            tableLayoutPanel1.Controls.Add(SinceCheck, 1, 1);
+            tableLayoutPanel1.Controls.Add(Since, 2, 1);
+            tableLayoutPanel1.Controls.Add(_NO_TRANSLATE_lblUntil, 0, 2);
+            tableLayoutPanel1.Controls.Add(CheckUntil, 1, 2);
+            tableLayoutPanel1.Controls.Add(Until, 2, 2);
+            tableLayoutPanel1.Controls.Add(_NO_TRANSLATE_lblAuthor, 0, 3);
+            tableLayoutPanel1.Controls.Add(AuthorCheck, 1, 3);
+            tableLayoutPanel1.Controls.Add(Author, 2, 3);
+            tableLayoutPanel1.Controls.Add(_NO_TRANSLATE_lblCommitter, 0, 4);
+            tableLayoutPanel1.Controls.Add(CommitterCheck, 1, 4);
+            tableLayoutPanel1.Controls.Add(Committer, 2, 4);
+            tableLayoutPanel1.Controls.Add(_NO_TRANSLATE_lblMessage, 0, 5);
+            tableLayoutPanel1.Controls.Add(MessageCheck, 1, 5);
+            tableLayoutPanel1.Controls.Add(Message, 2, 5);
+            tableLayoutPanel1.Controls.Add(_NO_TRANSLATE_lblDiffContent, 0, 6);
+            tableLayoutPanel1.Controls.Add(DiffContentCheck, 1, 6);
+            tableLayoutPanel1.Controls.Add(DiffContent, 2, 6);
+            tableLayoutPanel1.Controls.Add(IgnoreCase, 1, 7);
+            tableLayoutPanel1.Controls.Add(_NO_TRANSLATE_lblLimit, 0, 8);
+            tableLayoutPanel1.Controls.Add(CommitsLimitCheck, 1, 8);
+            tableLayoutPanel1.Controls.Add(_NO_TRANSLATE_CommitsLimit, 2, 8);
+            tableLayoutPanel1.Controls.Add(_NO_TRANSLATE_lblPathFilter, 0, 9);
+            tableLayoutPanel1.Controls.Add(PathFilterCheck, 1, 9);
+            tableLayoutPanel1.Controls.Add(PathFilter, 2, 9);
+            tableLayoutPanel1.Controls.Add(_NO_TRANSLATE_lblBranches, 0, 10);
+            tableLayoutPanel1.Controls.Add(BranchFilterCheck, 1, 10);
+            tableLayoutPanel1.Controls.Add(BranchFilter, 2, 10);
+            tableLayoutPanel1.Controls.Add(CurrentBranchOnlyCheck, 1, 11);
+            tableLayoutPanel1.Controls.Add(ReflogCheck, 1, 12);
+            tableLayoutPanel1.Controls.Add(OnlyFirstParentCheck, 1, 13);
+            tableLayoutPanel1.Controls.Add(HideMergeCommitsCheck, 1, 14);
+            tableLayoutPanel1.Controls.Add(SimplifyByDecorationCheck, 1, 15);
+            tableLayoutPanel1.Controls.Add(FullHistoryCheck, 1, 16);
+            tableLayoutPanel1.Controls.Add(SimplifyMergesCheck, 1, 17);
             tableLayoutPanel1.Dock = DockStyle.Fill;
             tableLayoutPanel1.Location = new Point(12, 12);
             tableLayoutPanel1.Margin = new Padding(0);
             tableLayoutPanel1.Name = "tableLayoutPanel1";
-            tableLayoutPanel1.RowCount = 17;
+            tableLayoutPanel1.RowCount = 18;
+            tableLayoutPanel1.RowStyles.Add(new RowStyle());
             tableLayoutPanel1.RowStyles.Add(new RowStyle());
             tableLayoutPanel1.RowStyles.Add(new RowStyle());
             tableLayoutPanel1.RowStyles.Add(new RowStyle());
@@ -546,6 +562,38 @@
             tableLayoutPanel1.Size = new Size(384, 459);
             tableLayoutPanel1.TabIndex = 0;
             // 
+            // _NO_TRANSLATE_DaysCount
+            // 
+            _NO_TRANSLATE_DaysCount.Dock = DockStyle.Left;
+            _NO_TRANSLATE_DaysCount.Increment = new decimal(new int[] { 10, 0, 0, 0 });
+            _NO_TRANSLATE_DaysCount.Location = new Point(118, 3);
+            _NO_TRANSLATE_DaysCount.Maximum = new decimal(new int[] { 40000, 0, 0, 0 });
+            _NO_TRANSLATE_DaysCount.Name = "_NO_TRANSLATE_DaysCount";
+            _NO_TRANSLATE_DaysCount.Size = new Size(116, 23);
+            _NO_TRANSLATE_DaysCount.TabIndex = 37;
+            // 
+            // DaysCountCheck
+            // 
+            DaysCountCheck.Anchor = AnchorStyles.Left;
+            DaysCountCheck.AutoSize = true;
+            DaysCountCheck.Location = new Point(98, 7);
+            DaysCountCheck.Name = "DaysCountCheck";
+            DaysCountCheck.Size = new Size(14, 14);
+            DaysCountCheck.TabIndex = 36;
+            DaysCountCheck.UseVisualStyleBackColor = true;
+            DaysCountCheck.CheckedChanged += option_CheckedChanged;
+            // 
+            // _NO_TRANSLATE_lblDaysCount
+            // 
+            _NO_TRANSLATE_lblDaysCount.AutoSize = true;
+            _NO_TRANSLATE_lblDaysCount.Dock = DockStyle.Fill;
+            _NO_TRANSLATE_lblDaysCount.Location = new Point(3, 0);
+            _NO_TRANSLATE_lblDaysCount.Name = "_NO_TRANSLATE_lblDaysCount";
+            _NO_TRANSLATE_lblDaysCount.Size = new Size(89, 29);
+            _NO_TRANSLATE_lblDaysCount.TabIndex = 35;
+            _NO_TRANSLATE_lblDaysCount.Text = "Last days count";
+            _NO_TRANSLATE_lblDaysCount.TextAlign = ContentAlignment.MiddleLeft;
+            // 
             // FormRevisionFilter
             // 
             AcceptButton = Ok;
@@ -563,9 +611,9 @@
             ((System.ComponentModel.ISupportInitialize)(_NO_TRANSLATE_CommitsLimit)).EndInit();
             tableLayoutPanel1.ResumeLayout(false);
             tableLayoutPanel1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)_NO_TRANSLATE_DaysCount).EndInit();
             ResumeLayout(false);
             PerformLayout();
-
         }
 
         #endregion
@@ -608,5 +656,8 @@
         private CheckBox FullHistoryCheck;
         private CheckBox SimplifyMergesCheck;
         private ToolTip toolTip;
+        private Label _NO_TRANSLATE_lblDaysCount;
+        private NumericUpDown _NO_TRANSLATE_DaysCount;
+        private CheckBox DaysCountCheck;
     }
 }
