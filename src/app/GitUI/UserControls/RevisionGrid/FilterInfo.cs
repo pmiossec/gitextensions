@@ -9,6 +9,7 @@ namespace GitUI.UserControls.RevisionGrid
     {
         private DateTime _dateFrom;
         private DateTime _dateTo;
+        private uint? _lastDaysCount = null;
         private string _author = string.Empty;
         private string _committer = string.Empty;
         private string _message = string.Empty;
@@ -37,6 +38,12 @@ namespace GitUI.UserControls.RevisionGrid
         {
             get => GetValue(ByDateTo, _dateTo, DateTime.MinValue);
             set => _dateTo = value;
+        }
+
+        public uint? LastDaysCount
+        {
+            get => _lastDaysCount;
+            set => _lastDaysCount = value;
         }
 
         public bool ByAuthor { get; set; }
@@ -334,6 +341,12 @@ namespace GitUI.UserControls.RevisionGrid
             if (CommitsLimit > 0)
             {
                 filter.Add($"--max-count={CommitsLimit}");
+            }
+
+            if (LastDaysCount.HasValue)
+            {
+                DateTime date = DateTime.Now.AddDays(-1 * LastDaysCount.Value);
+                filter.Add($"--since=\"{date:yyyy-MM-dd hh:mm:ss}\"");
             }
 
             if (ByDateFrom)
