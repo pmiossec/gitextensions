@@ -7484,6 +7484,10 @@ Do you want to use this custom merge script?</source>
         <source>SLOW</source>
         <target />
       </trans-unit>
+      <trans-unit id="_lastDaysCount.Text">
+        <source>Last &amp;Days count</source>
+        <target />
+      </trans-unit>
       <trans-unit id="_limit.Text">
         <source>&amp;Limit</source>
         <target />
