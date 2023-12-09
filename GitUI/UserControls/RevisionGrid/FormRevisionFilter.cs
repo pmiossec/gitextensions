@@ -6,6 +6,7 @@ namespace GitUI.UserControls.RevisionGrid
     {
         private readonly FilterInfo _filterInfo;
 
+        private readonly TranslationString _lastDaysCount = new("Last &Days count");
         private readonly TranslationString _since = new("&Since");
         private readonly TranslationString _until = new("&Until");
         private readonly TranslationString _author = new("&Author");
@@ -22,6 +23,7 @@ namespace GitUI.UserControls.RevisionGrid
         {
             InitializeComponent();
             InitializeComplete();
+            _NO_TRANSLATE_lblDaysCount.Text = _lastDaysCount.Text;
             _NO_TRANSLATE_lblSince.Text = _since.Text;
             _NO_TRANSLATE_lblUntil.Text = _until.Text;
             _NO_TRANSLATE_lblAuthor.Text = _author.Text;
@@ -43,6 +45,8 @@ namespace GitUI.UserControls.RevisionGrid
 
             FilterInfo rawFilterInfo = _filterInfo with { IsRaw = true };
 
+            DaysCountCheck.Checked = rawFilterInfo.LastDaysCount.HasValue;
+            _NO_TRANSLATE_DaysCount.Value = rawFilterInfo.LastDaysCount.HasValue ? rawFilterInfo.LastDaysCount.Value : 366;
             SinceCheck.Checked = rawFilterInfo.ByDateFrom;
             Since.Value = rawFilterInfo.DateFrom == DateTime.MinValue ? DateTime.Today : rawFilterInfo.DateFrom;
             CheckUntil.Checked = rawFilterInfo.ByDateTo;
@@ -87,6 +91,7 @@ namespace GitUI.UserControls.RevisionGrid
 
         private void UpdateFilters()
         {
+            _NO_TRANSLATE_DaysCount.Enabled = DaysCountCheck.Checked;
             Since.Enabled = SinceCheck.Checked;
             Until.Enabled = CheckUntil.Checked;
             Author.Enabled = AuthorCheck.Checked;
@@ -106,6 +111,7 @@ namespace GitUI.UserControls.RevisionGrid
         {
             // Note: There is no validation that information (like branch filters) are valid
 
+            _filterInfo.LastDaysCount = DaysCountCheck.Checked ? (uint)_NO_TRANSLATE_DaysCount.Value : null;
             _filterInfo.ByDateFrom = SinceCheck.Checked;
             _filterInfo.DateFrom = Since.Value;
             _filterInfo.ByDateTo = CheckUntil.Checked;
