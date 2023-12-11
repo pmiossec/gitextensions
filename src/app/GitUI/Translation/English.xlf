@@ -4625,7 +4625,8 @@ Examples on branch name: "feature/ABC-4587-commitMessageRegex"
         <target />
       </trans-unit>
       <trans-unit id="_deleteBranchQuestion.Text">
-        <source>The selected branch(es) have not been merged into HEAD.
+        <source>The selected branch(es) have not been merged into any local branch.
+
 Proceed?</source>
         <target />
       </trans-unit>
