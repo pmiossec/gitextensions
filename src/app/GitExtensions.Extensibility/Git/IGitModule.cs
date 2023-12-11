@@ -515,4 +515,6 @@ public interface IGitModule
         CancellationToken cancellationToken);
 
     GitBlame Blame(string? fileName, string from, Encoding encoding, string? lines, CancellationToken cancellationToken);
+
+    IReadOnlyList<string> GetReflogHashes();
 }
