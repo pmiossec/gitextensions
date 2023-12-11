@@ -2917,6 +2917,14 @@ public sealed partial class GitModule : IGitModule
         return [];
     }
 
+    public IReadOnlyList<string> GetReflogHashes()
+    {
+        ExecutionResult result = _gitExecutable.Execute("reflog show HEAD --pretty=format:\"%H\"", throwOnErrorExit: false);
+        return result.ExitedSuccessfully
+            ? result.StandardOutput.Split('\n')
+            : Array.Empty<string>();
+    }
+
     /// <summary>
     /// Get the Git refs.
     /// </summary>
