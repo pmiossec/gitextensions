@@ -121,7 +121,15 @@ namespace GitUI.CommandsDialogs
                 UserGitRemotes = _remotesManager.LoadRemotes(false).ToList();
                 BindRemotesDropDown(null);
 
-                UpdateBranchDropDown();
+                if (_currentBranchName.IndexOfAny("() ".ToCharArray()) != -1)
+                {
+                    _NO_TRANSLATE_Branch.Text = HeadText;
+                }
+                else
+                {
+                    _NO_TRANSLATE_Branch.Text = _currentBranchName;
+                }
+
                 UpdateRemoteBranchDropDown();
 
                 Push.Focus();
@@ -682,24 +690,32 @@ namespace GitUI.CommandsDialogs
             return (onRejectedPullAction ?? AppSettings.PullAction.None, forcePush);
         }
 
-        private void UpdateBranchDropDown()
+        private void _NO_TRANSLATE_Branch_Enter(object sender, EventArgs e)
+        {
+            if (_NO_TRANSLATE_Branch.Items.Count > 1)
+            {
+                return;
+            }
+
+            UpdateBranchDropDown(clear: false);
+            string curBranch = _NO_TRANSLATE_Branch.Text;
+            _NO_TRANSLATE_Branch.Items.RemoveAt(0);
+            _NO_TRANSLATE_Branch.Text = curBranch;
+        }
+
+        private void UpdateBranchDropDown(bool clear = true)
         {
             string curBranch = _NO_TRANSLATE_Branch.Text;
 
             _NO_TRANSLATE_Branch.DisplayMember = nameof(IGitRef.Name);
-            _NO_TRANSLATE_Branch.Items.Clear();
+
+            if (clear)
+            {
+                _NO_TRANSLATE_Branch.Items.Clear();
+            }
+
             _NO_TRANSLATE_Branch.Items.Add(AllRefs);
             _NO_TRANSLATE_Branch.Items.Add(HeadText);
-
-            if (string.IsNullOrEmpty(curBranch))
-            {
-                Validates.NotNull(_currentBranchName);
-                curBranch = _currentBranchName;
-                if (curBranch.IndexOfAny("() ".ToCharArray()) != -1)
-                {
-                    curBranch = HeadText;
-                }
-            }
 
             _NO_TRANSLATE_Branch.Items.AddRange(GetLocalBranches().ToArray());
 
