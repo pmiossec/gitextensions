@@ -9,6 +9,7 @@ namespace GitUI.LeftPanel
     internal abstract class BaseRevisionNode : Node
     {
         protected const char PathSeparator = '/';
+        private static readonly Color invisibleForeColor = Color.Silver.AdaptTextColor();
 
         protected BaseRevisionNode(Tree tree, string fullPath, bool visible)
             : base(tree)
@@ -56,7 +57,7 @@ namespace GitUI.LeftPanel
         {
             base.ApplyStyle();
 
-            TreeViewNode.ForeColor = Visible && TreeViewNode.TreeView is not null ? TreeViewNode.TreeView.ForeColor : Color.Silver.AdaptTextColor();
+            TreeViewNode.ForeColor = Visible && TreeViewNode.TreeView is not null ? TreeViewNode.TreeView.ForeColor : invisibleForeColor;
             TreeViewNode.ImageKey = TreeViewNode.SelectedImageKey = Visible ? null : nameof(Images.EyeClosed);
         }
 
