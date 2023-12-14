@@ -35,7 +35,7 @@ namespace GitUI.CommandsDialogs
         {
             base.OnRuntimeLoad(e);
 
-            Branches.BranchesToSelect = Module.GetRefs(RefsFilter.Remotes).ToList();
+            Branches.SetLoader(() => Module.GetRefs(RefsFilter.Remotes).ToList());
 
             if (_defaultRemoteBranch is not null)
             {

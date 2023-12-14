@@ -60,7 +60,7 @@ namespace GitUI.CommandsDialogs
             currentBranchLabel.Text = selectedHead;
 
             // Offer rebase on refs also for tags (but not stash, notes etc)
-            Branches.BranchesToSelect = Module.GetRefs(RefsFilter.Heads | RefsFilter.Remotes | RefsFilter.Tags);
+            Branches.SetLoader(() => Module.GetRefs(RefsFilter.Heads | RefsFilter.Remotes | RefsFilter.Tags));
 
             if (_defaultBranch is not null)
             {
