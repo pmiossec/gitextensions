@@ -3002,6 +3002,15 @@ namespace GitCommands
                 : Array.Empty<IGitRef>();
         }
 
+        public IGitRef GetRef(string refName)
+        {
+            ArgumentString cmd = Commands.GetRef(refName);
+            ExecutionResult result = _gitExecutable.Execute(cmd, throwOnErrorExit: false);
+            return result.ExitedSuccessfully
+                ? ParseRefs(result.StandardOutput).FirstOrDefault()
+                : default;
+        }
+
         public async Task<string[]> GetMergedBranchesAsync(bool includeRemote, bool fullRefname, string? commit, CancellationToken cancellationToken)
         {
             ExecutionResult result = await _gitExecutable
