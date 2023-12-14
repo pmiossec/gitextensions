@@ -42,6 +42,7 @@
             branches.Name = "branches";
             branches.Size = new Size(304, 23);
             branches.TabIndex = 0;
+            branches.Enter += branches_Enter;
             branches.SelectedValueChanged += branches_SelectedValueChanged;
             // 
             // selectMultipleBranchesButton
