@@ -130,10 +130,8 @@ namespace GitUI.CommandsDialogs
             Stashes.SelectedItem = null;
             Stashes.ComboBox.DisplayMember = nameof(GitStash.Summary);
             Stashes.Items.Clear();
-            foreach (GitStash stashedItem in stashedItems)
-            {
-                Stashes.Items.Add(stashedItem);
-            }
+
+            Stashes.Items.AddRange(stashedItems.ToArray());
 
             if (_lastSelectedStashIndex > 0)
             {
