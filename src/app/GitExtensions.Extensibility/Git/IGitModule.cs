@@ -20,6 +20,7 @@ public interface IGitModule
     IEnumerable<(string Setting, string Value)> GetAllLocalSettings();
 
     IReadOnlyList<IGitRef> GetRefs(RefsFilter getRef);
+    IGitRef GetRef(string refName);
     IEnumerable<string> GetSettings(string setting);
     IEnumerable<INamedGitItem> GetTree(ObjectId? commitId, bool full);
 
