@@ -38,7 +38,7 @@ public sealed partial class FormDeleteRemoteBranch : GitExtensionsDialog
     {
         base.OnRuntimeLoad(e);
 
-        Branches.BranchesToSelect = Module.GetRefs(RefsFilter.Remotes).ToList();
+        Branches.SetLoader(() => Module.GetRefs(RefsFilter.Remotes).ToList(), refName => Module.GetRef("refs/remotes/" + refName));
 
         if (_defaultRemoteBranch is not null)
         {

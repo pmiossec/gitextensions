@@ -28,6 +28,9 @@ public partial class FormMergeBranch : GitModuleForm
         helpImageDisplayUserControl1.Image2 = Properties.Images.HelpCommandMergeFastForward.AdaptLightness();
         InitializeComplete();
 
+        // Offer rebase on refs also for tags (but not stash, notes etc)
+        Branches.SetLoader(() => Module.GetRefs(RefsFilter.Heads | RefsFilter.Remotes | RefsFilter.Tags), refName => Module.GetRef("refs/*/" + refName));
+
         _commitMessageManager = new CommitMessageManager(this, Module.WorkingDirGitDir, Module.CommitEncoding);
 
         currentBranchLabel.Font = new Font(currentBranchLabel.Font, FontStyle.Bold);
@@ -58,9 +61,6 @@ public partial class FormMergeBranch : GitModuleForm
     {
         string selectedHead = Module.GetSelectedBranch();
         currentBranchLabel.Text = selectedHead;
-
-        // Offer rebase on refs also for tags (but not stash, notes etc)
-        Branches.BranchesToSelect = Module.GetRefs(RefsFilter.Heads | RefsFilter.Remotes | RefsFilter.Tags);
 
         if (_defaultBranch is not null)
         {

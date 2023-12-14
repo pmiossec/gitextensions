@@ -3018,6 +3018,15 @@ public sealed partial class GitModule : IGitModule
         return gitRefs;
     }
 
+    public IGitRef GetRef(string refName)
+    {
+        ArgumentString cmd = Commands.GetRef(refName);
+        ExecutionResult result = _gitExecutable.Execute(cmd, throwOnErrorExit: false);
+        return result.ExitedSuccessfully
+            ? ParseRefs(result.StandardOutput).FirstOrDefault()
+            : default;
+    }
+
     public IReadOnlyList<string> GetAllBranchesWhichContainGivenCommit(ObjectId objectId, bool getLocal, bool getRemote, CancellationToken cancellationToken)
     {
         if (!getLocal && !getRemote)

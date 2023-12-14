@@ -11,6 +11,8 @@ namespace GitUI;
 public partial class BranchComboBox : GitExtensionsControl
 {
     private readonly TranslationString _branchCheckoutError = new("Branch '{0}' is not selectable, this branch has been removed from the selection.");
+    private Func<IReadOnlyList<IGitRef>> _allBranchesLoader;
+    private Func<string, IGitRef> _oneBranchLoader;
 
     public BranchComboBox()
     {
@@ -27,6 +29,12 @@ public partial class BranchComboBox : GitExtensionsControl
     [Category("Action")]
     [Description("Occurs whenever the branch selection has changed.")]
     public event EventHandler SelectedValueChanged;
+
+    internal void SetLoader(Func<IReadOnlyList<IGitRef>> allBranchesLoader, Func<string, IGitRef> oneBranchLoader)
+    {
+        _allBranchesLoader = allBranchesLoader;
+        _oneBranchLoader = oneBranchLoader;
+    }
 
     private IReadOnlyList<IGitRef>? _branchesToSelect;
     public IReadOnlyList<IGitRef>? BranchesToSelect
@@ -73,10 +81,19 @@ public partial class BranchComboBox : GitExtensionsControl
         ArgumentNullException.ThrowIfNull(text);
 
         branches.Text = text;
+        if (text.Contains(" "))
+        {
+            PopulateBranches();
+        }
+        else
+        {
+            _branchesToSelect = [_oneBranchLoader(text)];
+        }
     }
 
     private void selectMultipleBranchesButton_Click(object sender, EventArgs e)
     {
+        PopulateBranches();
         Validates.NotNull(_branchesToSelect);
 
         using FormSelectMultipleBranches formSelectMultipleBranches = new(_branchesToSelect);
@@ -106,4 +123,20 @@ public partial class BranchComboBox : GitExtensionsControl
         => OnSelectedValueChanged();
 
     private void OnSelectedValueChanged() => SelectedValueChanged?.Invoke(this, EventArgs.Empty);
+
+    private void branches_Enter(object sender, EventArgs e)
+    {
+        PopulateBranches();
+    }
+
+    private bool _loaded = false;
+    private void PopulateBranches()
+    {
+        // TODO: perf load only when opening dropdown or clicking multiselect button
+        if (!_loaded)
+        {
+            _loaded = true;
+            BranchesToSelect = _allBranchesLoader();
+        }
+    }
 }
