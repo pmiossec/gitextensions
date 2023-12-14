@@ -16,6 +16,7 @@ public interface IGitModule
 
     string AddRemote(string remoteName, string? path);
     IReadOnlyList<IGitRef> GetRefs(RefsFilter getRef);
+    IGitRef GetRef(string refName);
     IEnumerable<string> GetSettings(string setting);
     IEnumerable<INamedGitItem> GetTree(ObjectId? commitId, bool full);
 
