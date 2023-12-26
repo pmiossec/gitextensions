@@ -53,8 +53,6 @@ namespace GitUI.CommandsDialogs
 
             advanced.Checked = AppSettings.AlwaysShowAdvOpt;
             advanced_CheckedChanged(this, EventArgs.Empty);
-
-            Branches.Select();
         }
 
         private void FormMergeBranchLoad(object sender, EventArgs e)
@@ -75,7 +73,7 @@ namespace GitUI.CommandsDialogs
                 }
             }
 
-            Branches.Select();
+            Ok.Select();
         }
 
         private void OkClick(object sender, EventArgs e)
