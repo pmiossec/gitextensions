@@ -53,8 +53,6 @@ public partial class FormMergeBranch : GitModuleForm
 
         advanced.Checked = AppSettings.AlwaysShowAdvOpt;
         advanced_CheckedChanged(this, EventArgs.Empty);
-
-        Branches.Select();
     }
 
     private void FormMergeBranchLoad(object sender, EventArgs e)
@@ -75,7 +73,7 @@ public partial class FormMergeBranch : GitModuleForm
             }
         }
 
-        Branches.Select();
+        Ok.Select();
     }
 
     private void OkClick(object sender, EventArgs e)
