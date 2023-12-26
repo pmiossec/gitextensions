@@ -41,13 +41,14 @@ namespace GitUI.CommandsDialogs
             {
                 Branches.SetSelectedText(_defaultRemoteBranch);
             }
+
+            DeleteRemote.Select();
         }
 
         protected override void OnShown(EventArgs e)
         {
             RecalculateSizeConstraints();
             base.OnShown(e);
-            Branches.Focus();
         }
 
         private void RecalculateSizeConstraints()
