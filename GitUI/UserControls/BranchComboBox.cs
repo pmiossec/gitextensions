@@ -11,7 +11,8 @@ namespace GitUI
     public partial class BranchComboBox : GitExtensionsControl
     {
         private readonly TranslationString _branchCheckoutError = new("Branch '{0}' is not selectable, this branch has been removed from the selection.");
-        private Func<IReadOnlyList<IGitRef>> _branchLoader;
+        private Func<IReadOnlyList<IGitRef>> _allBranchesLoader;
+        private Func<string, IGitRef> _oneBranchLoader;
 
         public BranchComboBox()
         {
@@ -21,9 +22,10 @@ namespace GitUI
             branches.DisplayMember = nameof(IGitRef.Name);
         }
 
-        internal void SetLoader(Func<IReadOnlyList<IGitRef>> branchLoader)
+        internal void SetLoader(Func<IReadOnlyList<IGitRef>> allBranchesLoader, Func<string, IGitRef> oneBranchLoader)
         {
-            _branchLoader = branchLoader;
+            _allBranchesLoader = allBranchesLoader;
+            _oneBranchLoader = oneBranchLoader;
         }
 
         [Browsable(true)]
@@ -82,6 +84,14 @@ namespace GitUI
             }
 
             branches.Text = text;
+            if (text.Contains(" "))
+            {
+                PopulateBranches();
+            }
+            else
+            {
+                _branchesToSelect = [_oneBranchLoader(text)];
+            }
         }
 
         private void selectMultipleBranchesButton_Click(object sender, EventArgs e)
@@ -129,7 +139,7 @@ namespace GitUI
             if (!_loaded)
             {
                 _loaded = true;
-                BranchesToSelect = _branchLoader();
+                BranchesToSelect = _allBranchesLoader();
             }
         }
     }

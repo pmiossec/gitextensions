@@ -35,7 +35,7 @@ namespace GitUI.CommandsDialogs
         {
             base.OnRuntimeLoad(e);
 
-            Branches.SetLoader(() => Module.GetRefs(RefsFilter.Remotes).ToList());
+            Branches.SetLoader(() => Module.GetRefs(RefsFilter.Remotes).ToList(), refName => Module.GetRef("refs/remotes/" + refName));
 
             if (_defaultRemoteBranch is not null)
             {

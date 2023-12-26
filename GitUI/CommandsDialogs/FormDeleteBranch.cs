@@ -42,7 +42,7 @@ namespace GitUI.CommandsDialogs
             _reflogHashes = Module.GetReflogHashes();
 
             // TODO: perf load only when opening dropdown or clicking multiselect button
-            Branches.SetLoader(() => Module.GetRefs(RefsFilter.Heads).ToList());
+            Branches.SetLoader(() => Module.GetRefs(RefsFilter.Heads).ToList(), refName => Module.GetRef("refs/heads/" + refName));
             _currentBranch = Module.GetSelectedBranch();
 
             if (_defaultBranches is not null)
@@ -164,19 +164,18 @@ namespace GitUI.CommandsDialogs
 
         private void CheckSelectedBranches(IGitRef[] selectedBranches)
         {
+            foreach (IGitRef selectedBranch in selectedBranches)
+            {
+                if (!_reflogHashes.Contains(selectedBranch.ObjectId.ToString()))
+                {
+                    labelWarning.Text = _warningNotInReflog.Text;
+                    labelWarning.ForeColor = Color.Orange;
+                    return;
+                }
+            }
 
-            ////foreach (IGitRef selectedBranch in selectedBranches)
-            ////{
-            ////    if (!_reflogHashes.Contains(selectedBranch.ObjectId.ToString()))
-            ////    {
-            ////        labelWarning.Text = _warningNotInReflog.Text;
-            ////        labelWarning.ForeColor = Color.Orange;
-            ////        return;
-            ////    }
-            ////}
-
-            ////labelWarning.Text = _restoreUsingReflogAvailable.Text;
-            ////labelWarning.ForeColor = Color.Green;
+            labelWarning.Text = _restoreUsingReflogAvailable.Text;
+            labelWarning.ForeColor = Color.Green;
         }
     }
 }

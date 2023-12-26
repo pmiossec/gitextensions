@@ -332,27 +332,6 @@ namespace GitCommands.Git
                 return $@"--sort=""{order}*{derefSortKey}"" --sort=""{order}{sortKey}""";
             }
 
-            static ArgumentString GitRefsFormat(bool needTags)
-            {
-                if (!needTags)
-                {
-                    // If we don't need tags, it is easy.
-                    return @"--format=""%(objectname) %(refname)""";
-                }
-
-                // ...however, if we're interested in tags, tags may be simple (in which case they are point to commits directly),
-                // or "dereferences" (i.e. commits that contain metadata and point to other commits, "^{}").
-                // Dereference commits do not contain date information, so we need to find information from the referenced commits (those with '*').
-                // So the following format is as follows:
-                //      If (there is a 'authordate' information, then this is a simple tag/direct commit)
-                //      Then
-                //          format = %(objectname) %(refname)
-                //      Else
-                //          format = %(*objectname) %(*refname) // i.e. info from a referenced commit
-                //      End
-                return @"--format=""%(if)%(authordate)%(then)%(objectname) %(refname)%(else)%(*objectname) %(*refname)%(end)""";
-            }
-
             static ArgumentString GitRefsPattern(RefsFilter option)
             {
                 if (option == RefsFilter.NoFilter)
@@ -370,6 +349,39 @@ namespace GitCommands.Git
 
                 return builder;
             }
+        }
+
+        private static ArgumentString GitRefsFormat(bool needTags)
+        {
+            if (!needTags)
+            {
+                // If we don't need tags, it is easy.
+                return @"--format=""%(objectname) %(refname)""";
+            }
+
+            // ...however, if we're interested in tags, tags may be simple (in which case they are point to commits directly),
+            // or "dereferences" (i.e. commits that contain metadata and point to other commits, "^{}").
+            // Dereference commits do not contain date information, so we need to find information from the referenced commits (those with '*').
+            // So the following format is as follows:
+            //      If (there is a 'authordate' information, then this is a simple tag/direct commit)
+            //      Then
+            //          format = %(objectname) %(refname)
+            //      Else
+            //          format = %(*objectname) %(*refname) // i.e. info from a referenced commit
+            //      End
+            return @"--format=""%(if)%(authordate)%(then)%(objectname) %(refname)%(else)%(*objectname) %(*refname)%(end)""";
+        }
+
+        public static ArgumentString GetRef(string refName)
+        {
+            GitArgumentBuilder cmd = new("for-each-ref",
+                gitOptions: (ArgumentString)"--no-optional-locks")
+            {
+                GitRefsFormat(false),
+                refName
+            };
+
+            return cmd;
         }
 
         public static ArgumentString MergeBranch(string branch, bool allowFastForward, bool squash, bool noCommit, string strategy, bool allowUnrelatedHistories, string? mergeCommitFilePath, Func<string, string?> getPathForGitExecution, int? log)
