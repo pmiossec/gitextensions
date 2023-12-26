@@ -44,13 +44,14 @@ namespace GitUI.CommandsDialogs
             {
                 Branches.SetSelectedText(_defaultRemoteBranch);
             }
+
+            DeleteRemote.Select();
         }
 
         protected override void OnShown(EventArgs e)
         {
             CheckDeleteTrackingAllowed();
             base.OnShown(e);
-            Branches.Focus();
         }
 
         private List<IGitRef> GetSelectedRemotRefs() => Branches.GetSelectedBranches().ToList();
