@@ -37,7 +37,7 @@ namespace GitCommands
         public static string GetOutput(
             this IExecutable executable,
             ArgumentString arguments = default,
-            byte[]? input = null,
+            string? input = null,
             Encoding? outputEncoding = null,
             CommandCache? cache = null,
             bool stripAnsiEscapeCodes = true)
@@ -63,7 +63,7 @@ namespace GitCommands
         public static string GetBatchOutput(
             this IExecutable executable,
             ICollection<BatchArgumentItem> batchArguments,
-            byte[]? input = null,
+            string? input = null,
             Encoding? outputEncoding = null,
             CommandCache? cache = null,
             bool stripAnsiEscapeCodes = true)
@@ -90,7 +90,7 @@ namespace GitCommands
         public static async Task<string> GetOutputAsync(
             this IExecutable executable,
             ArgumentString arguments = default,
-            byte[]? input = null,
+            string? input = null,
             Encoding? outputEncoding = null,
             CommandCache? cache = null,
             bool stripAnsiEscapeCodes = true)
@@ -112,10 +112,11 @@ namespace GitCommands
             if (input is not null)
             {
 #if DEBUG
-                System.Diagnostics.Debug.WriteLine($"git {arguments} {Encoding.UTF8.GetString(input)}");
+                System.Diagnostics.Debug.WriteLine($"git {arguments} {input}");
 #endif
-                await process.StandardInput.BaseStream.WriteAsync(input, 0, input.Length);
-                process.StandardInput.Close();
+                await process.StandardInput.WriteLineAsync(input);
+                await process.StandardInput.FlushAsync();
+                ////process.StandardInput.Close();
             }
 #if DEBUG
             else

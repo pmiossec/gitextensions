@@ -1,9 +1,15 @@
-﻿using System.Text;
+﻿using System.Diagnostics;
+using System.Text;
+using System.Text.Unicode;
+using System.Windows.Documents;
+using System.Windows.Forms;
+using System.Windows.Input;
 using GitCommands;
 using GitExtUtils;
 using GitExtUtils.GitUI;
 using GitUI;
 using GitUIPluginInterfaces;
+using ICSharpCode.TextEditor.Actions;
 using ResourceManager;
 
 namespace GitExtensions.Plugins.FindLargeFiles
@@ -19,6 +25,9 @@ namespace GitExtensions.Plugins.FindLargeFiles
         private string[] _revList = Array.Empty<string>();
         private readonly Dictionary<string, GitObject> _list = [];
         private readonly SortableObjectsList _gitObjects = [];
+        private static readonly char[] NullSeparator = ['\0'];
+        private static readonly char[] SpaceSeparator = [' '];
+        ////private readonly CancellationToken _cancellationToken = new();
 
         public FindLargeFilesForm(float threshold, GitUIEventArgs gitUiEventArgs)
         {
@@ -28,6 +37,7 @@ namespace GitExtensions.Plugins.FindLargeFiles
             sizeDataGridViewTextBoxColumn.Width = DpiUtil.Scale(52);
             commitCountDataGridViewTextBoxColumn.Width = DpiUtil.Scale(88);
             lastCommitDateDataGridViewTextBoxColumn.Width = DpiUtil.Scale(103);
+            dataGridViewCheckBoxColumn1.AutoSizeMode = DataGridViewAutoSizeColumnMode.ColumnHeader;
 
             InitializeComplete();
 
@@ -170,9 +180,52 @@ namespace GitExtensions.Plugins.FindLargeFiles
 
         private IEnumerable<GitObject> GetLargeFiles(float threshold)
         {
+            // TODO : https://stackoverflow.com/questions/10622179/how-to-find-identify-large-commits-in-git-history/42544963#42544963
+            // git rev-list --objects --all |
+            //          git cat-file --batch-check='%(objecttype) %(objectname) %(objectsize) %(rest)' |
+            //          sed - n 's/^blob //p' |
+            //          sort--numeric - sort--key = 2 |
+            //          cut - c 1 - 12,41 - |
+            // $(command - v gnumfmt || echo numfmt) --field = 2--to = iec - i--suffix = B--padding = 7--round = nearest
+
+            ////GitArgumentBuilder argsAll = new("rev-parse")
+            ////    {
+            ////        "--objects",
+            ////        "--all"
+            ////    };
+            ////string hashes = _gitCommands.GitExecutable.GetOutput(argsAll);
+
+            ////GitArgumentBuilder argsAll = new("rev-list")
+            ////    {
+            ////        "--objects",
+            ////        "--all"
+            ////    };
+            ////string hashes = _gitCommands.GitExecutable.GetOutput(argsAll);
+
+            string hashes = "8b4ef67497daa7072f6c46e8d00ec07fc80cc49a";
+
+            GitArgumentBuilder argsAllDetails = new("cat-file")
+                {
+                    "--batch-check='%(objecttype) %(objectname) %(objectsize) %(rest)'"
+                };
+
+            // byte[] bytes = System.Text.Encoding.UTF8.GetBytes(hashes);
+            string details = _gitCommands.GitExecutable.GetOutput(argsAllDetails, hashes);
+
+            Trace.WriteLine(details);
+
             int thresholdSize = (int)(threshold * 1024 * 1024);
             for (int i = 0; i < _revList.Length; i++)
             {
+                if (i == 50)
+                {
+                    break;
+                }
+
+                ////if (i == 50)
+                ////{
+                ////    _cancellationToken.IsCancellationRequested = true;
+                ////}
                 ThreadHelper.JoinableTaskFactory.Run(async () =>
                 {
                     await pbRevisions.SwitchToMainThreadAsync();
@@ -184,12 +237,12 @@ namespace GitExtensions.Plugins.FindLargeFiles
                     "-zrl",
                     rev
                 };
-                string[] objects = _gitCommands.GitExecutable.GetOutput(args).Split(new[] { '\0' }, StringSplitOptions.RemoveEmptyEntries);
+                string[] objects = _gitCommands.GitExecutable.GetOutput(args).Split(NullSeparator, StringSplitOptions.RemoveEmptyEntries);
                 foreach (string objData in objects)
                 {
                     // "100644 blob b17a497cdc6140aa3b9a681344522f44768165ac 2120195\tBin/Dictionaries/de-DE.dic"
                     string[] dataPack = objData.Split('\t');
-                    string[] data = dataPack[0].Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                    string[] data = dataPack[0].Split(SpaceSeparator, StringSplitOptions.RemoveEmptyEntries);
                     if (data[1] == "blob")
                     {
                         int.TryParse(data[3], out int size);
@@ -204,6 +257,11 @@ namespace GitExtensions.Plugins.FindLargeFiles
 
         private void Delete_Click(object sender, EventArgs e)
         {
+            if (!_gitObjects.Any(gitObject => gitObject.Delete))
+            {
+                return;
+            }
+
             if (MessageBox.Show(this, _areYouSureToDelete.Text, _deleteCaption.Text, MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
             {
                 StringBuilder sb = new();
