@@ -292,7 +292,8 @@ namespace GitUIPluginInterfaces
         /// <param name="getLocal">Pass true to include local branches.</param>
         /// <param name="getRemote">Pass true to include remote branches.</param>
         /// <param name="cancellationToken">A cancellation token.</param>
-        IReadOnlyList<string> GetAllBranchesWhichContainGivenCommit(ObjectId objectId, bool getLocal, bool getRemote, CancellationToken cancellationToken = default);
+        /// <param name="branchPattern">A pattern of branches to look into.</param>
+        IReadOnlyList<string> GetAllBranchesWhichContainGivenCommit(ObjectId objectId, bool getLocal, bool getRemote, CancellationToken cancellationToken = default, params string[] branchPattern);
 
         /// <summary>
         /// Uses check-ref-format to ensure that a branch name is well formed.
@@ -433,7 +434,8 @@ namespace GitUIPluginInterfaces
         /// </summary>
         /// <param name="objectId">The sha1.</param>
         /// <param name="cancellationToken">A cancellation token.</param>
-        IReadOnlyList<string> GetAllTagsWhichContainGivenCommit(ObjectId objectId, CancellationToken cancellationToken);
+        /// <param name="tagPattern">A pattern of tag to look into.</param>
+        IReadOnlyList<string> GetAllTagsWhichContainGivenCommit(ObjectId objectId, CancellationToken cancellationToken, params string[] tagPattern);
 
         /// <summary>
         ///  Gets the remote branch.

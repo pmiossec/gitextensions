@@ -16,6 +16,7 @@ using GitUI;
 using GitUIPluginInterfaces;
 using Microsoft;
 using Microsoft.VisualStudio.Threading;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.ListView;
 
 namespace GitCommands
 {
@@ -2826,10 +2827,21 @@ namespace GitCommands
 
         public IReadOnlySet<string> GetReflogHashes()
         {
+            HashSet<string> hashes = new(50_000);
+            for (int i = 0; i < 50_000; i++)
+            {
+                hashes.Add(ObjectId.Random().ToString());
+            }
+
             ExecutionResult result = _gitExecutable.Execute("reflog show HEAD --pretty=format:\"%H\"", throwOnErrorExit: false);
-            return result.ExitedSuccessfully
+            foreach (string hash in result.ExitedSuccessfully
                 ? result.StandardOutput.Split('\n').ToHashSet()
-                : [];
+                : [])
+            {
+                hashes.Add(hash);
+            }
+
+            return hashes;
         }
 
         /// <summary>
@@ -2921,11 +2933,10 @@ namespace GitCommands
             }
 
             gitRefs.AddRange(headByRemote.Values);
-
             return gitRefs;
         }
 
-        public IReadOnlyList<string> GetAllBranchesWhichContainGivenCommit(ObjectId objectId, bool getLocal, bool getRemote, CancellationToken cancellationToken = default)
+        public IReadOnlyList<string> GetAllBranchesWhichContainGivenCommit(ObjectId objectId, bool getLocal, bool getRemote, CancellationToken cancellationToken = default, params string[] branchPattern)
         {
             if (!getLocal && !getRemote)
             {
@@ -2937,8 +2948,11 @@ namespace GitCommands
                 { getRemote && getLocal, "-a" },
                 { getRemote && !getLocal, "-r" },
                 "--contains",
-                objectId
+                objectId,
             };
+
+            args.AddRange(branchPattern);
+
             ExecutionResult exec = _gitExecutable.Execute(args, throwOnErrorExit: false, cancellationToken: cancellationToken, cache: GitCommandCacheBetweenRefresh);
             if (!exec.ExitedSuccessfully)
             {
@@ -2974,9 +2988,9 @@ namespace GitCommands
             return result;
         }
 
-        public IReadOnlyList<string> GetAllTagsWhichContainGivenCommit(ObjectId objectId, CancellationToken cancellationToken)
+        public IReadOnlyList<string> GetAllTagsWhichContainGivenCommit(ObjectId objectId, CancellationToken cancellationToken, params string[] tagPattern)
         {
-            ExecutionResult exec = _gitExecutable.Execute($"tag --contains {objectId}", throwOnErrorExit: false, cancellationToken: cancellationToken);
+            ExecutionResult exec = _gitExecutable.Execute($"tag --contains {objectId} " + tagPattern.Join(" "), throwOnErrorExit: false, cancellationToken: cancellationToken);
             if (!exec.ExitedSuccessfully)
             {
                 // Error occurred, no matches (no error presented to the user)

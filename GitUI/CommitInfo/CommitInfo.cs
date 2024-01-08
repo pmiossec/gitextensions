@@ -536,7 +536,7 @@ namespace GitUI.CommitInfo
                     // Include remote branches if requested
                     bool getRemote = AppSettings.CommitInfoShowContainedInBranchesRemote ||
                                      AppSettings.CommitInfoShowContainedInBranchesRemoteIfNoLocal;
-                    List<string> branches = Module.GetAllBranchesWhichContainGivenCommit(revision, getLocal, getRemote, cancellationToken).ToList();
+                    List<string> branches = Module.GetAllBranchesWhichContainGivenCommit(revision, getLocal, getRemote, cancellationToken: cancellationToken).ToList();
 
                     await this.SwitchToMainThreadAsync(cancellationToken);
                     _branches = branches;

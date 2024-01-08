@@ -19,8 +19,8 @@ namespace GitUI.CommandsDialogs
 
         private readonly IEnumerable<string> _defaultBranches;
         private string? _currentBranch;
-        private IReadOnlySet<string> _reflogHashes;
-        private HashSet<string>? _mergedBranches;
+        private HashSet<string>? _deletableBranches;
+        private HashSet<string> _reflogHashes;
         private Dictionary<ObjectId, IReadOnlyList<string>> _containedInBranch = new();
         private Dictionary<ObjectId, bool> _cacheRefInReflog = new(1);
 
@@ -40,13 +40,18 @@ namespace GitUI.CommandsDialogs
         {
             base.OnRuntimeLoad(e);
 
-            _reflogHashes = Module.GetReflogHashes();
+            _reflogHashes = (HashSet<string>)Module.GetReflogHashes();
 
             Branches.BranchesToSelect = Module.GetRefs(RefsFilter.Heads).ToList();
 
+            foreach (IGitRef branch in Branches.BranchesToSelect)
+            {
+                _reflogHashes.Add(branch.ObjectId.ToString());
+            }
+
             _currentBranch = Module.GetSelectedBranch(emptyIfDetached: true);
 
-            _mergedBranches = [];
+            _deletableBranches = [];
 
             if (!string.IsNullOrEmpty(_currentBranch))
             {
@@ -58,7 +63,7 @@ namespace GitUI.CommandsDialogs
                     }
                     else
                     {
-                        _mergedBranches.Add(branch.Trim());
+                        _deletableBranches.Add(branch.Trim());
                     }
                 }
             }
@@ -91,19 +96,22 @@ namespace GitUI.CommandsDialogs
             string[] deletedCandidates = selectedBranches.Select(b => b.Name).ToArray();
             bool atLeastOneHeadCommitWillBeDangling = false;
 
-            foreach (IGitRef selectedBranch in selectedBranches)
+            lock (_deletableBranches)
             {
-                if (_mergedBranches.Contains(selectedBranch.Name))
+                foreach (IGitRef selectedBranch in selectedBranches)
                 {
-                    continue;
-                }
+                    if (_deletableBranches.Contains(selectedBranch.Name))
+                    {
+                        continue;
+                    }
 
-                atLeastOneHeadCommitWillBeDangling = !GetAllBranchesWhichContainGivenCommit(selectedBranch.ObjectId)
-                    .Any(b2 => !deletedCandidates.Contains(b2));
+                    atLeastOneHeadCommitWillBeDangling = !GetAllRefsWhichContainGivenBranchTip(selectedBranch.ObjectId)
+                        .Any(b2 => !deletedCandidates.Contains(b2));
 
-                if (atLeastOneHeadCommitWillBeDangling)
-                {
-                    break;
+                    if (atLeastOneHeadCommitWillBeDangling)
+                    {
+                        break;
+                    }
                 }
             }
 
@@ -138,7 +146,19 @@ namespace GitUI.CommandsDialogs
             }
         }
 
-        private IReadOnlyList<string> GetAllBranchesWhichContainGivenCommit(ObjectId commitId)
+        private bool IsReachableByTag(IGitRef branch)
+        {
+            IReadOnlyList<string> tags = Module.GetAllTagsWhichContainGivenCommit(branch.ObjectId, default, "2.42");
+            if (tags.Count > 0)
+            {
+                _deletableBranches.Add(branch.Name);
+                return true;
+            }
+
+            return false;
+        }
+
+        private IReadOnlyList<string> GetAllRefsWhichContainGivenBranchTip(ObjectId commitId)
         {
             lock (_containedInBranch)
             {
@@ -147,7 +167,11 @@ namespace GitUI.CommandsDialogs
                     return branches;
                 }
 
-                branches = Module.GetAllBranchesWhichContainGivenCommit(commitId, true, false); // include also remotes?
+                branches = Module.GetAllBranchesWhichContainGivenCommit(commitId, true, false, default, "master", "main"); // include also remotes?
+                if (branches.Count == 0)
+                {
+                    branches = Module.GetAllBranchesWhichContainGivenCommit(commitId, true, false); // include also remotes?
+                }
 
                 _containedInBranch.Add(commitId, branches);
                 return branches;
@@ -161,9 +185,17 @@ namespace GitUI.CommandsDialogs
                 return;
             }
 
-            foreach (IGitRef selectedBranch in selectedBranches)
+            lock (_deletableBranches)
             {
-                GetAllBranchesWhichContainGivenCommit(selectedBranch.ObjectId);
+                foreach (IGitRef selectedBranch in selectedBranches)
+                {
+                    if (IsReachableByTag(selectedBranch))
+                    {
+                        continue;
+                    }
+
+                    GetAllRefsWhichContainGivenBranchTip(selectedBranch.ObjectId);
+                }
             }
         }
 
@@ -179,7 +211,7 @@ namespace GitUI.CommandsDialogs
 
             Task.Run(() =>
             {
-                BuildContainedInBranchData(selectedBranches.Where(b => !_mergedBranches.Contains(b.Name)).ToArray());
+                BuildContainedInBranchData(selectedBranches.Where(b => !_deletableBranches.Contains(b.Name)).ToArray());
             });
         }
 

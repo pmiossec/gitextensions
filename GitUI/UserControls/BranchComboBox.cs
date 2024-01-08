@@ -49,6 +49,7 @@ namespace GitUI
 
         public IEnumerable<IGitRef> GetSelectedBranches()
         {
+            // TODO: find a clever date order? start by older?
             foreach (string branch in branches.Text.LazySplit(' ', StringSplitOptions.RemoveEmptyEntries))
             {
                 IGitRef gitHead = _branchesToSelect.FirstOrDefault(g => g.Name == branch);
