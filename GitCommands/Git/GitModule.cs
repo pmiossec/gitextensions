@@ -2874,10 +2874,10 @@ namespace GitCommands
             return result.StandardOutput.Split(Delimiters.LineFeed, StringSplitOptions.RemoveEmptyEntries);
         }
 
-        public IEnumerable<string> GetMergedBranches(bool includeRemote = false)
+        public IEnumerable<string> GetMergedBranches(bool includeRemote = false, string? commit = null)
         {
             return _gitExecutable
-                .GetOutput(Commands.MergedBranches(includeRemote))
+                .GetOutput(Commands.MergedBranches(includeRemote, commit: commit))
                 .LazySplit('\n', StringSplitOptions.RemoveEmptyEntries);
         }
 
@@ -2986,6 +2986,12 @@ namespace GitCommands
             }
 
             return result;
+        }
+
+        public bool IsReachableByTag(ObjectId objectId, CancellationToken cancellationToken)
+        {
+            ExecutionResult exec = _gitExecutable.Execute($"name-rev --tags --no-undefined --name-only {objectId}", throwOnErrorExit: false, cancellationToken: cancellationToken);
+            return exec.ExitedSuccessfully;
         }
 
         public IReadOnlyList<string> GetAllTagsWhichContainGivenCommit(ObjectId objectId, CancellationToken cancellationToken, params string[] tagPattern)

@@ -66,6 +66,22 @@ namespace GitUI.CommandsDialogs
                         _deletableBranches.Add(branch.Trim());
                     }
                 }
+
+                // Do that on demand
+                foreach (IGitRef tag in Module.GetRefs(RefsFilter.Tags))
+                {
+                    foreach (string branch in Module.GetMergedBranches(commit: tag.ObjectId.ToString()))
+                    {
+                        if (branch.StartsWith("* "))
+                        {
+                            _currentBranch = branch.Trim('*', ' ');
+                        }
+                        else
+                        {
+                            _deletableBranches.Add(branch.Trim());
+                        }
+                    }
+                }
             }
 
             if (_defaultBranches is not null)
@@ -148,8 +164,9 @@ namespace GitUI.CommandsDialogs
 
         private bool IsReachableByTag(IGitRef branch)
         {
-            IReadOnlyList<string> tags = Module.GetAllTagsWhichContainGivenCommit(branch.ObjectId, default, "2.42");
-            if (tags.Count > 0)
+            ////IReadOnlyList<string> tags = Module.GetAllTagsWhichContainGivenCommit(branch.ObjectId, default, "2.42");
+            ////if (tags.Count > 0)
+            if (Module.IsReachableByTag(branch.ObjectId, default))
             {
                 _deletableBranches.Add(branch.Name);
                 return true;

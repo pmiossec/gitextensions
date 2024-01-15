@@ -404,7 +404,7 @@ namespace GitUIPluginInterfaces
 
         string? GetCombinedDiffContent(ObjectId revisionOfMergeCommit, string filePath, string extraArgs, Encoding encoding);
         bool IsMerge(ObjectId objectId);
-        IEnumerable<string> GetMergedBranches(bool includeRemote = false);
+        IEnumerable<string> GetMergedBranches(bool includeRemote = false, string? commit = null);
         Task<string[]> GetMergedBranchesAsync(bool includeRemote, bool fullRefname, string? commit, CancellationToken cancellationToken);
         IReadOnlyList<string> GetMergedRemoteBranches();
         IReadOnlyList<IGitRef> GetRemoteServerRefs(string remote, bool tags, bool branches, out string? errorOutput, CancellationToken cancellationToken);
@@ -436,6 +436,7 @@ namespace GitUIPluginInterfaces
         /// <param name="cancellationToken">A cancellation token.</param>
         /// <param name="tagPattern">A pattern of tag to look into.</param>
         IReadOnlyList<string> GetAllTagsWhichContainGivenCommit(ObjectId objectId, CancellationToken cancellationToken, params string[] tagPattern);
+        bool IsReachableByTag(ObjectId objectId, CancellationToken cancellationToken);
 
         /// <summary>
         ///  Gets the remote branch.
