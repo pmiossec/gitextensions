@@ -472,7 +472,7 @@ namespace GitUI.CommandsDialogs
             string? fullname = _fullPathResolver.Resolve(filename);
             if (Directory.Exists(fullname) && !File.Exists(fullname))
             {
-                if (Module.IsSubmodule(filename.Trim()))
+                if (Module.IsSubmodule(fullname))
                 {
                     return ItemType.Submodule;
                 }
