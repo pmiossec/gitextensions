@@ -455,17 +455,21 @@ namespace GitCommands
 
         public bool IsSubmodule(string submodulePath)
         {
-            GitArgumentBuilder args = new("submodule")
+            if (submodulePath != null && !Path.IsPathFullyQualified(submodulePath))
             {
-                "status",
-                submodulePath
+                submodulePath = Path.Combine(WorkingDir, submodulePath);
+            }
+
+            IExecutable gitExecutableInSubmodule = submodulePath == null || submodulePath == WorkingDir
+                ? _gitWindowsExecutable
+                : new Executable(() => AppSettings.GitCommand, submodulePath);
+            GitArgumentBuilder args = new("rev-parse")
+            {
+                "--show-superproject-working-tree",
             };
-            ExecutionResult result = _gitExecutable.Execute(args, throwOnErrorExit: false);
+            ExecutionResult result = gitExecutableInSubmodule.Execute(args, throwOnErrorExit: false);
 
-            return result.ExitedSuccessfully || IsSubmoduleRemoved();
-
-            bool IsSubmoduleRemoved()
-                => result.StandardOutput.StartsWith("No submodule mapping found in .gitmodules for path");
+            return result.ExitedSuccessfully && !string.IsNullOrEmpty(result.StandardOutput);
         }
 
         public bool HasSubmodules()
