@@ -1737,6 +1737,12 @@ namespace GitCommands
             set => SetInt("MaxMostRecentRepositories", value);
         }
 
+        public static bool DontAddSubmoduleToRecentList
+        {
+            get => GetBool("DontAddSubmoduleToRecentList", false);
+            set => SetBool("DontAddSubmoduleToRecentList", value);
+        }
+
         public static int RecentRepositoriesHistorySize
         {
             get => GetInt("history size", 30);
