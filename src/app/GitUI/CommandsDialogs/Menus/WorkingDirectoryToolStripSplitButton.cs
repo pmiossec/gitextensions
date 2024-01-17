@@ -143,6 +143,12 @@ internal class WorkingDirectoryToolStripSplitButton : ToolStripSplitButton, ITra
             return;
         }
 
+        if (AppSettings.DontAddSubmoduleToRecentList && UICommands.Module.IsSubmodule(null))
+        {
+            Text = PathUtil.GetDisplayPath(path);
+            return;
+        }
+
         IList<Repository> recentRepositoryHistory = ThreadHelper.JoinableTaskFactory.Run(
             () => RepositoryHistoryManager.Locals.AddAsMostRecentAsync(path));
 
