@@ -427,7 +427,7 @@ public interface IGitModule
 
     (string? BaseFile, string? LocalFile, string? RemoteFile) CheckoutConflictedFiles(ConflictData unmergedData);
 
-    bool IsSubmodule(string submodulePath);
+    bool IsSubmodule(string? submodulePath);
 
     Task<List<ConflictData>> GetConflictsAsync(string? filename = "");
     string FormatPatch(string from, string to, string output, int? start = null);
