@@ -1168,6 +1168,12 @@ namespace GitUI.CommandsDialogs
                 return;
             }
 
+            if (AppSettings.DontAddSubmoduleToRecentList && Module.IsSubmodule(null))
+            {
+                _NO_TRANSLATE_WorkingDir.Text = PathUtil.GetDisplayPath(path);
+                return;
+            }
+
             IList<Repository> recentRepositoryHistory = ThreadHelper.JoinableTaskFactory.Run(
                 () => RepositoryHistoryManager.Locals.AddAsMostRecentAsync(path));
 

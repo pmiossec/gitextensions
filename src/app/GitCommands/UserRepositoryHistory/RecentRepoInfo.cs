@@ -96,11 +96,6 @@
                 {
                     AddToOrderedSignDir(orderedRepos, ri, signDir);
                 }
-
-                if (ri.Caption is not null)
-                {
-                    ri.Caption = PathUtil.GetDisplayPath(ri.Caption);
-                }
             }
 
             int r = topRepos.Count - 1;
@@ -175,7 +170,7 @@
             }
             else
             {
-                repoInfo.Caption = repoInfo.Repo.Path;
+                repoInfo.Caption = PathUtil.GetDisplayPath(repoInfo.Repo.Path);
             }
 
             bool existsShortName = orderedRepos.TryGetValue(repoInfo.Caption!, out List<RecentRepoInfo> list);
