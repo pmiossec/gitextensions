@@ -455,6 +455,11 @@ namespace GitCommands
 
         public bool IsSubmodule(string submodulePath)
         {
+            if (submodulePath != null)
+            {
+                DebugHelpers.Fail("Just to debug IsSubmodule()");
+            }
+
             if (submodulePath != null && !Path.IsPathFullyQualified(submodulePath))
             {
                 submodulePath = Path.Combine(WorkingDir, submodulePath);
