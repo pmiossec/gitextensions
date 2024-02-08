@@ -2,6 +2,7 @@
 using GitExtensions.Extensibility;
 using GitExtensions.Extensibility.Git;
 using GitExtUtils;
+using GitExtUtils.GitUI;
 using GitUI.CommandsDialogs;
 using GitUI.UserControls.RevisionGrid;
 using ResourceManager;
@@ -437,6 +438,52 @@ namespace GitUI.UserControls
             {
                 ApplyRevisionFilter();
             }
+        }
+
+        private static readonly int WidthInscrease = DpiUtil.Scale(200);
+
+        private bool _shouldIgnoreParasiticFirstLeaveEvent = false;
+        private void TstxtRevisionFilter_Enter(object sender, EventArgs e)
+        {
+            if (_shouldIgnoreParasiticFirstLeaveEvent)
+            {
+                _shouldIgnoreParasiticFirstLeaveEvent = false;
+                return;
+            }
+
+            Parent.BeginInvoke(new Action(() =>
+            {
+                _shouldIgnoreParasiticFirstLeaveEvent = true;
+                tstxtRevisionFilter.Width += WidthInscrease;
+
+                // Resize of this control loose focus
+                // and so raise "leave" event (that should be ignored)
+                // and should be re-focused (and so "enter" event should be ignored too)!
+                tstxtRevisionFilter.Focus();
+            }));
+        }
+
+        private void TstxtRevisionFilter_Leave(object sender, EventArgs e)
+        {
+            if (_shouldIgnoreParasiticFirstLeaveEvent)
+            {
+                return;
+            }
+
+            tstxtRevisionFilter.Width -= WidthInscrease;
+        }
+
+        private void TscboBranchFilter_Enter(object sender, EventArgs e)
+        {
+            Parent.BeginInvoke(new Action(() =>
+            {
+                tscboBranchFilter.Width += WidthInscrease;
+            }));
+        }
+
+        private void TscboBranchFilter_Leave(object sender, EventArgs e)
+        {
+            tscboBranchFilter.Width -= WidthInscrease;
         }
 
         private void tscboBranchFilter_Click(object sender, EventArgs e)
