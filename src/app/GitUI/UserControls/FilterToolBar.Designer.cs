@@ -179,6 +179,8 @@ internal partial class FilterToolBar
         tscboBranchFilter.KeyUp += tscboBranchFilter_KeyUp;
         tscboBranchFilter.TextChanged += tscboBranchFilter_TextChanged;
         tscboBranchFilter.TextUpdate += tscboBranchFilter_TextUpdate;
+        tscboBranchFilter.Enter += TscboBranchFilter_Enter;
+        tscboBranchFilter.Leave += TscboBranchFilter_Leave;
         // 
         // tsmiBranchLocal
         // 
@@ -235,6 +237,8 @@ internal partial class FilterToolBar
         tstxtRevisionFilter.Size = new Size(100, 25);
         tstxtRevisionFilter.Tag = "ToolBar_group:Text filter";
         tstxtRevisionFilter.KeyUp += tstxtRevisionFilter_KeyUp;
+        tstxtRevisionFilter.Enter += TstxtRevisionFilter_Enter;
+        tstxtRevisionFilter.Leave += TstxtRevisionFilter_Leave;
         // 
         // tsddbtnRevisionFilter
         // 
