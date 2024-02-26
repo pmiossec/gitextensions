@@ -80,6 +80,7 @@ namespace GitUI
             rebaseInteractivelyToolStripMenuItem = new ToolStripMenuItem();
             toolStripSeparator10 = new ToolStripSeparator();
             rebaseWithAdvOptionsToolStripMenuItem = new ToolStripMenuItem();
+            replayToolStripMenuItem = new ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(_gridView)).BeginInit();
             mainContextMenu.SuspendLayout();
             SuspendLayout();
@@ -256,7 +257,8 @@ namespace GitUI
             rebaseToolStripMenuItem,
             rebaseInteractivelyToolStripMenuItem,
             toolStripSeparator10,
-            rebaseWithAdvOptionsToolStripMenuItem});
+            rebaseWithAdvOptionsToolStripMenuItem,
+            replayToolStripMenuItem});
             rebaseOnToolStripMenuItem.Image = Properties.Images.Rebase;
             rebaseOnToolStripMenuItem.Name = "rebaseOnToolStripMenuItem";
             rebaseOnToolStripMenuItem.Size = new Size(270, 22);
@@ -582,6 +584,13 @@ namespace GitUI
             rebaseWithAdvOptionsToolStripMenuItem.Text = "Selected commit with &advanced options...";
             rebaseWithAdvOptionsToolStripMenuItem.Click += OnRebaseWithAdvOptionsClicked;
             // 
+            // replayToolStripMenuItem
+            // 
+            replayToolStripMenuItem.Name = "rebaseWithAdvOptionsToolStripMenuItem";
+            replayToolStripMenuItem.Size = new Size(307, 22);
+            replayToolStripMenuItem.Text = "Replay branch";
+            replayToolStripMenuItem.DropDownOpening += OnReplayDropDownOpening;
+            // 
             // RevisionGrid
             // 
             AutoScaleMode = AutoScaleMode.Inherit;
@@ -638,6 +647,7 @@ namespace GitUI
         private ToolStripMenuItem openPullRequestPageStripMenuItem;
         private ToolStripMenuItem editCommitToolStripMenuItem;
         private ToolStripMenuItem rebaseWithAdvOptionsToolStripMenuItem;
+        private ToolStripMenuItem replayToolStripMenuItem;
         private ToolStripMenuItem createTagToolStripMenuItem;
         private ToolStripMenuItem createNewBranchToolStripMenuItem;
         private ToolStripMenuItem resetCurrentBranchToHereToolStripMenuItem;
