@@ -9700,6 +9700,10 @@ See the changes in the commit form.</source>
         <source>R&amp;ename branch...</source>
         <target />
       </trans-unit>
+      <trans-unit id="replayToolStripMenuItem.Text">
+        <source>Replay branch</source>
+        <target />
+      </trans-unit>
       <trans-unit id="resetAnotherBranchToHereToolStripMenuItem.Text">
         <source>Reset an&amp;other branch to here...</source>
         <target />
