@@ -128,4 +128,5 @@ public interface IGitUICommands : IServiceProvider
     void UpdateSubmodules(IWin32Window? owner);
     IGitUICommands WithGitModule(IGitModule module);
     IGitUICommands WithWorkingDirectory(string? workingDirectory);
+    void ReplayBranch(IWin32Window? owner, string rebaseOnTopOf, string branchToRebase);
 }
