@@ -20,6 +20,7 @@ public interface IGitModule
     IEnumerable<(string Setting, string Value)> GetAllLocalSettings();
 
     IReadOnlyList<IGitRef> GetRefs(RefsFilter getRef);
+    IReadOnlyList<IGitRef> GetRefs(RefsFilter getRef, GitRefsSortBy sortBy, GitRefsSortOrder sortOrder, int count = 0);
     IGitRef GetRef(string refName);
     IEnumerable<string> GetSettings(string setting);
     IEnumerable<IObjectGitItem> GetTree(ObjectId? commitId, bool full, string fileName = "", CancellationToken cancellationToken = default);
@@ -529,4 +530,5 @@ public interface IGitModule
     GitBlame Blame(string? fileName, string from, Encoding encoding, string? lines, CancellationToken cancellationToken);
 
     IReadOnlyList<string> GetReflogHashes();
+    GitReplayStatus ReplayBranch(string rebaseOnTopOf, string from);
 }
