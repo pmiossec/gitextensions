@@ -2284,6 +2284,9 @@ public sealed partial class RevisionGridControl : GitModuleControl, ICheckRefs, 
         rebaseWithAdvOptionsToolStripMenuItem.Enabled = _rebaseOnTopOf is not null
             && (selectedRevisions.Count == 1
                 || (selectedRevisions.Count == 2 && selectedRevisions.All(r => !r.IsArtificial)));
+
+        replayToolStripMenuItem.DropDownItems.Clear();
+        replayToolStripMenuItem.DropDownItems.Add("placeholder");
     }
 
     private void ToolStripItemClickRebaseBranch(object sender, EventArgs e)
@@ -2323,6 +2326,35 @@ public sealed partial class RevisionGridControl : GitModuleControl, ICheckRefs, 
         if (result == TaskDialogButton.Yes)
         {
             UICommands.StartRebase(ParentForm, _rebaseOnTopOf);
+        }
+    }
+
+    private void OnReplayDropDownOpening(object sender, EventArgs e)
+    {
+        IReadOnlyList<IGitRef> recentHeads = Module.GetRefs(RefsFilter.Heads, GitRefsSortBy.committerdate, AppSettings.RefsSortOrder, 10);
+        replayToolStripMenuItem.DropDownItems.Clear();
+        IReadOnlyList<GitRevision> selectedRevisions = GetSelectedRevisions();
+        if (selectedRevisions.Count != 1)
+        {
+            return;
+        }
+
+        string currentBranch = CurrentBranch.Value;
+
+        foreach (IGitRef head in recentHeads)
+        {
+            if (head.LocalName == currentBranch)
+            {
+                continue;
+            }
+
+            ToolStripMenuItem item = new(head.LocalName);
+            item.Click += delegate
+            {
+                UICommands.ReplayBranch(ParentForm, selectedRevisions[0].ObjectId.ToString(), head.LocalName);
+            };
+
+            replayToolStripMenuItem.DropDownItems.Add(item);
         }
     }
 
