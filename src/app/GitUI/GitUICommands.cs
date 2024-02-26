@@ -1996,6 +1996,34 @@ namespace GitUI
         #endregion
 
         internal TestAccessor GetTestAccessor() => new(this);
+        public void ReplayBranch(IWin32Window? owner, string rebaseOnTopOf, string branchToRebase)
+        {
+            DoActionOnRepo(owner, () =>
+            {
+                GitReplayStatus status = Module.ReplayBranch(rebaseOnTopOf, branchToRebase);
+
+                switch (status)
+                {
+                    case GitReplayStatus.Success:
+                        return true;
+                    case GitReplayStatus.Conflicts:
+                        DialogResult result = MessageBox.Show("Conflicts during replay of commits!!!\nCheckout to rebase.", "Conflicts", MessageBoxButtons.YesNo);
+                        if (result == DialogResult.Yes)
+                        {
+                            StartCheckoutBranch(owner, branchToRebase);
+                            return true;
+                        }
+
+                        return false;
+
+                    case GitReplayStatus.OtherError:
+                        MessageBox.Show("Git Replay pre-condition not satisfied or unknown error!!!");
+                        return true;
+                    default:
+                        throw new NotImplementedException();
+                }
+            });
+        }
 
         internal struct TestAccessor
         {

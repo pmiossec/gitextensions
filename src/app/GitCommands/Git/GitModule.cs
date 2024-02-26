@@ -2990,12 +2990,15 @@ namespace GitCommands
                 : Array.Empty<string>();
         }
 
+        public IReadOnlyList<IGitRef> GetRefs(RefsFilter getRef)
+            => GetRefs(getRef, AppSettings.RefsSortBy, AppSettings.RefsSortOrder);
+
         /// <summary>
         /// Get the Git refs.
         /// </summary>
         /// <param name="getRef">Combined refs to search for.</param>
         /// <returns>All Git refs.</returns>
-        public IReadOnlyList<IGitRef> GetRefs(RefsFilter getRef)
+        public IReadOnlyList<IGitRef> GetRefs(RefsFilter getRef, GitRefsSortBy sortBy, GitRefsSortOrder sortOrder, int count = 0)
         {
             // We do not want to lock the repo for background operations.
             // The primary use of 'noLocks' is to run git-status the commit count as a background operation,
@@ -3004,7 +3007,7 @@ namespace GitCommands
             // Assume that all GetRefs() are done in the background, which may not be correct in the future.
             const bool noLocks = true;
 
-            ArgumentString cmd = Commands.GetRefs(getRef, noLocks, AppSettings.RefsSortBy, AppSettings.RefsSortOrder);
+            ArgumentString cmd = Commands.GetRefs(getRef, noLocks, sortBy, sortOrder, count);
             ExecutionResult result = _gitExecutable.Execute(cmd, throwOnErrorExit: false);
             return result.ExitedSuccessfully
                 ? ParseRefs(result.StandardOutput)
@@ -4165,6 +4168,53 @@ namespace GitCommands
         }
 
         internal TestAccessor GetTestAccessor() => new(this);
+
+        public GitReplayStatus ReplayBranch(string onto, string branch)
+        {
+            // https://git-scm.com/docs/git-replay/2.44.0#_output
+            GitArgumentBuilder args = new("replay")
+            {
+                "--remove-empty",
+                "--onto",
+                onto,
+                $"{onto}..{branch}"
+            };
+
+            ExecutionResult exec = _gitExecutable.Execute(args, throwOnErrorExit: false);
+            if (exec.ExitedSuccessfully)
+            {
+                // reset replayed refs
+                LazyStringSplit lines = exec.StandardOutput.LazySplit('\n');
+
+                foreach (string line in lines)
+                {
+                    string[] data = line.Split(" ");
+                    if (data.Length != 4 || data[0] != "update")
+                    {
+                        continue;
+                    }
+
+                    Debug.WriteLine($"Will reset {data[1]} from {data[3]} to {data[2]}");
+                    args = new("update-ref")
+                    {
+                        "-m \"Replayed with GitExtensions\"",
+                        "--create-reflog",
+                        data[1],
+                        data[2],
+                        data[3]
+                    };
+                    exec = _gitExecutable.Execute(args, throwOnErrorExit: false);
+                    if (!exec.ExitedSuccessfully)
+                    {
+                        return GitReplayStatus.OtherError;
+                    }
+                }
+
+                return GitReplayStatus.Success;
+            }
+
+            return exec.ExitCode == 1 ? GitReplayStatus.Conflicts : GitReplayStatus.OtherError;
+        }
 
         internal readonly struct TestAccessor
         {
