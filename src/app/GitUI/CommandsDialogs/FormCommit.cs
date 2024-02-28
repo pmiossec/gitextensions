@@ -216,6 +216,7 @@ namespace GitUI.CommandsDialogs
             Message.TextAssigned += Message_TextAssigned;
             Message.AddAutoCompleteProvider(new CommitAutoCompleteProvider(() => Module));
             Message.AddAutoCompleteProvider(new CommitMessageMetadataProvider());
+            Message.AddAutoCompleteProvider(new CommitMessageGitMojiProvider());
             _commitTemplateManager = new CommitTemplateManager(() => Module);
 
             SolveMergeconflicts.Font = new Font(SolveMergeconflicts.Font, FontStyle.Bold);
