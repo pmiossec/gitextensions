@@ -589,12 +589,12 @@ public sealed class RevisionReader
         int firstLineEnd = decoded.IndexOfAny(Delimiters.LineAndVerticalFeed);
         if (firstLineEnd < 0)
         {
-            revision.Subject = decoded.ToString();
+            revision.Subject = HandleGitMoji(decoded.ToString());
             revision.HasMultiLineMessage = false;
         }
         else
         {
-            revision.Subject = decoded[..firstLineEnd].TrimEnd().ToString();
+            revision.Subject = HandleGitMoji(decoded[..firstLineEnd].TrimEnd().ToString());
             Split(decoded, out ReadOnlySpan<char> body, out ReadOnlySpan<char> notes);
             revision.HasMultiLineMessage = revision.Subject.Length < body.Length;
 

@@ -33,7 +33,6 @@ public sealed partial class FormCommit : GitModuleForm
     private const string _resetSoftRevision = "HEAD~1";
 
     #region Translation
-
     private readonly TranslationString _amendCommit
         = new("You are about to rewrite history." + Environment.NewLine
             + "Only use Amend if the commit has not been published yet!" + Environment.NewLine
@@ -129,8 +128,6 @@ public sealed partial class FormCommit : GitModuleForm
     private readonly TranslationString _untrackedRemote = new("(untracked)");
     #endregion
 
-    private event Action? OnStageAreaLoaded;
-
     private readonly ICommitTemplateManager _commitTemplateManager;
     private readonly GitRevision? _editedCommit;
     private readonly ToolStripMenuItem _addSelectionToCommitMessageToolStripMenuItem;
@@ -167,6 +164,10 @@ public sealed partial class FormCommit : GitModuleForm
     private int _alreadyLoadedTemplatesCount = -1;
     private EventHandler? _branchNameLabelOnClick;
     private ToolStripMenuItem _conventionalCommitItem;
+
+    public static readonly string HotkeySettingsName = "Commit";
+
+    private event Action? OnStageAreaLoaded;
 
     /// <summary>
     /// Regex to find message replace pattern: {{ group1 }}[ group2 ]
@@ -222,6 +223,7 @@ public sealed partial class FormCommit : GitModuleForm
         Message.TextAssigned += Message_TextAssigned;
         Message.AddAutoCompleteProvider(new CommitAutoCompleteProvider(() => Module));
         Message.AddAutoCompleteProvider(new CommitMessageMetadataProvider());
+        Message.AddAutoCompleteProvider(new CommitMessageGitMojiProvider());
         _commitTemplateManager = new CommitTemplateManager(() => Module);
 
         SolveMergeconflicts.Font = new Font(SolveMergeconflicts.Font, FontStyle.Bold);
@@ -630,8 +632,6 @@ public sealed partial class FormCommit : GitModuleForm
     }
 
     #region Hotkey commands
-
-    public static readonly string HotkeySettingsName = "Commit";
 
     internal enum Command
     {
