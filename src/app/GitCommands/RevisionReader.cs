@@ -18,6 +18,82 @@ namespace GitCommands
 {
     public sealed class RevisionReader
     {
+        public static readonly (string shortCode, string gitMoji)[] GitMoji = [
+            (":adhesive_bandage:", "🩹"),
+            (":alembic:", "⚗️"),
+            (":alien:", "👽️"),
+            (":ambulance:", "🚑️"),
+            (":arrow_down:", "⬇️"),
+            (":arrow_up:", "⬆️"),
+            (":art:", "🎨"),
+            (":beers:", "🍻"),
+            (":bento:", "🍱"),
+            (":bookmark:", "🔖"),
+            (":boom:", "💥"),
+            (":bricks:", "🧱"),
+            (":bug:", "🐛"),
+            (":building_construction:", "🏗️"),
+            (":bulb:", "💡"),
+            (":busts_in_silhouette:", "👥"),
+            (":camera_flash:", "📸"),
+            (":card_file_box:", "🗃️"),
+            (":chart_with_upwards_trend:", "📈"),
+            (":children_crossing:", "🚸"),
+            (":closed_lock_with_key:", "🔐"),
+            (":clown_face:", "🤡"),
+            (":coffin:", "⚰️"),
+            (":construction:", "🚧"),
+            (":construction_worker:", "👷"),
+            (":dizzy:", "💫"),
+            (":egg:", "🥚"),
+            (":fire:", "🔥"),
+            (":globe_with_meridians:", "🌐"),
+            (":goal_net:", "🥅"),
+            (":green_heart:", "💚"),
+            (":hammer:", "🔨"),
+            (":heavy_minus_sign:", "➖"),
+            (":heavy_plus_sign:", "➕"),
+            (":iphone:", "📱"),
+            (":label:", "🏷️"),
+            (":lipstick:", "💄"),
+            (":lock:", "🔒️"),
+            (":loud_sound:", "🔊"),
+            (":mag:", "🔍️"),
+            (":memo:", "📝"),
+            (":money_with_wings:", "💸"),
+            (":monocle_face:", "🧐"),
+            (":mute:", "🔇"),
+            (":necktie:", "👔"),
+            (":package:", "📦️"),
+            (":page_facing_up:", "📄"),
+            (":passport_control:", "🛂"),
+            (":pencil2:", "✏️"),
+            (":poop:", "💩"),
+            (":pushpin:", "📌"),
+            (":recycle:", "♻️"),
+            (":rewind:", "⏪️"),
+            (":rocket:", "🚀"),
+            (":rotating_light:", "🚨"),
+            (":safety_vest:", "🦺"),
+            (":see_no_evil:", "🙈"),
+            (":seedling:", "🌱"),
+            (":sparkles:", "✨"),
+            (":speech_balloon:", "💬"),
+            (":stethoscope:", "🩺"),
+            (":tada:", "🎉"),
+            (":technologist:", "🧑‍💻"),
+            (":test_tube:", "🧪"),
+            (":thread:", "🧵"),
+            (":triangular_flag_on_post:", "🚩"),
+            (":truck:", "🚚"),
+            (":twisted_rightwards_arrows:", "🔀"),
+            (":wastebasket:", "🗑️"),
+            (":wheelchair:", "♿️"),
+            (":white_check_mark:", "✅"),
+            (":wrench:", "🔧"),
+            (":zap:", "⚡️"),
+        ];
+
         private const string _fullFormat =
 
             // These header entries can all be decoded from the bytes (ASCII compatible) directly.
@@ -580,10 +656,10 @@ namespace GitCommands
                 ? decoded.Length != lengthSubject + _notesMarker.Length + 1 // Notes must always include the notes marker
                 : lengthSubject >= 0;
 
-            revision.Subject = (lengthSubject >= 0
+            revision.Subject = HandleGitMoji((lengthSubject >= 0
                 ? decoded.Slice(0, lengthSubject).TrimEnd()
                 : decoded)
-                .ToString();
+                .ToString());
 
             if (keepBody && revision.HasMultiLineMessage)
             {
@@ -687,6 +763,22 @@ namespace GitCommands
                 DebugHelpers.Assert(!Debugger.IsAttached || _noOfParseError > 1, message);
                 Trace.WriteLineIf(_noOfParseError < 10, message);
             }
+        }
+
+        public static string HandleGitMoji(string text)
+        {
+            if (!text.StartsWith(":"))
+            {
+                return text;
+            }
+
+            // Try to support GitMoji
+            foreach ((string shortCode, string gitMoji) in GitMoji)
+            {
+                text = text.Replace(shortCode, gitMoji);
+            }
+
+            return text;
         }
 
         internal TestAccessor GetTestAccessor()
