@@ -539,7 +539,7 @@ namespace GitUI.CommandsDialogs
                 if (PluginRegistry.GitHosters.Count != 0)
                 {
                     // TODO: support more than one Git hosting provider plugin (ADO, GitLab,...)
-                    _repositoryHostsToolStripMenuItem.Text = PluginRegistry.GitHosters[0].Name;
+                    _repositoryHostsToolStripMenuItem.Text = "&" + PluginRegistry.GitHosters[0].Name;
                 }
 
                 // Show "Repository hosts" menu item when there is at least 1 repository host plugin loaded
