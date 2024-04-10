@@ -52,11 +52,13 @@ public sealed class AppTitleGenerator : IAppTitleGenerator
 
         string description = _descriptionProvider.Get(workingDir);
 
+            string parentFolder = Path.GetFullPath(workingDir + "..");
+
 #if DEBUG
-        return $"{pathName}{description} ({branchName}) - {AppSettings.ApplicationName}{_extraInfo}";
-#else
-        return $"{pathName}{description} ({branchName}) - {AppSettings.ApplicationName}";
-#endif
+            return $"{pathName}{description} ({branchName}) in {parentFolder} - {AppSettings.ApplicationName}{_extraInfo}";
+    #else
+            return $"{pathName}{description} ({branchName}) in {parentFolder} - {AppSettings.ApplicationName}";
+    #endif
 
         static string? GetFileName(string? path)
         {
