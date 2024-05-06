@@ -533,4 +533,5 @@ public interface IGitModule
 
     IReadOnlyList<string> GetReflogHashes();
     GitReplayStatus ReplayBranch(string rebaseOnTopOf, string from);
+    GitReplayStatus ReplayBranch(string onto, IEnumerable<string> ranges);
 }
