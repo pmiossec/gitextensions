@@ -156,6 +156,7 @@ namespace GitUI.CommandsDialogs
             gitextSettingsToolStripMenuItem = new ToolStripMenuItem();
             gitSettingsToolStripMenuItem = new ToolStripMenuItem();
             pluginsSettingsToolStripMenuItem = new ToolStripMenuItem();
+            syncTrackedToolStripMenuItem = new ToolStripMenuItem();
             toolStripSeparator14 = new ToolStripSeparator();
             toolStripSeparator11 = new ToolStripSeparator();
             ToolStripMain.SuspendLayout();
@@ -994,35 +995,7 @@ namespace GitUI.CommandsDialogs
             // 
             // commandsToolStripMenuItem
             // 
-            commandsToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] {
-            commitToolStripMenuItem,
-            undoLastCommitToolStripMenuItem,
-            pullToolStripMenuItem,
-            pushToolStripMenuItem,
-            toolStripSeparator21,
-            stashToolStripMenuItem,
-            resetToolStripMenuItem,
-            cleanupToolStripMenuItem,
-            toolStripSeparator25,
-            branchToolStripMenuItem,
-            deleteBranchToolStripMenuItem,
-            checkoutBranchToolStripMenuItem,
-            mergeBranchToolStripMenuItem,
-            rebaseToolStripMenuItem,
-            runMergetoolToolStripMenuItem,
-            toolStripSeparator45,
-            tagToolStripMenuItem,
-            deleteTagToolStripMenuItem,
-            toolStripSeparator23,
-            cherryPickToolStripMenuItem,
-            archiveToolStripMenuItem,
-            checkoutToolStripMenuItem,
-            bisectToolStripMenuItem,
-            toolStripMenuItemReflog,
-            toolStripSeparator22,
-            formatPatchToolStripMenuItem,
-            applyPatchToolStripMenuItem,
-            patchToolStripMenuItem});
+            commandsToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { commitToolStripMenuItem, undoLastCommitToolStripMenuItem, pullToolStripMenuItem, syncTrackedToolStripMenuItem, pushToolStripMenuItem, toolStripSeparator21, stashToolStripMenuItem, resetToolStripMenuItem, cleanupToolStripMenuItem, toolStripSeparator25, branchToolStripMenuItem, deleteBranchToolStripMenuItem, checkoutBranchToolStripMenuItem, mergeBranchToolStripMenuItem, rebaseToolStripMenuItem, runMergetoolToolStripMenuItem, toolStripSeparator45, tagToolStripMenuItem, deleteTagToolStripMenuItem, toolStripSeparator23, cherryPickToolStripMenuItem, archiveToolStripMenuItem, checkoutToolStripMenuItem, bisectToolStripMenuItem, toolStripMenuItemReflog, toolStripSeparator22, formatPatchToolStripMenuItem, applyPatchToolStripMenuItem, patchToolStripMenuItem });
             commandsToolStripMenuItem.Name = "commandsToolStripMenuItem";
             commandsToolStripMenuItem.Size = new Size(81, 20);
             commandsToolStripMenuItem.Text = "&Commands";
@@ -1418,11 +1391,19 @@ namespace GitUI.CommandsDialogs
             // 
             // pluginsSettingsToolStripMenuItem
             // 
-            this.pluginsSettingsToolStripMenuItem.Image = Properties.Images.Plugin;
-            this.pluginsSettingsToolStripMenuItem.Name = "pluginsSettingsToolStripMenuItem";
-            this.pluginsSettingsToolStripMenuItem.Size = new Size(180, 22);
-            this.pluginsSettingsToolStripMenuItem.Text = "&Plugins settings";
-            this.pluginsSettingsToolStripMenuItem.Click += pluginsSettingsToolStripMenuItem_Click;
+            pluginsSettingsToolStripMenuItem.Image = Properties.Images.Plugin;
+            pluginsSettingsToolStripMenuItem.Name = "pluginsSettingsToolStripMenuItem";
+            pluginsSettingsToolStripMenuItem.Size = new Size(180, 22);
+            pluginsSettingsToolStripMenuItem.Text = "&Plugins settings";
+            pluginsSettingsToolStripMenuItem.Click += pluginsSettingsToolStripMenuItem_Click;
+            // 
+            // syncTrackedToolStripMenuItem
+            // 
+            syncTrackedToolStripMenuItem.Image = Properties.Images.SubmodulesSync;
+            syncTrackedToolStripMenuItem.Name = "syncTrackedToolStripMenuItem";
+            syncTrackedToolStripMenuItem.Size = new Size(209, 22);
+            syncTrackedToolStripMenuItem.Text = "Sync tracked";
+            syncTrackedToolStripMenuItem.Click += syncTrackedToolStripMenuItem_Click;
             // 
             // FormBrowse
             // 
@@ -1608,5 +1589,6 @@ namespace GitUI.CommandsDialogs
         private ToolStripMenuItem gitextSettingsToolStripMenuItem;
         private ToolStripMenuItem gitSettingsToolStripMenuItem;
         private ToolStripMenuItem pluginsSettingsToolStripMenuItem;
+        private ToolStripMenuItem syncTrackedToolStripMenuItem;
     }
 }
