@@ -4171,14 +4171,23 @@ namespace GitCommands
 
         public GitReplayStatus ReplayBranch(string onto, string branch)
         {
+            return ReplayBranch(onto, [$"{onto}..{branch}"]);
+        }
+
+        public GitReplayStatus ReplayBranch(string onto, IEnumerable<string> ranges)
+        {
             // https://git-scm.com/docs/git-replay/2.44.0#_output
             GitArgumentBuilder args = new("replay")
             {
-                "--remove-empty",
+                "--remove-empty", // I don't think it is doing something (maybe in the future...)
                 "--onto",
                 onto,
-                $"{onto}..{branch}"
             };
+
+            foreach (string range in ranges)
+            {
+                args.Add(range);
+            }
 
             ExecutionResult exec = _gitExecutable.Execute(args, throwOnErrorExit: false);
             if (exec.ExitedSuccessfully)
