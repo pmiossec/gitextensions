@@ -3237,6 +3237,10 @@ Do you want to continue?</source>
         <source>Ma&amp;nage stashes...</source>
         <target />
       </trans-unit>
+      <trans-unit id="syncTrackedToolStripMenuItem.Text">
+        <source>Sync tracked</source>
+        <target />
+      </trans-unit>
       <trans-unit id="synchronizeAllSubmodulesToolStripMenuItem.Text">
         <source>Synchronize all su&amp;bmodules</source>
         <target />
