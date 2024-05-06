@@ -3077,5 +3077,88 @@ namespace GitUI.CommandsDialogs
         {
             _dashboard?.RefreshContent();
         }
+
+        private void syncTrackedToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            const string configFile = @"GitExtensions_track.sync";
+            const string trackingSymbol = "->";
+            string fullPath = Path.Combine(Module.WorkingDirGitDir, configFile);
+            if (!File.Exists(fullPath))
+            {
+                return;
+            }
+
+            IEnumerable<string> lines = File.ReadAllLines(fullPath).Where(l => !l.StartsWith("#") && l.Contains(trackingSymbol));
+
+            bool shouldRefresh = false;
+            foreach (string line in lines)
+            {
+                string[] refs = line.Split(trackingSymbol);
+                string localBranch = refs[0];
+                string trackedRemote = refs[1];
+
+                // # 1. cBefore= git rev-parse master
+                // #   /!\ '*' for checked out branch
+                ObjectId oldCommit = Module.RevParse(localBranch);
+
+                if (oldCommit == null)
+                {
+                    continue;
+                }
+
+                ObjectId remoteCommit = Module.RevParse(trackedRemote);
+
+                if (remoteCommit == oldCommit)
+                {
+                    continue;
+                }
+
+                shouldRefresh = true;
+
+                // # 3. git.exe push "file://C:/Users/pmios/Documents/Perso/Dev/GitHub/gitextensions/" "61c7418a6da6e540ac69895a0b1ed6ec196f0d57:refs/heads/master"
+                //             git.exe push . "refs/remotes/upstream/master:refs/heads/master"
+                Module.GitCommandRunner.RunDetached(new GitArgumentBuilder("push") { ".", $"refs/remotes/{trackedRemote}:refs/heads/{localBranch}" });
+
+                // # 2. git branch --contains master
+                IReadOnlyList<string> branchesToSync = Module.GetAllBranchesWhichContainGivenCommit(oldCommit, getLocal: true, getRemote: false, cancellationToken: default)
+                    .Where(b => b != localBranch).ToArray();
+
+                if (branchesToSync.Count == 0)
+                {
+                    continue;
+                }
+
+                string oldCommitHash = oldCommit.ToString();
+
+                // # 4. git replay --contained --onto refs/remotes/upstream/master cBefore..all_to_upstream cBefore..form_rebase_commits_range_reduced | git update-ref --stdin
+                // git replay --onto refs/remotes/upstream/master 61c7418a6da6e540ac69895a0b1ed6ec196f0d57..all_to_upstream 61c7418a6da6e540ac69895a0b1ed6ec196f0d57..form_rebase_commits_range_reduced | git update - ref --stdin
+                // # ending with empty commits :( https://lwn.net/Articles/963620/
+
+                GitReplayStatus status = Module.ReplayBranch(remoteCommit.ToString(), branchesToSync.Select(b => $"{oldCommitHash}..{b}"));
+
+                switch (status)
+                {
+                    case GitReplayStatus.Conflicts:
+                        MessageBoxes.ShowError(this, $"Conflicts detected while syncing/replaying {line}.\n\n Needed to rebase manually...", "Conflict occured");
+                        break;
+                    case GitReplayStatus.OtherError:
+                        MessageBoxes.ShowError(this, $"Error occured while syncing/replaying {line}", "Error occured");
+                        break;
+                }
+            }
+
+            if (shouldRefresh)
+            {
+                // TODO Seems "Refresh" button not in good state after refresh
+                RevisionGrid.Load();
+            }
+
+            // TODO If current branch is replayed, need to clean working directory.
+            // TODO Do it when current ref is updated and working dir was not dirty...
+            if (Module.IsDirtyDir())
+            {
+                Module.ResetAllChanges(clean: false);
+            }
+        }
     }
 }
