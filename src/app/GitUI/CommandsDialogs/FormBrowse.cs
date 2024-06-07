@@ -3067,7 +3067,15 @@ namespace GitUI.CommandsDialogs
 
             if (shouldRefresh)
             {
+                // TODO Seems "Refresh" button not in good state after refresh
                 RevisionGrid.Load();
+            }
+
+            // TODO If current branch is replayed, need to clean working directory.
+            // TODO Do it when current ref is updated and working dir was not dirty...
+            if (Module.IsDirtyDir())
+            {
+                Module.ResetAllChanges(clean: false);
             }
         }
     }
