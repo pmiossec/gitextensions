@@ -947,6 +947,8 @@ namespace GitUI
 
                 _superprojectCurrentCheckout = null;
 
+                IndexWatcher.Reset();
+
                 IReadOnlyList<ObjectId>? currentlySelectedObjectIds = _gridView.SelectedObjectIds;
                 _gridView.SuspendLayout();
                 _gridView.SelectionChanged -= OnGridViewSelectionChanged;
@@ -968,8 +970,6 @@ namespace GitUI
                 _revisionSubscription = observeRevisions
                     .ObserveOn(ThreadPoolScheduler.Instance)
                     .Subscribe(OnRevisionRead, OnRevisionReaderError, OnRevisionReadCompleted);
-
-                IndexWatcher.Reset();
 
                 // Selected is null: Update to trigger reset the tabs etc.
                 _selectionTimer.Stop();

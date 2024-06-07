@@ -6,17 +6,22 @@ namespace GitUI.CommandsDialogs
 {
     partial class FormBrowse
     {
-        // This file is dedicated to init logic for FormBrowse revisiong grid control
+        // This file is dedicated to init logic for FormBrowse revision grid control
+
+        private Image _reloadRevisionsDirty = Images.ReloadRevisionsDirty;
+        private Image _reloadRevisions = Images.ReloadRevisions;
 
         private void InitRevisionGrid(ObjectId? selectedId, ObjectId? firstId, bool isFileHistoryMode)
         {
             RevisionGrid.IndexWatcher.Changed += (_, args) =>
             {
-                bool indexChanged = args.IsIndexChanged;
-                this.InvokeAndForget(() =>
-                    RefreshButton.Image = indexChanged && AppSettings.ShowGitStatusInBrowseToolbar && Module.IsValidGitWorkingDir()
-                        ? Images.ReloadRevisionsDirty
-                        : Images.ReloadRevisions);
+                Image image = args.IsIndexChanged && AppSettings.ShowGitStatusInBrowseToolbar && Module.IsValidGitWorkingDir()
+                        ? _reloadRevisionsDirty
+                        : _reloadRevisions;
+                if (RefreshButton.Image != image)
+                {
+                    this.InvokeAndForget(() => RefreshButton.Image = image);
+                }
             };
 
             RevisionGrid.MenuCommands.MenuChanged += (sender, e) => _formBrowseMenus.OnMenuCommandsPropertyChanged();
