@@ -35,6 +35,7 @@ namespace GitExtensions.Plugins.BackgroundFetch
         private readonly StringSetting _gitCommand = new("Arguments of git command to run", _defaultGitCommand);
         private readonly NumberSetting<int> _fetchInterval = new("Fetch every (seconds) - set to 0 to disable", 0);
         private readonly BoolSetting _autoRefresh = new("Refresh view after fetch", false);
+        private readonly BoolSetting _dryRun = new("dry_run", "Pre-fetch only git objects (to speed up later user fetch)", false);
         private readonly BoolSetting _fetchAllSubmodules = new("Fetch all submodules", false);
 
         public override IEnumerable<ISetting> GetSettings()
@@ -43,6 +44,7 @@ namespace GitExtensions.Plugins.BackgroundFetch
             yield return _gitCommand;
             yield return _fetchInterval;
             yield return _autoRefresh;
+            yield return _dryRun;
             yield return _fetchAllSubmodules;
             yield return _warningForceWithLease;
         }
@@ -125,6 +127,10 @@ namespace GitExtensions.Plugins.BackgroundFetch
 
                                       string[] gitCmd = gitCmdString.Trim().Split(Delimiters.Space, StringSplitOptions.RemoveEmptyEntries);
                                       args = new GitArgumentBuilder(gitCmd[0]) { gitCmd.Skip(1) };
+
+                                      bool dryRun = _dryRun.ValueOrDefault(Settings);
+                                      args.Add(dryRun, "--dry-run");
+
                                       string msg;
                                       try
                                       {
@@ -139,7 +145,7 @@ namespace GitExtensions.Plugins.BackgroundFetch
                                           return;
                                       }
 
-                                      if (_autoRefresh.ValueOrDefault(Settings))
+                                      if (!dryRun && _autoRefresh.ValueOrDefault(Settings))
                                       {
                                           if (gitCmd[0].Equals("fetch", StringComparison.InvariantCultureIgnoreCase))
                                           {
