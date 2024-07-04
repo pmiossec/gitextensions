@@ -90,12 +90,18 @@ namespace GitUI.Avatars
 
         private static string? GetInitialsFromNames(string[]? names)
         {
+            string[]? originalNames = names;
             names = names?.Where(s => !string.IsNullOrWhiteSpace(s) && char.IsLetter(s[0])).ToArray();
 
             // if no valid name-elements are found, return null
             if (names?.Length is not > 0)
             {
-                return null;
+                if (originalNames?.Length is not > 0)
+                {
+                    return "?";
+                }
+
+                return "" + originalNames[0][0];
             }
 
             string name = names[0];
@@ -159,6 +165,8 @@ namespace GitUI.Avatars
 
         private Image DrawText(string? text, Brush foreColor, Color backColor, int avatarSize)
         {
+            text ??= "?";
+
             Bitmap bitmap = new(avatarSize, avatarSize);
             using Graphics graphics = Graphics.FromImage(bitmap);
             graphics.Clear(backColor);
