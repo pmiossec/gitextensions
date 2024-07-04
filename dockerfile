@@ -6,6 +6,7 @@
 # Available dotnet images: https://hub.docker.com/_/microsoft-dotnet-sdk/?tab=description
 FROM mcr.microsoft.com/dotnet/sdk:6.0.408-windowsservercore-ltsc2022
 
+# include git in image
 COPY ./artifacts/DockerTmp/git ./git
 
 USER ContainerAdministrator
