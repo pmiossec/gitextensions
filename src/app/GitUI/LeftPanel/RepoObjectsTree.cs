@@ -379,8 +379,10 @@ namespace GitUI.LeftPanel
 
         private static void AddTreeNodeToSearchResult(ICollection<TreeNode> ret, TreeNode node)
         {
-            node.BackColor = SystemColors.Info;
+            node.BackColor = AppColor.HighlightAllOccurences.GetThemeColor();
             node.ForeColor = SystemColors.InfoText;
+            ////node.BackColor = AppColor.AuthoredHighlight.GetThemeColor();
+            ////node.ForeColor = node.BackColor.GetContrastColor();
             ret.Add(node);
         }
 
