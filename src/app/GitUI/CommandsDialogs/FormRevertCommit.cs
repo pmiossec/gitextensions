@@ -90,18 +90,16 @@ namespace GitUI.CommandsDialogs
                 {
                     IReadOnlyList<GitRevision> parents = Module.GetParentRevisions(Revision.ObjectId);
 
-                    for (int i = 0; i < parents.Count; i++)
+                    int i = 0;
+                    lvParentsList.Items.AddRange(parents.Select(parent => new ListViewItem((i++).ToString())
                     {
-                        lvParentsList.Items.Add(new ListViewItem((i + 1).ToString())
+                        SubItems =
                         {
-                            SubItems =
-                            {
-                                parents[i].Subject,
-                                parents[i].Author,
-                                parents[i].CommitDate.ToShortDateString()
-                            }
-                        });
-                    }
+                            parent.Subject,
+                            parent.Author,
+                            parent.CommitDate.ToShortDateString()
+                        }
+                    }).ToArray());
 
                     lvParentsList.TopItem.Selected = true;
                     Size size = MinimumSize;
