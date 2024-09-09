@@ -15,9 +15,11 @@ public sealed partial class FormStash : GitModuleForm
     private readonly CancellationTokenSequence _viewChangesSequence = new();
     private readonly AsyncLoader _asyncLoader = new();
     private int _lastSelectedStashIndex = -1;
+    private GitStash? _currentWorkingDirStashItem;
+
+    public static readonly string HotkeySettingsName = "Stash";
 
     public bool ManageStashes { get; set; }
-    private GitStash? _currentWorkingDirStashItem;
 
     public FormStash(IGitUICommands commands, string? initialStash = null)
         : base(commands)
@@ -133,10 +135,8 @@ public sealed partial class FormStash : GitModuleForm
         Stashes.SelectedItem = null;
         Stashes.ComboBox.DisplayMember = nameof(GitStash.Summary);
         Stashes.Items.Clear();
-        foreach (GitStash stashedItem in stashedItems)
-        {
-            Stashes.Items.Add(stashedItem);
-        }
+
+        Stashes.Items.AddRange(stashedItems.ToArray());
 
         if (_lastSelectedStashIndex > 0)
         {
@@ -202,8 +202,6 @@ public sealed partial class FormStash : GitModuleForm
     }
 
     #region Hotkey commands
-
-    public static readonly string HotkeySettingsName = "Stash";
 
     internal enum Command
     {

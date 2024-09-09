@@ -75,10 +75,7 @@ public partial class SearchControl<T> : UserControl, IDisposable where T : class
         listBoxSearchResult.BeginUpdate();
         listBoxSearchResult.Items.Clear();
 
-        foreach (T candidate in candidates.Take(20))
-        {
-            listBoxSearchResult.Items.Add(candidate);
-        }
+        listBoxSearchResult.Items.AddRange(candidates.Take(20).ToArray());
 
         listBoxSearchResult.EndUpdate();
         if (listBoxSearchResult.Items.Count > 0)
