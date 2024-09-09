@@ -252,21 +252,18 @@ namespace GitUI.CommandsDialogs.RepoHosting
         private void LoadListView()
         {
             Validates.NotNull(_pullRequestsInfo);
-            foreach (IPullRequestInformation info in _pullRequestsInfo)
+            _pullRequestsList.Items.AddRange(_pullRequestsInfo.Select(info => new ListViewItem
             {
-                _pullRequestsList.Items.Add(new ListViewItem
-                {
-                    Text = info.Id,
-                    Tag = info,
-                    SubItems =
+                Text = info.Id,
+                Tag = info,
+                SubItems =
                     {
                         info.Title,
                         info.Owner,
                         info.Created.ToString(),
                         info.FetchBranch,
                     }
-                });
-            }
+            }).ToArray());
 
             ResizeColumnsToFitContent();
 
