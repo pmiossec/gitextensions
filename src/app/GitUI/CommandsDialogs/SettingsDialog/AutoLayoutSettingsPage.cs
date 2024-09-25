@@ -7,8 +7,8 @@ namespace GitUI.CommandsDialogs.SettingsDialog
     {
         private ISettingsLayout? _settingsLayout;
 
-        public AutoLayoutSettingsPage(IServiceProvider serviceProvider)
-           : base(serviceProvider)
+        public AutoLayoutSettingsPage(IServiceProvider serviceProvider, bool isRepoValid)
+           : base(serviceProvider, isRepoValid)
         {
         }
 

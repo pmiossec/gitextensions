@@ -5,8 +5,8 @@ namespace GitUI.CommandsDialogs.SettingsDialog.Pages
 {
     public partial class AdvancedSettingsPage : SettingsPageWithHeader
     {
-        public AdvancedSettingsPage(IServiceProvider serviceProvider)
-            : base(serviceProvider)
+        public AdvancedSettingsPage(IServiceProvider serviceProvider, bool isRepoValid)
+            : base(serviceProvider, isRepoValid)
         {
             InitializeComponent();
             InitializeComplete();

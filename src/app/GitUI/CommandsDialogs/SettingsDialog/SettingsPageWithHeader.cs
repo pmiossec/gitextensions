@@ -10,11 +10,10 @@ namespace GitUI.CommandsDialogs.SettingsDialog
         private SettingsPageHeader? _header;
         private bool _isrepoValid;
 
-        public SettingsPageWithHeader(IServiceProvider serviceProvider)
+        public SettingsPageWithHeader(IServiceProvider serviceProvider, bool isRepoValid)
             : base(serviceProvider)
         {
-            IGitModule gitModule = (serviceProvider as GitUICommands).Module;
-            _isrepoValid = gitModule.IsValidGitWorkingDir();
+            _isrepoValid = isRepoValid;
         }
 
         public override Control GuiControl => _header ??= new SettingsPageHeader(this, _isrepoValid);

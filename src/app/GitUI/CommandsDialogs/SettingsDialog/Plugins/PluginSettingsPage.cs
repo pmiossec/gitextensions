@@ -9,8 +9,8 @@ namespace GitUI.CommandsDialogs.SettingsDialog.Plugins
         private IGitPlugin? _gitPlugin;
         private GitPluginSettingsContainer? _settingsContainer;
 
-        public PluginSettingsPage(IServiceProvider serviceProvider)
-           : base(serviceProvider)
+        public PluginSettingsPage(IServiceProvider serviceProvider, bool isRepoValid)
+           : base(serviceProvider, isRepoValid)
         {
             InitializeComponent();
         }
@@ -37,9 +37,9 @@ namespace GitUI.CommandsDialogs.SettingsDialog.Plugins
             InitializeComplete();
         }
 
-        public static PluginSettingsPage CreateSettingsPageFromPlugin(ISettingsPageHost pageHost, IGitPlugin gitPlugin, IServiceProvider serviceProvider)
+        public static PluginSettingsPage CreateSettingsPageFromPlugin(ISettingsPageHost pageHost, IGitPlugin gitPlugin, IServiceProvider serviceProvider, bool isRepoValid)
         {
-            PluginSettingsPage result = Create<PluginSettingsPage>(pageHost, serviceProvider);
+            PluginSettingsPage result = Create<PluginSettingsPage>(pageHost, serviceProvider, isRepoValid);
             result.Init(gitPlugin);
             return result;
         }

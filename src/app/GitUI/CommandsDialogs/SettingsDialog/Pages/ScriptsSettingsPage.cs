@@ -104,8 +104,8 @@ Diff selection:
         // we need to track that so we load images before we bind the list
         private bool _imagesLoaded;
 
-        public ScriptsSettingsPage(IServiceProvider serviceProvider)
-            : base(serviceProvider)
+        public ScriptsSettingsPage(IServiceProvider serviceProvider, bool isRepoValid)
+            : base(serviceProvider, isRepoValid)
         {
             _scriptsManager = serviceProvider.GetRequiredService<IScriptsManager>();
 
