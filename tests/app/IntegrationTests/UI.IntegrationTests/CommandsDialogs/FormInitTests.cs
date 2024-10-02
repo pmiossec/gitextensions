@@ -1,4 +1,5 @@
 ﻿using CommonTestUtils;
+using FluentAssertions;
 using GitUI;
 using GitUI.CommandsDialogs;
 
@@ -75,7 +76,7 @@ namespace GitExtensions.UITests.CommandsDialogs
             RunFormTest(
                 form =>
                 {
-                    Assert.IsTrue(form.GetTestAccessor().IsRootedDirectoryPath(input));
+                    form.GetTestAccessor().IsRootedDirectoryPath(input).Should().BeTrue();
                 },
                 currentDir);
         }

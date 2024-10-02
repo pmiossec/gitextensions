@@ -396,7 +396,7 @@ namespace GitCommandsTests.Remote
             List<IConfigSection> sections = [new ConfigSection($"{ConfigFileRemoteSettingsManager.DisabledSectionPrefix}{ConfigFileRemoteSettingsManager.SectionRemote}.{disabledRemoteName}", true)];
             _configFile.GetConfigSections().Returns(x => sections);
 
-            Assert.IsTrue(_remotesManager.EnabledRemoteExists(enabledRemoteName));
+            _remotesManager.EnabledRemoteExists(enabledRemoteName).Should().BeTrue();
             Assert.IsFalse(_remotesManager.EnabledRemoteExists(disabledRemoteName));
         }
 
@@ -411,7 +411,7 @@ namespace GitCommandsTests.Remote
             List<IConfigSection> sections = [new ConfigSection($"{ConfigFileRemoteSettingsManager.DisabledSectionPrefix}{ConfigFileRemoteSettingsManager.SectionRemote}.{disabledRemoteName}", true)];
             _configFile.GetConfigSections().Returns(x => sections);
 
-            Assert.IsTrue(_remotesManager.DisabledRemoteExists(disabledRemoteName));
+            _remotesManager.DisabledRemoteExists(disabledRemoteName).Should().BeTrue();
             Assert.IsFalse(_remotesManager.DisabledRemoteExists(enabledRemoteName));
         }
 

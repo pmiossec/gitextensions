@@ -170,7 +170,7 @@ namespace GitExtensions.UITests.CommandsDialogs
 
             RunFormTest(form =>
             {
-                Assert.IsEmpty(form.GetTestAccessor().Message.Text);
+                form.GetTestAccessor().Message.Text.Should().BeEmpty();
                 form.GetTestAccessor().Message.Text = generatedCommitMessage;
             });
 
@@ -197,7 +197,7 @@ namespace GitExtensions.UITests.CommandsDialogs
 
             RunFormTest(form =>
             {
-                Assert.IsEmpty(form.GetTestAccessor().Message.Text);
+                form.GetTestAccessor().Message.Text.Should().BeEmpty();
             });
         }
 
@@ -294,7 +294,7 @@ namespace GitExtensions.UITests.CommandsDialogs
 
                 Assert.AreEqual(2, testform.StagedList.AllItemsCount);
                 Assert.AreEqual(1, testform.UnstagedList.AllItemsCount);
-                Assert.IsTrue(fileNotMatchedByFilterIsStillUnstaged);
+                fileNotMatchedByFilterIsStillUnstaged.Should().BeTrue();
             });
         }
 
@@ -340,7 +340,7 @@ namespace GitExtensions.UITests.CommandsDialogs
 
                 Assert.AreEqual(2, testform.UnstagedList.AllItemsCount);
                 Assert.AreEqual(1, testform.StagedList.AllItemsCount);
-                Assert.IsTrue(fileNotMatchedByFilterIsStillStaged);
+                fileNotMatchedByFilterIsStillStaged.Should().BeTrue();
             });
         }
 
@@ -539,7 +539,7 @@ namespace GitExtensions.UITests.CommandsDialogs
                     // - if the user does not change the geometry, the height will oscillate to a constant value
                     int height1 = bounds1.Height;
                     int height2 = bounds2.Height;
-                    Assert.IsTrue(height1 >= height2 - 1 && height1 <= height2 + 1);
+                    (height1 >= height2 - 1 && height1 <= height2 + 1).Should().BeTrue();
                 });
         }
 

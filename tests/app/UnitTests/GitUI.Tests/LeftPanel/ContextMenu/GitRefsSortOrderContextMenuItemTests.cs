@@ -1,4 +1,5 @@
-﻿using GitCommands;
+﻿using FluentAssertions;
+using GitCommands;
 using GitCommands.Utils;
 using GitUI.LeftPanel.ContextMenu;
 using GitUIPluginInterfaces;
@@ -24,7 +25,7 @@ namespace GitUITests.UserControls
         [Test]
         public void Should_show_all_sort_options()
         {
-            Assert.IsTrue(_itemUnderTest.HasDropDownItems);
+            _itemUnderTest.HasDropDownItems.Should().BeTrue();
             Assert.AreEqual(EnumHelper.GetValues<GitRefsSortOrder>().Length, _itemUnderTest.DropDownItems.Count);
         }
 
@@ -83,7 +84,7 @@ namespace GitUITests.UserControls
         private void AssertOnlyCheckedItemIs(GitRefsSortOrder sortType)
         {
             ToolStripMenuItem matchingSubItem = _itemUnderTest.DropDownItems.Cast<ToolStripMenuItem>().Single(i => i.Tag.Equals(sortType));
-            Assert.IsTrue(matchingSubItem.Checked);
+            matchingSubItem.Checked.Should().BeTrue();
 
             foreach (ToolStripMenuItem otherItem in _itemUnderTest.DropDownItems.Cast<ToolStripMenuItem>().Except(new[] { matchingSubItem }))
             {

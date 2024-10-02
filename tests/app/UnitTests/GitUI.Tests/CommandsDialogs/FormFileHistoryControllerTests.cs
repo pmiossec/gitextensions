@@ -1,4 +1,5 @@
 ﻿using CommonTestUtils;
+using FluentAssertions;
 using GitUI.CommandsDialogs;
 
 namespace GitUITests.CommandsDialogs
@@ -34,7 +35,7 @@ namespace GitUITests.CommandsDialogs
             string lowercasePath = path.ToLower();
             bool isExistingOnFileSystem = _controller.TryGetExactPath(lowercasePath, out string exactPath);
 
-            Assert.IsTrue(isExistingOnFileSystem);
+            isExistingOnFileSystem.Should().BeTrue();
 
             Assert.AreEqual(path, exactPath);
         }

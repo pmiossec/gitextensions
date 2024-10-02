@@ -51,9 +51,9 @@ namespace UITests.CommandsDialogs.SettingsDialog.Pages
               {
                   await AsyncTestHelper.JoinPendingOperationsAsync(AsyncTestHelper.UnexpectedTimeout);
 
-                  Assert.AreEqual(/* default None + GenericBuildServerMock */2, _settingsPage.GetTestAccessor().BuildServerType.Items.Count);
-                  Assert.AreEqual(0, _settingsPage.GetTestAccessor().BuildServerType.SelectedIndex);
-                  Assert.AreEqual("GenericBuildServerMock", _settingsPage.GetTestAccessor().BuildServerType.Items[1]);
+                  Assert.That(_settingsPage.GetTestAccessor().BuildServerType.Items.Count, Is.EqualTo(2));
+                  Assert.That(_settingsPage.GetTestAccessor().BuildServerType.SelectedIndex, Is.EqualTo(0));
+                  Assert.That(_settingsPage.GetTestAccessor().BuildServerType.Items[1], Is.EqualTo("GenericBuildServerMock"));
               });
         }
 
@@ -66,12 +66,12 @@ namespace UITests.CommandsDialogs.SettingsDialog.Pages
                   await AsyncTestHelper.JoinPendingOperationsAsync(AsyncTestHelper.UnexpectedTimeout);
 
                   // Default option, no custom control
-                  Assert.AreEqual(0, _settingsPage.GetTestAccessor().buildServerSettingsPanel.Controls.Count);
+                  Assert.That(_settingsPage.GetTestAccessor().buildServerSettingsPanel.Controls.Count, Is.EqualTo(0));
 
                   // Select the custom build server
                   _settingsPage.GetTestAccessor().BuildServerType.SelectedIndex = 1;
-                  Assert.AreEqual(1, _settingsPage.GetTestAccessor().buildServerSettingsPanel.Controls.Count);
-                  Assert.IsInstanceOf<IBuildServerSettingsUserControl>(_settingsPage.GetTestAccessor().buildServerSettingsPanel.Controls[0]);
+                  Assert.That(_settingsPage.GetTestAccessor().buildServerSettingsPanel.Controls.Count, Is.EqualTo(1));
+                  Assert.That(_settingsPage.GetTestAccessor().buildServerSettingsPanel.Controls[0], Is.InstanceOf<IBuildServerSettingsUserControl>());
               });
         }
 

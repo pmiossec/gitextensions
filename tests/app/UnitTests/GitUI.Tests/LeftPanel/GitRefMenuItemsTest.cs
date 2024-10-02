@@ -1,4 +1,5 @@
 ﻿using System.Runtime.CompilerServices;
+using FluentAssertions;
 using GitUI.LeftPanel.ContextMenu;
 using GitUI.LeftPanel.Interfaces;
 using NSubstitute;
@@ -64,7 +65,7 @@ namespace GitUITests.LeftPanel
         {
             // Act
             ToolStripItemWithKey[] menuItems = group.ToArray();
-            Assert.IsEmpty(_factoryQueue);
+            _factoryQueue.Should().BeEmpty();
             Assert.AreEqual(menuItems.Length, expectedTotal);
             int testIndex = 0;
             AssertItem(menuItems[testIndex++], nameof(TestBranchNode.Checkout));

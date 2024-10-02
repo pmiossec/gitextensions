@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using System.Text.RegularExpressions;
+using FluentAssertions;
 using GitExtensions.Extensibility.Git;
 using GitUIPluginInterfaces;
 using JetBrains.Annotations;
@@ -143,19 +144,19 @@ namespace GitCommandsTests.Git
         [Test]
         public void WorkTreeId_is_artificial()
         {
-            Assert.IsTrue(ObjectId.WorkTreeId.IsArtificial);
+            ObjectId.WorkTreeId.IsArtificial.Should().BeTrue();
         }
 
         [Test]
         public void IndexId_is_artificial()
         {
-            Assert.IsTrue(ObjectId.IndexId.IsArtificial);
+            ObjectId.IndexId.IsArtificial.Should().BeTrue();
         }
 
         [Test]
         public void CombinedDiffId_is_artificial()
         {
-            Assert.IsTrue(ObjectId.CombinedDiffId.IsArtificial);
+            ObjectId.CombinedDiffId.IsArtificial.Should().BeTrue();
         }
 
         [Test]
@@ -302,10 +303,10 @@ namespace GitCommandsTests.Git
         public void Equals_using_operator()
         {
             string objectIdString = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
-            Assert.IsTrue(ObjectId.Parse(objectIdString) == ObjectId.Parse(objectIdString));
+            (ObjectId.Parse(objectIdString) == ObjectId.Parse(objectIdString)).Should().BeTrue();
             Assert.IsFalse(ObjectId.Parse(objectIdString) != ObjectId.Parse(objectIdString));
             Assert.IsFalse(ObjectId.Parse(objectIdString) == ObjectId.Random());
-            Assert.IsTrue(ObjectId.Parse(objectIdString) != ObjectId.Random());
+            (ObjectId.Parse(objectIdString) != ObjectId.Random()).Should().BeTrue();
         }
     }
 }

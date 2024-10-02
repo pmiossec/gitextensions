@@ -1,4 +1,5 @@
-﻿using GitCommands;
+﻿using FluentAssertions;
+using GitCommands;
 
 namespace GitCommandsTests.Git
 {
@@ -61,8 +62,8 @@ namespace GitCommandsTests.Git
         [Test]
         public void IsRemoteHead()
         {
-            Assert.IsTrue(GitRefName.IsRemoteHead("refs/remotes/origin/HEAD"));
-            Assert.IsTrue(GitRefName.IsRemoteHead("refs/remotes/upstream/HEAD"));
+            GitRefName.IsRemoteHead("refs/remotes/origin/HEAD").Should().BeTrue();
+            GitRefName.IsRemoteHead("refs/remotes/upstream/HEAD").Should().BeTrue();
 
             Assert.IsFalse(GitRefName.IsRemoteHead("refs/remotes/ori/gin/HEAD"));
             Assert.IsFalse(GitRefName.IsRemoteHead("refs/remotes//HEAD"));

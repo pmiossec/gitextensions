@@ -1,3 +1,4 @@
+using FluentAssertions;
 using GitCommands;
 using GitCommands.Git;
 using GitExtensions.Extensibility.Configurations;
@@ -30,7 +31,7 @@ namespace GitCommandsTests_Git
             IGitCommand cmd = Commands.DeleteBranch(new IGitRef[] { remoteBranchRef }, force: false);
 
             Assert.IsFalse(cmd.AccessesRemote);
-            Assert.IsTrue(cmd.ChangesRepoState);
+            cmd.ChangesRepoState.Should().BeTrue();
         }
 
         private static IEnumerable<TestCaseData> DeleteBranchTestData

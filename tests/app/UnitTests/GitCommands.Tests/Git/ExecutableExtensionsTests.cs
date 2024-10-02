@@ -2,6 +2,7 @@
 using System.Reflection;
 using System.Text;
 using CommonTestUtils;
+using FluentAssertions;
 using GitCommands;
 using GitCommands.Settings;
 using GitExtensions.Extensibility;
@@ -81,9 +82,9 @@ namespace GitCommandsTests.Git
 
             // Validate data stored in cache afterwards
             Assert.AreEqual(1, cache.GetCachedCommands().Count);
-            Assert.IsTrue(cache.TryGet(arguments, out string? outputBytes, out string? errorBytes));
+            cache.TryGet(arguments, out string? outputBytes, out string? errorBytes).Should().BeTrue();
             Assert.AreEqual(GitModule.SystemEncoding.GetBytes(commandOutput), outputBytes);
-            Assert.IsEmpty(errorBytes);
+            errorBytes.Should().BeEmpty();
         }
 
         // Process argument upper bound is actually (short.MaxValue - 1)
@@ -110,7 +111,7 @@ namespace GitCommandsTests.Git
             int index = 0;
             ExecutionResult? result = _gitExecutable.RunBatchCommand(args, (eventArgs) =>
             {
-                Assert.IsTrue(eventArgs.ExecutionResult);
+                eventArgs.ExecutionResult.Should().BeTrue();
                 Assert.AreEqual(expectedProcessedCounts[index], eventArgs.ProcessedCount);
                 index++;
             });

@@ -1,4 +1,5 @@
-﻿using GitCommands;
+﻿using FluentAssertions;
+using GitCommands;
 
 namespace GitCommandsTests
 {
@@ -52,7 +53,7 @@ namespace GitCommandsTests
                 for (int chunkIndex = 0; chunkIndex < expectedChunks.Length; chunkIndex++)
                 {
                     byte[] expected = expectedChunks[chunkIndex];
-                    Assert.IsTrue(e.MoveNext());
+                    e.MoveNext().Should().BeTrue();
                     Assert.AreEqual(
                         expected,
                         e.Current.ToArray(),

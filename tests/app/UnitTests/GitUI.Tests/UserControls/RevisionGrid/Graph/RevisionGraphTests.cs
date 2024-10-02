@@ -78,13 +78,13 @@ namespace GitUITests.UserControls.RevisionGrid
             Setup(mergeGraphLanesHavingCommonParent);
 
             _revisionGraph.CacheTo(_revisionGraph.Count, _revisionGraph.Count);
-            Assert.IsTrue(_revisionGraph.GetNodeForRow(0).IsRelative);
-            Assert.IsTrue(_revisionGraph.GetNodeForRow(1).IsRelative);
-            Assert.IsTrue(_revisionGraph.GetNodeForRow(4).IsRelative);
+            _revisionGraph.GetNodeForRow(0).IsRelative.Should().BeTrue();
+            _revisionGraph.GetNodeForRow(1).IsRelative.Should().BeTrue();
+            _revisionGraph.GetNodeForRow(4).IsRelative.Should().BeTrue();
             _revisionGraph.HighlightBranch(_revisionGraph.GetNodeForRow(1).Objectid);
             Assert.IsFalse(_revisionGraph.GetNodeForRow(0).IsRelative);
-            Assert.IsTrue(_revisionGraph.GetNodeForRow(1).IsRelative);
-            Assert.IsTrue(_revisionGraph.GetNodeForRow(4).IsRelative);
+            _revisionGraph.GetNodeForRow(1).IsRelative.Should().BeTrue();
+            _revisionGraph.GetNodeForRow(4).IsRelative.Should().BeTrue();
         }
 
         [Test]
@@ -112,7 +112,7 @@ namespace GitUITests.UserControls.RevisionGrid
             Setup(mergeGraphLanesHavingCommonParent);
 
             _revisionGraph.CacheTo(_revisionGraph.Count, _revisionGraph.Count);
-            Assert.IsTrue(_revisionGraph.GetTestAccessor().ValidateTopoOrder());
+            _revisionGraph.GetTestAccessor().ValidateTopoOrder().Should().BeTrue();
 
             GitRevision commit1 = new(ObjectId.Random());
 
@@ -123,12 +123,12 @@ namespace GitUITests.UserControls.RevisionGrid
             _revisionGraph.Add(commit2); // This commit is now dangling
 
             _revisionGraph.CacheTo(_revisionGraph.Count, _revisionGraph.Count);
-            Assert.IsTrue(_revisionGraph.GetTestAccessor().ValidateTopoOrder());
+            _revisionGraph.GetTestAccessor().ValidateTopoOrder().Should().BeTrue();
 
             _revisionGraph.Add(commit1); // Add the connecting commit
 
             _revisionGraph.CacheTo(_revisionGraph.Count, _revisionGraph.Count);
-            Assert.IsTrue(_revisionGraph.GetTestAccessor().ValidateTopoOrder());
+            _revisionGraph.GetTestAccessor().ValidateTopoOrder().Should().BeTrue();
 
             // Add a new head
             GitRevision newHead = new(ObjectId.Random());
@@ -136,7 +136,7 @@ namespace GitUITests.UserControls.RevisionGrid
             _revisionGraph.Add(newHead); // Add commit that has the current top node as parent.
 
             _revisionGraph.CacheTo(_revisionGraph.Count, _revisionGraph.Count); // Call to cache fix the order
-            Assert.IsTrue(_revisionGraph.GetTestAccessor().ValidateTopoOrder());
+            _revisionGraph.GetTestAccessor().ValidateTopoOrder().Should().BeTrue();
         }
 
         [Test] // https://github.com/gitextensions/gitextensions/issues/6193

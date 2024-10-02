@@ -129,8 +129,8 @@ namespace GitCommandsTests
         [Test]
         public void ParseRefs()
         {
-            Assert.IsEmpty(_gitModule.ParseRefs(""));
-            Assert.IsEmpty(_gitModule.ParseRefs("Foo"));
+            _gitModule.ParseRefs("").Should().BeEmpty();
+            _gitModule.ParseRefs("Foo").Should().BeEmpty();
 
             const string refList =
                 "69a7c7a40230346778e7eebed809773a6bc45268 refs/heads/master\n" +
@@ -146,36 +146,36 @@ namespace GitCommandsTests
             Assert.AreEqual("refs/heads/master", refs[0].CompleteName);
             Assert.AreEqual("master", refs[0].LocalName);
             Assert.AreEqual("", refs[0].Remote);
-            Assert.IsTrue(refs[0].IsHead);
-            Assert.IsFalse(refs[0].IsRemote);
-            Assert.IsFalse(refs[0].IsTag);
+            refs[0].IsHead.Should().BeTrue();
+            refs[0].IsRemote.Should().BeFalse();
+            refs[0].IsTag.Should().BeFalse();
             Assert.AreSame(_gitModule, refs[0].Module);
 
             Assert.AreEqual("69a7c7a40230346778e7eebed809773a6bc45268", refs[1].Guid);
             Assert.AreEqual("refs/remotes/origin/master", refs[1].CompleteName);
             Assert.AreEqual("master", refs[1].LocalName);
             Assert.AreEqual("origin", refs[1].Remote);
-            Assert.IsFalse(refs[1].IsHead);
-            Assert.IsTrue(refs[1].IsRemote);
-            Assert.IsFalse(refs[1].IsTag);
+            refs[1].IsHead.Should().BeFalse();
+            refs[1].IsRemote.Should().BeTrue();
+            refs[1].IsTag.Should().BeFalse();
             Assert.AreSame(_gitModule, refs[1].Module);
 
             Assert.AreEqual("5303e7114f1896c639dea0231fac522752cc44a2", refs[2].Guid);
             Assert.AreEqual("refs/remotes/upstream/mono", refs[2].CompleteName);
             Assert.AreEqual("mono", refs[2].LocalName);
             Assert.AreEqual("upstream", refs[2].Remote);
-            Assert.IsFalse(refs[2].IsHead);
-            Assert.IsTrue(refs[2].IsRemote);
-            Assert.IsFalse(refs[2].IsTag);
+            refs[2].IsHead.Should().BeFalse();
+            refs[2].IsRemote.Should().BeTrue();
+            refs[2].IsTag.Should().BeFalse();
             Assert.AreSame(_gitModule, refs[2].Module);
 
             Assert.AreEqual("366dfba1abf6cb98d2934455713f3d190df2ba34", refs[3].Guid);
             Assert.AreEqual("refs/tags/2.51", refs[3].CompleteName);
             Assert.AreEqual("2.51", refs[3].LocalName);
             Assert.AreEqual("", refs[3].Remote);
-            Assert.IsFalse(refs[3].IsHead);
-            Assert.IsFalse(refs[3].IsRemote);
-            Assert.IsTrue(refs[3].IsTag);
+            refs[3].IsHead.Should().BeFalse();
+            refs[3].IsRemote.Should().BeFalse();
+            refs[3].IsTag.Should().BeTrue();
             Assert.AreSame(_gitModule, refs[3].Module);
         }
 

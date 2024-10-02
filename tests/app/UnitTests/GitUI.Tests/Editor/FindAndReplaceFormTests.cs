@@ -1,4 +1,5 @@
-﻿using GitUI;
+﻿using FluentAssertions;
+using GitUI;
 using ICSharpCode.TextEditor;
 using ICSharpCode.TextEditor.Document;
 
@@ -208,7 +209,7 @@ namespace GitUITests.Editor
         {
             Arrange("line 1\r\nline 2\r\nline 3", "line", scanRegion: new TextRegion(new TextLocation(0, 1), new TextLocation(0, 2)));
 
-            Assert.IsTrue(_testAccessor.Search.HasScanRegion);
+            _testAccessor.Search.HasScanRegion.Should().BeTrue();
 
             _textEditorControl.Text = "new text";
 

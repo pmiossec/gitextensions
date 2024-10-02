@@ -1,4 +1,5 @@
-﻿using GitExtensions.Extensibility.Git;
+﻿using FluentAssertions;
+using GitExtensions.Extensibility.Git;
 using GitUI.UserControls.RevisionGrid.Graph;
 using GitUIPluginInterfaces;
 
@@ -64,7 +65,7 @@ namespace GitUITests.UserControls.RevisionGrid
                 _revisionGraph.CacheTo(_revisionGraph.Count, _revisionGraph.Count);
 
                 // Validate topo order
-                Assert.IsTrue(_revisionGraph.GetTestAccessor().ValidateTopoOrder());
+                _revisionGraph.GetTestAccessor().ValidateTopoOrder().Should().BeTrue();
             }
         }
 

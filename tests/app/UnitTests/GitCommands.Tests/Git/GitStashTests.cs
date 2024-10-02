@@ -1,4 +1,5 @@
-﻿using GitUIPluginInterfaces;
+﻿using FluentAssertions;
+using GitUIPluginInterfaces;
 
 namespace GitCommandsTests.Git
 {
@@ -11,7 +12,7 @@ namespace GitCommandsTests.Git
         [TestCase("stash@{3}: WIP on master: Test", 3, "stash@{3}", "WIP on master: Test")]
         public void Can_parse_stash_names(string rawStash, int index, string name, string message)
         {
-            Assert.IsTrue(GitStash.TryParse(rawStash, out GitStash? stash));
+            GitStash.TryParse(rawStash, out GitStash? stash).Should().BeTrue();
 
             Assert.NotNull(stash);
             Assert.AreEqual(index, stash.Index);

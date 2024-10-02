@@ -232,7 +232,7 @@ namespace GitUITests.CommandsDialogs
             PopulateTreeView(nativeTreeView, @"folder2\file2");
             bool isNodeFound = _controller.SelectFileOrFolder(nativeTreeView, "folder1");
 
-            Assert.IsTrue(isNodeFound);
+            isNodeFound.Should().BeTrue();
             Assert.AreEqual("folder1", nativeTreeView.SelectedNode.FullPath);
         }
 
@@ -244,7 +244,7 @@ namespace GitUITests.CommandsDialogs
             PopulateTreeView(nativeTreeView, @"folder1\file2");
             bool isNodeFound = _controller.SelectFileOrFolder(nativeTreeView, @"folder1\file1");
 
-            Assert.IsTrue(isNodeFound);
+            isNodeFound.Should().BeTrue();
             Assert.AreEqual(@"folder1\file1", nativeTreeView.SelectedNode.FullPath);
         }
 
@@ -269,7 +269,7 @@ namespace GitUITests.CommandsDialogs
             PopulateTreeView(nativeTreeView, @"folder1\subfolder4\subfolder5\file2");
             bool isNodeFound = _controller.SelectFileOrFolder(nativeTreeView, @"folder1\subfolder1\subfolder2\file2");
 
-            Assert.IsTrue(isNodeFound);
+            isNodeFound.Should().BeTrue();
             Assert.AreEqual(@"folder1\subfolder1\subfolder2\file2", nativeTreeView.SelectedNode.FullPath);
         }
 

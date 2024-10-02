@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using FluentAssertions;
 using GitCommands;
 using GitCommands.Config;
 using GitExtUtils;
@@ -104,7 +105,7 @@ namespace GitCommandsTests.Config
                 GitModule.SystemEncoding.GetBytes(
                     string.Format("[branch \"BranchName1\"]{0}\tremote = origin1{0}", Environment.NewLine));
 
-            Assert.IsTrue(File.Exists(GetConfigFileName()));
+            File.Exists(GetConfigFileName()).Should().BeTrue();
             byte[] fileContent = File.ReadAllBytes(GetConfigFileName());
 
             Assert.AreEqual(expectedFileContent.Length, fileContent.Length);

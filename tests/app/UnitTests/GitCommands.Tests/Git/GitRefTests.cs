@@ -1,4 +1,5 @@
-﻿using GitCommands;
+﻿using FluentAssertions;
+using GitCommands;
 using GitExtensions.Extensibility.Configurations;
 using GitExtensions.Extensibility.Git;
 using NSubstitute;
@@ -16,7 +17,7 @@ namespace GitCommandsTests.Git
 
             GitRef remoteBranchRef = SetupRemoteRef(remoteBranchShortName, remoteName);
 
-            Assert.IsTrue(localBranchRef.IsTrackingRemote(remoteBranchRef));
+            localBranchRef.IsTrackingRemote(remoteBranchRef).Should().BeTrue();
         }
 
         [Test]

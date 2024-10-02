@@ -1,3 +1,4 @@
+using FluentAssertions;
 using GitCommands;
 
 namespace GitCommandsTests.Git
@@ -22,7 +23,7 @@ namespace GitCommandsTests.Git
 
             _cache.Add("git command", output, error);
 
-            Assert.IsTrue(expectedCachedCommand.SequenceEqual(_cache.GetCachedCommands()));
+            expectedCachedCommand.SequenceEqual(_cache.GetCachedCommands()).Should().BeTrue();
         }
 
         [Test]
@@ -40,7 +41,7 @@ namespace GitCommandsTests.Git
 
             _cache.Add("git command", originalOutput, originalError);
 
-            Assert.IsTrue(_cache.TryGet("git command", out string? cachedOutput, out string? cachedError));
+            _cache.TryGet("git command", out string? cachedOutput, out string? cachedError).Should().BeTrue();
             Assert.AreEqual(cachedOutput, originalOutput);
             Assert.AreEqual(cachedError, originalError);
         }

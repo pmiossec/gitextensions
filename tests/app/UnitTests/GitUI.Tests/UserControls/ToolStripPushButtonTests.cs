@@ -171,7 +171,7 @@ namespace GitUITests.UserControls
             int updatedSize = _sut.GetTestAccessor().GetButtonWidth();
             _sut.ResetBeforeUpdate();
             _sut.GetTestAccessor().GetButtonWidth().Should().Be(updatedSize);
-            _sut.GetTestAccessor().GetButtonText().IsNullOrEmpty().Should().BeTrue();
+            string.IsNullOrEmpty(_sut.GetTestAccessor().GetButtonText()).Should().BeTrue();
             _sut.DisplayStyle.Should().Be(ToolStripItemDisplayStyle.ImageAndText);
         }
     }
