@@ -97,7 +97,7 @@ namespace GitExtensions.UITests.CommandsDialogs
             UITest.RunForm(
                 () =>
                 {
-                    Assert.True(_commands.StartInitializeDialog(owner: null, path));
+                    _commands.StartInitializeDialog(owner: null, path).Should().BeTrue();
                 },
                 testDriverAsync);
         }

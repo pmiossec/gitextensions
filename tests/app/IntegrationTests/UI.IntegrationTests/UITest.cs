@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using CommonTestUtils;
+using FluentAssertions;
 using GitUI;
 using GitUIPluginInterfaces;
 using Microsoft.VisualStudio.Threading;
@@ -109,7 +110,7 @@ namespace GitExtensions.UITests
                 {
                     Form form = new() { Text = $"Test {typeof(T).Name}" };
                     control = createControl(form);
-                    Assert.True(form.Controls.Contains(control));
+                    form.Controls.Contains(control).Should().BeTrue();
                     Application.Run(form);
                 },
                 runTestAsync: form => runTestAsync(control));

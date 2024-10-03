@@ -1,4 +1,5 @@
-﻿using GitCommands.Git;
+﻿using FluentAssertions;
+using GitCommands.Git;
 
 namespace GitCommandsTests.Git
 {
@@ -8,14 +9,14 @@ namespace GitCommandsTests.Git
         [Test]
         public void ShouldExtractOldVersionOfDetachedHeadOutput()
         {
-            Assert.True(DetachedHeadParser.TryParse("(detached from c299581)", out string? sha1));
+            DetachedHeadParser.TryParse("(detached from c299581)", out string? sha1).Should().BeTrue();
             Assert.AreEqual("c299581", sha1);
         }
 
         [Test]
         public void ShouldExtractNewVersionOfDetachedHeadOutput()
         {
-            Assert.True(DetachedHeadParser.TryParse("(HEAD detached at c299582)", out string? sha1));
+            DetachedHeadParser.TryParse("(HEAD detached at c299582)", out string? sha1).Should().BeTrue();
             Assert.AreEqual("c299582", sha1);
         }
     }

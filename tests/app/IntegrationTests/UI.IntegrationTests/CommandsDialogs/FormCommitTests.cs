@@ -407,33 +407,33 @@ namespace GitExtensions.UITests.CommandsDialogs
                 FormCommit.TestAccessor testForm = form.GetTestAccessor();
 
                 // check initial state
-                Assert.False(testForm.Amend.Checked);
-                Assert.False(testForm.ResetAuthor.Checked);
-                Assert.False(testForm.ResetAuthor.Visible);
+                testForm.Amend.Checked.Should().BeFalse();
+                testForm.ResetAuthor.Checked.Should().BeFalse();
+                testForm.ResetAuthor.Visible.Should().BeFalse();
 
                 testForm.Amend.Checked = true;
 
                 // check that reset author checkbox becomes visible when amend is checked
-                Assert.True(testForm.Amend.Checked);
-                Assert.True(testForm.ResetAuthor.Visible);
+                testForm.Amend.Checked.Should().BeTrue();
+                testForm.ResetAuthor.Visible.Should().BeTrue();
 
                 testForm.ResetAuthor.Checked = true;
 
-                Assert.True(testForm.Amend.Checked);
+                testForm.Amend.Checked.Should().BeTrue();
 
                 testForm.Amend.Checked = false;
 
                 // check that reset author checkbox becomes invisible and unchecked when amend is unchecked
-                Assert.False(testForm.Amend.Checked);
-                Assert.False(testForm.ResetAuthor.Checked);
-                Assert.False(testForm.ResetAuthor.Visible);
+                testForm.Amend.Checked.Should().BeFalse();
+                testForm.ResetAuthor.Checked.Should().BeFalse();
+                testForm.ResetAuthor.Visible.Should().BeFalse();
 
                 testForm.Amend.Checked = true;
 
                 // check that when amend is checked again reset author is still unchecked
-                Assert.True(testForm.Amend.Checked);
-                Assert.True(testForm.ResetAuthor.Visible);
-                Assert.False(testForm.ResetAuthor.Checked);
+                testForm.Amend.Checked.Should().BeTrue();
+                testForm.ResetAuthor.Visible.Should().BeTrue();
+                testForm.ResetAuthor.Checked.Should().BeFalse();
             });
         }
 

@@ -1,4 +1,5 @@
-﻿using GitUI;
+﻿using FluentAssertions;
+using GitUI;
 
 namespace GitUITests
 {
@@ -12,12 +13,12 @@ namespace GitUITests
 
             CancellationToken token1 = sequence.Next();
 
-            Assert.False(token1.IsCancellationRequested);
+            token1.IsCancellationRequested.Should().BeFalse();
 
             CancellationToken token2 = sequence.Next();
 
-            Assert.True(token1.IsCancellationRequested);
-            Assert.False(token2.IsCancellationRequested);
+            token1.IsCancellationRequested.Should().BeTrue();
+            token2.IsCancellationRequested.Should().BeFalse();
         }
 
         [Test]
@@ -37,11 +38,11 @@ namespace GitUITests
 
             CancellationToken token = sequence.Next();
 
-            Assert.False(token.IsCancellationRequested);
+            token.IsCancellationRequested.Should().BeFalse();
 
             sequence.CancelCurrent();
 
-            Assert.True(token.IsCancellationRequested);
+            token.IsCancellationRequested.Should().BeTrue();
         }
 
         [Test]
@@ -51,7 +52,7 @@ namespace GitUITests
 
             CancellationToken token = sequence.Next();
 
-            Assert.False(token.IsCancellationRequested);
+            token.IsCancellationRequested.Should().BeFalse();
 
             sequence.CancelCurrent();
             sequence.CancelCurrent();
@@ -74,11 +75,11 @@ namespace GitUITests
 
             CancellationToken token = sequence.Next();
 
-            Assert.False(token.IsCancellationRequested);
+            token.IsCancellationRequested.Should().BeFalse();
 
             sequence.Dispose();
 
-            Assert.True(token.IsCancellationRequested);
+            token.IsCancellationRequested.Should().BeTrue();
         }
 
         [Test]

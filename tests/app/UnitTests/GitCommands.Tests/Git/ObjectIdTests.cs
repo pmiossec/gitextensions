@@ -24,7 +24,7 @@ namespace GitCommandsTests.Git
         [TestCase("0123456789abcdef0123456789abcdef01234567")]
         public void TryParse_handles_valid_hashes(string sha1)
         {
-            Assert.True(ObjectId.TryParse(sha1, out ObjectId? id));
+            ObjectId.TryParse(sha1, out ObjectId? id).Should().BeTrue();
             Assert.AreEqual(sha1.ToLower(), id.ToString());
         }
 
@@ -36,7 +36,7 @@ namespace GitCommandsTests.Git
         [TestCase("  0000000000000000000000000000000000000000  ")]
         public void TryParse_identifies_invalid_hashes(string sha1)
         {
-            Assert.False(ObjectId.TryParse(sha1, out _));
+            ObjectId.TryParse(sha1, out _).Should().BeFalse();
         }
 
         [TestCase("0000000000000000000000000000000000000000", 0)]
@@ -47,7 +47,7 @@ namespace GitCommandsTests.Git
         [TestCase("__0102030405060708091011121314151617181920__", 2)]
         public void TryParse_with_offset_handles_valid_hashes(string sha1, int offset)
         {
-            Assert.True(ObjectId.TryParse(sha1, offset, out ObjectId? id));
+            ObjectId.TryParse(sha1, offset, out ObjectId? id).Should().BeTrue();
             Assert.AreEqual(
                 sha1.Substring(offset, 40),
                 id.ToString());
@@ -79,7 +79,7 @@ namespace GitCommandsTests.Git
         [TestCase("0123456789abcdef0123456789abcdef01234567")]
         public void IsValid_identifies_valid_hashes(string sha1)
         {
-            Assert.True(ObjectId.IsValid(sha1));
+            ObjectId.IsValid(sha1).Should().BeTrue();
         }
 
         [TestCase("00000000000000000000000000000000000000")]
@@ -90,7 +90,7 @@ namespace GitCommandsTests.Git
         [TestCase("  0000000000000000000000000000000000000000  ")]
         public void IsValid_identifies_invalid_hashes(string sha1)
         {
-            Assert.False(ObjectId.IsValid(sha1));
+            ObjectId.IsValid(sha1).Should().BeFalse();
         }
 
         [TestCase("0000000000000000000000000000000000000000", 0)]
@@ -269,9 +269,9 @@ namespace GitCommandsTests.Git
         [Test]
         public void TryParse_returns_false_when_array_null()
         {
-            Assert.False(ObjectId.TryParse(default, out ObjectId objectId));
+            ObjectId.TryParse(default, out ObjectId objectId).Should().BeFalse();
             Assert.Null(objectId);
-            Assert.False(ObjectId.TryParse(default(Span<byte>), out objectId));
+            ObjectId.TryParse(default(Span<byte>), out objectId).Should().BeFalse();
             Assert.Null(objectId);
         }
 
@@ -280,7 +280,7 @@ namespace GitCommandsTests.Git
         {
             byte[] bytes = new byte[ObjectId.Sha1CharCount];
 
-            Assert.False(ObjectId.TryParse(bytes.AsSpan(1), out ObjectId objectId));
+            ObjectId.TryParse(bytes.AsSpan(1), out ObjectId objectId).Should().BeFalse();
             Assert.Null(objectId);
         }
 

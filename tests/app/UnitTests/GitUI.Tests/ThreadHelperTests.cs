@@ -1,5 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 using CommonTestUtils;
+using FluentAssertions;
 using GitUI;
 using JetBrains.Annotations;
 using Microsoft.VisualStudio.Threading;
@@ -49,13 +50,13 @@ namespace GitUITests
         [Test]
         public void ThrowIfNotOnUIThread()
         {
-            Assert.True(ThreadHelper.JoinableTaskContext.IsOnMainThread);
+            ThreadHelper.JoinableTaskContext.IsOnMainThread.Should().BeTrue();
             ThreadHelper.ThrowIfNotOnUIThread();
             ThreadHelper.JoinableTaskFactory.Run(async () =>
             {
                 await TaskScheduler.Default;
 
-                Assert.False(ThreadHelper.JoinableTaskContext.IsOnMainThread);
+                ThreadHelper.JoinableTaskContext.IsOnMainThread.Should().BeFalse();
 
                 Assert.Throws<COMException>(() => ThreadHelper.ThrowIfNotOnUIThread());
             });
@@ -64,13 +65,13 @@ namespace GitUITests
         [Test]
         public void ThrowIfOnUIThread()
         {
-            Assert.True(ThreadHelper.JoinableTaskContext.IsOnMainThread);
+            ThreadHelper.JoinableTaskContext.IsOnMainThread.Should().BeTrue();
             Assert.Throws<COMException>(() => ThreadHelper.ThrowIfOnUIThread());
             ThreadHelper.JoinableTaskFactory.Run(async () =>
             {
                 await TaskScheduler.Default;
 
-                Assert.False(ThreadHelper.JoinableTaskContext.IsOnMainThread);
+                ThreadHelper.JoinableTaskContext.IsOnMainThread.Should().BeFalse();
 
                 ThreadHelper.ThrowIfOnUIThread();
             });
@@ -154,7 +155,7 @@ namespace GitUITests
             Assert.Null(SynchronizationContext.Current);
             Assert.NotNull(ThreadHelper.JoinableTaskContext);
             Assert.NotNull(ThreadHelper.JoinableTaskFactory);
-            Assert.False(ThreadHelper.JoinableTaskContext.IsOnMainThread);
+            ThreadHelper.JoinableTaskContext.IsOnMainThread.Should().BeFalse();
         }
 
         [Test]

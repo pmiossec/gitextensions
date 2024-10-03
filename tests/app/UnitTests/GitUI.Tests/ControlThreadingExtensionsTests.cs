@@ -1,4 +1,5 @@
 ﻿using CommonTestUtils;
+using FluentAssertions;
 using GitUI;
 using Microsoft.VisualStudio.Threading;
 
@@ -17,17 +18,17 @@ namespace GitUITests
 
             ThreadHelper.JoinableTaskFactory.Run(async () =>
             {
-                Assert.True(ThreadHelper.JoinableTaskContext.IsOnMainThread);
+                ThreadHelper.JoinableTaskContext.IsOnMainThread.Should().BeTrue();
                 await form.SwitchToMainThreadAsync();
-                Assert.True(ThreadHelper.JoinableTaskContext.IsOnMainThread);
+                ThreadHelper.JoinableTaskContext.IsOnMainThread.Should().BeTrue();
             });
 
             CancellationTokenSource cancellationTokenSource = new();
             ThreadHelper.JoinableTaskFactory.Run(async () =>
             {
-                Assert.True(ThreadHelper.JoinableTaskContext.IsOnMainThread);
+                ThreadHelper.JoinableTaskContext.IsOnMainThread.Should().BeTrue();
                 await form.SwitchToMainThreadAsync(cancellationTokenSource.Token);
-                Assert.True(ThreadHelper.JoinableTaskContext.IsOnMainThread);
+                ThreadHelper.JoinableTaskContext.IsOnMainThread.Should().BeTrue();
             });
         }
 
@@ -36,20 +37,20 @@ namespace GitUITests
         {
             Form form = new();
 
-            Assert.True(ThreadHelper.JoinableTaskContext.IsOnMainThread);
+            ThreadHelper.JoinableTaskContext.IsOnMainThread.Should().BeTrue();
 
             ControlThreadingExtensions.ControlMainThreadAwaiter awaiter = form.SwitchToMainThreadAsync().GetAwaiter();
-            Assert.True(awaiter.IsCompleted);
+            awaiter.IsCompleted.Should().BeTrue();
             awaiter.GetResult();
 
-            Assert.True(ThreadHelper.JoinableTaskContext.IsOnMainThread);
+            ThreadHelper.JoinableTaskContext.IsOnMainThread.Should().BeTrue();
 
             CancellationTokenSource cancellationTokenSource = new();
             awaiter = form.SwitchToMainThreadAsync(cancellationTokenSource.Token).GetAwaiter();
-            Assert.True(awaiter.IsCompleted);
+            awaiter.IsCompleted.Should().BeTrue();
             awaiter.GetResult();
 
-            Assert.True(ThreadHelper.JoinableTaskContext.IsOnMainThread);
+            ThreadHelper.JoinableTaskContext.IsOnMainThread.Should().BeTrue();
         }
 
         [Test]
@@ -60,18 +61,18 @@ namespace GitUITests
             ThreadHelper.JoinableTaskFactory.Run(async () =>
             {
                 await TaskScheduler.Default;
-                Assert.False(ThreadHelper.JoinableTaskContext.IsOnMainThread);
+                ThreadHelper.JoinableTaskContext.IsOnMainThread.Should().BeFalse();
                 await form.SwitchToMainThreadAsync();
-                Assert.True(ThreadHelper.JoinableTaskContext.IsOnMainThread);
+                ThreadHelper.JoinableTaskContext.IsOnMainThread.Should().BeTrue();
             });
 
             CancellationTokenSource cancellationTokenSource = new();
             ThreadHelper.JoinableTaskFactory.Run(async () =>
             {
                 await TaskScheduler.Default;
-                Assert.False(ThreadHelper.JoinableTaskContext.IsOnMainThread);
+                ThreadHelper.JoinableTaskContext.IsOnMainThread.Should().BeFalse();
                 await form.SwitchToMainThreadAsync(cancellationTokenSource.Token);
-                Assert.True(ThreadHelper.JoinableTaskContext.IsOnMainThread);
+                ThreadHelper.JoinableTaskContext.IsOnMainThread.Should().BeTrue();
             });
         }
 
@@ -81,7 +82,7 @@ namespace GitUITests
             Form form = new();
             form.Dispose();
 
-            Assert.True(ThreadHelper.JoinableTaskContext.IsOnMainThread);
+            ThreadHelper.JoinableTaskContext.IsOnMainThread.Should().BeTrue();
             await AssertEx.ThrowsAsync<OperationCanceledException>(async () => await form.SwitchToMainThreadAsync());
         }
 
@@ -92,7 +93,7 @@ namespace GitUITests
             CancellationTokenSource cancellationTokenSource = new();
             await cancellationTokenSource.CancelAsync();
 
-            Assert.True(ThreadHelper.JoinableTaskContext.IsOnMainThread);
+            ThreadHelper.JoinableTaskContext.IsOnMainThread.Should().BeTrue();
             await AssertEx.ThrowsAsync<OperationCanceledException>(async () => await form.SwitchToMainThreadAsync(cancellationTokenSource.Token));
         }
 
@@ -104,7 +105,7 @@ namespace GitUITests
             CancellationTokenSource cancellationTokenSource = new();
             await cancellationTokenSource.CancelAsync();
 
-            Assert.True(ThreadHelper.JoinableTaskContext.IsOnMainThread);
+            ThreadHelper.JoinableTaskContext.IsOnMainThread.Should().BeTrue();
             OperationCanceledException exception = await AssertEx.ThrowsAsync<OperationCanceledException>(async () => await form.SwitchToMainThreadAsync(cancellationTokenSource.Token));
 
             // If both conditions are met on entry, the explicit cancellation token is the one used for the exception
@@ -120,7 +121,7 @@ namespace GitUITests
 
             form.Dispose();
 
-            Assert.True(ThreadHelper.JoinableTaskContext.IsOnMainThread);
+            ThreadHelper.JoinableTaskContext.IsOnMainThread.Should().BeTrue();
             await AssertEx.ThrowsAsync<OperationCanceledException>(async () => await awaitable);
         }
 
@@ -134,7 +135,7 @@ namespace GitUITests
 
             await cancellationTokenSource.CancelAsync();
 
-            Assert.True(ThreadHelper.JoinableTaskContext.IsOnMainThread);
+            ThreadHelper.JoinableTaskContext.IsOnMainThread.Should().BeTrue();
             await AssertEx.ThrowsAsync<OperationCanceledException>(async () => await awaitable);
         }
 
@@ -146,7 +147,7 @@ namespace GitUITests
 
             await TaskScheduler.Default;
 
-            Assert.False(ThreadHelper.JoinableTaskContext.IsOnMainThread);
+            ThreadHelper.JoinableTaskContext.IsOnMainThread.Should().BeFalse();
             await AssertEx.ThrowsAsync<OperationCanceledException>(async () => await form.SwitchToMainThreadAsync());
         }
 
@@ -160,7 +161,7 @@ namespace GitUITests
             CancellationTokenSource cancellationTokenSource = new();
             await cancellationTokenSource.CancelAsync();
 
-            Assert.False(ThreadHelper.JoinableTaskContext.IsOnMainThread);
+            ThreadHelper.JoinableTaskContext.IsOnMainThread.Should().BeFalse();
             await AssertEx.ThrowsAsync<OperationCanceledException>(async () => await form.SwitchToMainThreadAsync(cancellationTokenSource.Token));
         }
 
@@ -182,7 +183,7 @@ namespace GitUITests
                     form.Dispose();
                 });
 
-            Assert.False(ThreadHelper.JoinableTaskContext.IsOnMainThread);
+            ThreadHelper.JoinableTaskContext.IsOnMainThread.Should().BeFalse();
             await AssertEx.ThrowsAsync<OperationCanceledException>(async () => await awaitable);
         }
 
@@ -199,7 +200,7 @@ namespace GitUITests
 
             await cancellationTokenSource.CancelAsync();
 
-            Assert.False(ThreadHelper.JoinableTaskContext.IsOnMainThread);
+            ThreadHelper.JoinableTaskContext.IsOnMainThread.Should().BeFalse();
             await AssertEx.ThrowsAsync<OperationCanceledException>(async () => await awaitable);
         }
     }

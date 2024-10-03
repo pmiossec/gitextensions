@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using CommonTestUtils;
+using FluentAssertions;
 using GitCommands;
 using GitUI;
 using Microsoft.VisualStudio.Threading;
@@ -42,7 +43,7 @@ namespace GitCommandsTests
                     },
                     () => completed++);
 
-                Assert.True(await loadSignal.WaitAsync(1000));
+                (await loadSignal.WaitAsync(1000)).Should().BeTrue();
 
                 Assert.AreEqual(1, started);
                 Assert.AreEqual(0, completed);
@@ -67,14 +68,14 @@ namespace GitCommandsTests
                 Thread loadThread = null;
                 Thread continuationThread = null;
 
-                Assert.False(callerThread.IsThreadPoolThread);
+                callerThread.IsThreadPoolThread.Should().BeFalse();
 
                 using AsyncLoader loader = new();
                 await loader.LoadAsync(
                     () => loadThread = Thread.CurrentThread,
                     () => continuationThread = Thread.CurrentThread);
 
-                Assert.True(loadThread.IsThreadPoolThread);
+                loadThread.IsThreadPoolThread.Should().BeTrue();
                 Assert.AreNotSame(loadThread, callerThread);
                 Assert.AreNotSame(loadThread, continuationThread);
             });
@@ -99,7 +100,7 @@ namespace GitCommandsTests
                     },
                     () => completed++);
 
-                Assert.True(await loadSignal.WaitAsync(1000));
+                (await loadSignal.WaitAsync(1000)).Should().BeTrue();
 
                 Assert.AreEqual(1, started);
                 Assert.AreEqual(0, completed);
@@ -165,7 +166,7 @@ namespace GitCommandsTests
                     },
                     () => completed++);
 
-                Assert.True(await loadSignal.WaitAsync(1000));
+                (await loadSignal.WaitAsync(1000)).Should().BeTrue();
 
                 Assert.AreEqual(1, started);
                 Assert.AreEqual(0, completed);

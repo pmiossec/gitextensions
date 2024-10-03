@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using CommonTestUtils;
+using FluentAssertions;
 using GitUI;
 using GitUI.CommandsDialogs;
 using GitUI.Editor;
@@ -45,16 +46,16 @@ namespace GitExtensions.UITests.CommandsDialogs
                     },
                     form =>
                     {
-                        Assert.False(form.GetTestAccessor().HasChanges);
+                        form.GetTestAccessor().HasChanges.Should().BeFalse();
 
                         FileViewerInternal fileViewerInternal = form.GetTestAccessor().FileViewer.GetTestAccessor().FileViewerInternal;
                         fileViewerInternal.SetText(fileViewerInternal.GetText() + "!", openWithDifftool: null);
 
-                        Assert.True(form.GetTestAccessor().HasChanges);
+                        form.GetTestAccessor().HasChanges.Should().BeTrue();
 
                         form.GetTestAccessor().SaveChanges();
 
-                        Assert.False(form.GetTestAccessor().HasChanges);
+                        form.GetTestAccessor().HasChanges.Should().BeFalse();
 
                         return Task.CompletedTask;
                     });
@@ -83,17 +84,17 @@ namespace GitExtensions.UITests.CommandsDialogs
                     },
                     form =>
                     {
-                        Assert.False(form.GetTestAccessor().HasChanges);
+                        form.GetTestAccessor().HasChanges.Should().BeFalse();
 
                         FileViewerInternal fileViewerInternal = form.GetTestAccessor().FileViewer.GetTestAccessor().FileViewerInternal;
                         fileViewerInternal.GetTestAccessor().CurrentViewPositionCache.GetTestAccessor().SetCurrentIdentification("hello-world");
                         fileViewerInternal.SetText(fileViewerInternal.GetText() + "!", openWithDifftool: null, ViewMode.Text, true, "hello-world");
 
-                        Assert.True(form.GetTestAccessor().HasChanges);
+                        form.GetTestAccessor().HasChanges.Should().BeTrue();
 
                         form.GetTestAccessor().SaveChanges();
 
-                        Assert.False(form.GetTestAccessor().HasChanges);
+                        form.GetTestAccessor().HasChanges.Should().BeFalse();
 
                         Assert.AreEqual(lineNumberDefault, fileViewerInternal.CurrentFileLine());
 

@@ -70,12 +70,12 @@ namespace GitExtensions.UITests.UserControls.RevisionGrid
                 grepMessage: "",
                 revisionGridControl =>
                 {
-                    Assert.False(AppSettings.BranchFilterEnabled);
-                    Assert.False(AppSettings.ShowCurrentBranchOnly);
+                    AppSettings.BranchFilterEnabled.Value.Should().BeFalse();
+                    AppSettings.ShowCurrentBranchOnly.Value.Should().BeFalse();
 
-                    Assert.True(revisionGridControl.CurrentFilter.IsShowAllBranchesChecked);
-                    Assert.False(revisionGridControl.CurrentFilter.IsShowCurrentBranchOnlyChecked);
-                    Assert.False(revisionGridControl.CurrentFilter.IsShowFilteredBranchesChecked);
+                    revisionGridControl.CurrentFilter.IsShowAllBranchesChecked.Should().BeTrue();
+                    revisionGridControl.CurrentFilter.IsShowCurrentBranchOnlyChecked.Should().BeFalse();
+                    revisionGridControl.CurrentFilter.IsShowFilteredBranchesChecked.Should().BeFalse();
                 });
 
             RunSetAndApplyBranchFilterTest(
@@ -83,12 +83,12 @@ namespace GitExtensions.UITests.UserControls.RevisionGrid
                 grepMessage: "",
                 revisionGridControl =>
                 {
-                    Assert.True(AppSettings.BranchFilterEnabled);
-                    Assert.False(AppSettings.ShowCurrentBranchOnly);
+                    AppSettings.BranchFilterEnabled.Value.Should().BeTrue();
+                    AppSettings.ShowCurrentBranchOnly.Value.Should().BeFalse();
 
-                    Assert.False(revisionGridControl.CurrentFilter.IsShowAllBranchesChecked);
-                    Assert.False(revisionGridControl.CurrentFilter.IsShowCurrentBranchOnlyChecked);
-                    Assert.True(revisionGridControl.CurrentFilter.IsShowFilteredBranchesChecked);
+                    revisionGridControl.CurrentFilter.IsShowAllBranchesChecked.Should().BeFalse();
+                    revisionGridControl.CurrentFilter.IsShowCurrentBranchOnlyChecked.Should().BeFalse();
+                    revisionGridControl.CurrentFilter.IsShowFilteredBranchesChecked.Should().BeTrue();
                 });
 
             RunSetAndApplyBranchFilterTest(
@@ -96,12 +96,12 @@ namespace GitExtensions.UITests.UserControls.RevisionGrid
                 grepMessage: "Commit1",
                 revisionGridControl =>
                 {
-                    Assert.False(AppSettings.BranchFilterEnabled);
-                    Assert.False(AppSettings.ShowCurrentBranchOnly);
+                    AppSettings.BranchFilterEnabled.Value.Should().BeFalse();
+                    AppSettings.ShowCurrentBranchOnly.Value.Should().BeFalse();
 
-                    Assert.True(revisionGridControl.CurrentFilter.IsShowAllBranchesChecked);
-                    Assert.False(revisionGridControl.CurrentFilter.IsShowCurrentBranchOnlyChecked);
-                    Assert.False(revisionGridControl.CurrentFilter.IsShowFilteredBranchesChecked);
+                    revisionGridControl.CurrentFilter.IsShowAllBranchesChecked.Should().BeTrue();
+                    revisionGridControl.CurrentFilter.IsShowCurrentBranchOnlyChecked.Should().BeFalse();
+                    revisionGridControl.CurrentFilter.IsShowFilteredBranchesChecked.Should().BeFalse();
                 });
         }
 
@@ -121,7 +121,7 @@ namespace GitExtensions.UITests.UserControls.RevisionGrid
                     WaitForRevisionsToBeLoaded(revisionGridControl);
 
                     RevisionGridControl.TestAccessor ta = revisionGridControl.GetTestAccessor();
-                    Assert.False(revisionGridControl.CurrentFilter.IsShowFilteredBranchesChecked);
+                    revisionGridControl.CurrentFilter.IsShowFilteredBranchesChecked.Should().BeFalse();
 #if DEBUG
                     // https://github.com/gitextensions/gitextensions/issues/10170
                     // This test occasionaly fails with 3 visible revisions
@@ -133,7 +133,7 @@ namespace GitExtensions.UITests.UserControls.RevisionGrid
 
                     // set filter
                     revisionGridControl.SetAndApplyBranchFilter("Branch1");
-                    Assert.True(revisionGridControl.CurrentFilter.IsShowFilteredBranchesChecked);
+                    revisionGridControl.CurrentFilter.IsShowFilteredBranchesChecked.Should().BeTrue();
 
 #if DEBUG
                     // https://github.com/gitextensions/gitextensions/issues/10170
@@ -163,7 +163,7 @@ namespace GitExtensions.UITests.UserControls.RevisionGrid
                     WaitForRevisionsToBeLoaded(revisionGridControl);
 
                     RevisionGridControl.TestAccessor ta = revisionGridControl.GetTestAccessor();
-                    Assert.True(revisionGridControl.CurrentFilter.IsShowFilteredBranchesChecked);
+                    revisionGridControl.CurrentFilter.IsShowFilteredBranchesChecked.Should().BeTrue();
                     ta.VisibleRevisionCount.Should().Be(2);
 
                     // Verify the view hasn't changed until we refresh
@@ -171,7 +171,7 @@ namespace GitExtensions.UITests.UserControls.RevisionGrid
 
                     // reset filter
                     revisionGridControl.SetAndApplyBranchFilter(string.Empty);
-                    Assert.False(revisionGridControl.CurrentFilter.IsShowFilteredBranchesChecked);
+                    revisionGridControl.CurrentFilter.IsShowFilteredBranchesChecked.Should().BeFalse();
 
 #if DEBUG
                     // https://github.com/gitextensions/gitextensions/issues/10170
