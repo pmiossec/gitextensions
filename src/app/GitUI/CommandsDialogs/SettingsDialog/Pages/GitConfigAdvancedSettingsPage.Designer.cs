@@ -28,12 +28,23 @@
         /// </summary>
         private void InitializeComponent()
         {
+            checkBoxMergeAutostash = new CheckBox();
             checkBoxRebaseAutostash = new CheckBox();
             checkBoxFetchPrune = new CheckBox();
             checkBoxPullRebase = new CheckBox();
             checkBoxRebaseAutosquash = new CheckBox();
             checkBoxUpdateRefs = new CheckBox();
             SuspendLayout();
+            // 
+            // checkBoxRebaseAutostash
+            // 
+            checkBoxMergeAutostash.AutoSize = true;
+            checkBoxMergeAutostash.Location = new Point(19, 200);
+            checkBoxMergeAutostash.Name = "checkBoxMergeAutostash";
+            checkBoxMergeAutostash.Size = new Size(247, 19);
+            checkBoxMergeAutostash.TabIndex = 3;
+            checkBoxMergeAutostash.Text = "Automatically stash before doing a merge";
+            checkBoxMergeAutostash.UseVisualStyleBackColor = true;
             // 
             // checkBoxRebaseAutostash
             // 
@@ -89,6 +100,7 @@
             // 
             AutoScaleDimensions = new SizeF(96F, 96F);
             AutoScaleMode = AutoScaleMode.Dpi;
+            Controls.Add(checkBoxMergeAutostash);
             Controls.Add(checkBoxRebaseAutostash);
             Controls.Add(checkBoxFetchPrune);
             Controls.Add(checkBoxPullRebase);
@@ -104,6 +116,7 @@
 
         #endregion
 
+        private CheckBox checkBoxMergeAutostash;
         private CheckBox checkBoxRebaseAutostash;
         private CheckBox checkBoxFetchPrune;
         private CheckBox checkBoxPullRebase;
