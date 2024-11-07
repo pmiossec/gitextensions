@@ -20,7 +20,8 @@ namespace GitUI.CommandsDialogs.SettingsDialog.Pages
                 new("fetch.prune", checkBoxFetchPrune),
                 new("rebase.autoStash", checkBoxRebaseAutostash),
                 new("rebase.autosquash", checkBoxRebaseAutosquash),
-                new("rebase.updateRefs", checkBoxUpdateRefs)
+                new("rebase.updateRefs", checkBoxUpdateRefs),
+                new("merge.autostash", checkBoxMergeAutostash),
             ];
 
             checkBoxUpdateRefs.Visible = GitVersion.Current.SupportUpdateRefs;
