@@ -2,6 +2,7 @@ using System.ComponentModel.Composition;
 using System.Net.Http.Headers;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
+using System.Text.Json.Nodes;
 using GitCommands.Utils;
 using GitExtensions.Extensibility.BuildServerIntegration;
 using GitExtensions.Extensibility.Git;
@@ -9,15 +10,14 @@ using GitExtensions.Extensibility.Settings;
 using GitUI;
 using GitUIPluginInterfaces.BuildServerIntegration;
 using Microsoft;
-using Newtonsoft.Json.Linq;
 
 namespace AppVeyorIntegration
 {
     [MetadataAttribute]
     [AttributeUsage(AttributeTargets.Class)]
-    public class AppVeyorIntegrationMetadata : BuildServerAdapterMetadataAttribute
+    public class AppVeyorIntegrationMetadataAttribute : BuildServerAdapterMetadataAttribute
     {
-        public AppVeyorIntegrationMetadata(string buildServerType)
+        public AppVeyorIntegrationMetadataAttribute(string buildServerType)
             : base(buildServerType)
         {
         }
@@ -37,7 +37,7 @@ namespace AppVeyorIntegration
     }
 
     [Export(typeof(IBuildServerAdapter))]
-    [AppVeyorIntegrationMetadata(PluginName)]
+    [AppVeyorIntegrationMetadataAttribute(PluginName)]
     [PartCreationPolicy(CreationPolicy.NonShared)]
     internal class AppVeyorAdapter : IBuildServerAdapter
     {
@@ -106,7 +106,7 @@ namespace AppVeyorIntegration
                 string result = ThreadHelper.JoinableTaskFactory.Run(() => GetResponseAsync(_httpClientAppVeyor, apiBaseUrl, CancellationToken.None));
                 if (!string.IsNullOrWhiteSpace(result))
                 {
-                    foreach (JToken project in JArray.Parse(result))
+                    foreach (JsonNode project in ((JsonArray)JsonArray.Parse(result)).GetValues<JsonNode>())
                     {
                         // "slug" and "name" are normally the same
                         string repoName = project["slug"].ToString();
@@ -177,57 +177,57 @@ namespace AppVeyorIntegration
 
             Validates.NotNull(_isCommitInRevisionGrid);
 
-            JObject content = JObject.Parse(result);
+            JsonNode content = JsonNode.Parse(result);
 
-            JToken projectData = content["project"];
-            JToken repositoryName = projectData["repositoryName"];
-            JToken repositoryType = projectData["repositoryType"];
+            JsonNode projectData = content["project"];
+            JsonNode repositoryName = projectData["repositoryName"];
+            JsonNode repositoryType = projectData["repositoryType"];
 
-            JEnumerable<JToken> builds = content["builds"].Children();
+            JsonArray builds = content["builds"].AsArray();
             string baseWebUrl = $"{WebSiteUrl}/project/{projectId}/build/";
             string baseApiUrl = $"{ApiBaseUrl}{projectId}/";
 
             List<AppVeyorBuildInfo> buildDetails = [];
-            foreach (JToken b in builds)
+            foreach (JsonNode b in builds)
             {
                 try
                 {
-                    if (!ObjectId.TryParse((b["pullRequestHeadCommitId"] ?? b["commitId"]).ToObject<string>(),
+                    if (!ObjectId.TryParse((b["pullRequestHeadCommitId"] ?? b["commitId"]).GetValue<string>(),
                             out ObjectId? objectId) || !_isCommitInRevisionGrid(objectId))
                     {
                         continue;
                     }
 
-                    JToken pullRequestId = b["pullRequestId"];
-                    string version = b["version"].ToObject<string>();
-                    BuildStatus status = ParseBuildStatus(b["status"].ToObject<string>());
+                    JsonNode pullRequestId = b["pullRequestId"];
+                    string version = b["version"].GetValue<string>();
+                    BuildStatus status = ParseBuildStatus(b["status"].GetValue<string>());
                     long? duration = null;
                     if (status is (BuildStatus.Success or BuildStatus.Failure))
                     {
                         duration = GetBuildDuration(b);
                     }
 
-                    JToken pullRequestTitle = b["pullRequestName"];
+                    JsonNode pullRequestTitle = b["pullRequestName"];
 
                     buildDetails.Add(new AppVeyorBuildInfo
                     {
                         Id = version,
-                        BuildId = b["buildId"].ToObject<string>(),
-                        Branch = b["branch"].ToObject<string>(),
+                        BuildId = b["buildId"]!.ToString(),
+                        Branch = b["branch"]!.ToString(),
                         CommitId = objectId,
                         CommitHashList = new[] { objectId },
                         Status = status,
-                        StartDate = b["started"]?.ToObject<DateTime>() ?? DateTime.MinValue,
+                        StartDate = b["started"]?.GetValue<DateTime>() ?? DateTime.MinValue,
                         BaseWebUrl = baseWebUrl,
                         Url = baseWebUrl + version,
                         PullRequestUrl = repositoryType is not null && repositoryName is not null && pullRequestId is not null
-                            ? BuildPullRequetUrl(repositoryType.Value<string>(), repositoryName.Value<string>(),
-                                pullRequestId.Value<string>())
+                            ? BuildPullRequetUrl(repositoryType.GetValue<string>(), repositoryName.GetValue<string>(),
+                                pullRequestId.GetValue<string>())
                             : null,
                         BaseApiUrl = baseApiUrl,
                         AppVeyorBuildReportUrl = baseApiUrl + "build/" + version,
-                        PullRequestText = pullRequestId is not null ? "PR#" + pullRequestId.Value<string>() : string.Empty,
-                        PullRequestTitle = pullRequestTitle is not null ? pullRequestTitle.Value<string>() : string.Empty,
+                        PullRequestText = pullRequestId is not null ? "PR#" + pullRequestId.GetValue<string>() : string.Empty,
+                        PullRequestTitle = pullRequestTitle is not null ? pullRequestTitle.GetValue<string>() : string.Empty,
                         Duration = duration,
                         TestsResultText = string.Empty
                     });
@@ -347,17 +347,17 @@ namespace AppVeyorIntegration
 
         private void UpdateDescription(AppVeyorBuildInfo buildDetails, CancellationToken cancellationToken)
         {
-            JObject buildDetailsParsed = ThreadHelper.JoinableTaskFactory.Run(() => FetchBuildDetailsManagingVersionUpdateAsync(buildDetails, cancellationToken));
+            JsonNode buildDetailsParsed = ThreadHelper.JoinableTaskFactory.Run(() => FetchBuildDetailsManagingVersionUpdateAsync(buildDetails, cancellationToken));
             if (buildDetailsParsed is null)
             {
                 return;
             }
 
-            JToken buildData = buildDetailsParsed["build"];
-            IList<JToken> buildJobs = (JContainer)buildData["jobs"];
-            JToken buildDescription = buildJobs[^1];
+            JsonNode buildData = buildDetailsParsed["build"];
+            IList<JsonNode> buildJobs = (JsonArray)buildData["jobs"];
+            JsonNode buildDescription = buildJobs[^1];
 
-            string status = buildDescription["status"].ToObject<string>();
+            string status = buildDescription["status"].GetValue<string>();
             buildDetails.Status = ParseBuildStatus(status);
 
             if (!buildDetails.IsRunning)
@@ -365,20 +365,20 @@ namespace AppVeyorIntegration
                 buildDetails.Duration = GetBuildDuration(buildData);
             }
 
-            int runTests = buildDescription["passedTestsCount"].ToObject<int>();
+            int runTests = buildDescription["passedTestsCount"].GetValue<int>();
             if (runTests != 0)
             {
-                int failedTestCount = buildDescription["failedTestsCount"].ToObject<int>();
+                int failedTestCount = buildDescription["failedTestsCount"].GetValue<int>();
                 buildDetails.TestsResultText = failedTestCount != 0
                     ? $"{failedTestCount} failed / {runTests} tests run"
                     : $"{runTests} tests run";
             }
         }
 
-        private static long GetBuildDuration(JToken buildData)
+        private static long GetBuildDuration(JsonNode buildData)
         {
-            DateTime? startTime = (buildData["started"] ?? buildData["created"])?.ToObject<DateTime>();
-            DateTime? updateTime = buildData["updated"]?.ToObject<DateTime>();
+            DateTime? startTime = (buildData["started"] ?? buildData["created"])?.GetValue<DateTime>();
+            DateTime? updateTime = buildData["updated"]?.GetValue<DateTime>();
             if (!startTime.HasValue || !updateTime.HasValue)
             {
                 return 0;
@@ -387,26 +387,26 @@ namespace AppVeyorIntegration
             return (long)(updateTime.Value - startTime.Value).TotalMilliseconds;
         }
 
-        private async Task<JObject> FetchBuildDetailsManagingVersionUpdateAsync(AppVeyorBuildInfo buildDetails, CancellationToken cancellationToken)
+        private async Task<JsonNode> FetchBuildDetailsManagingVersionUpdateAsync(AppVeyorBuildInfo buildDetails, CancellationToken cancellationToken)
         {
             Validates.NotNull(_httpClientAppVeyor);
 
             try
             {
                 Validates.NotNull(buildDetails.AppVeyorBuildReportUrl);
-                return JObject.Parse(await GetResponseAsync(_httpClientAppVeyor, buildDetails.AppVeyorBuildReportUrl, cancellationToken).ConfigureAwait(false));
+                return JsonNode.Parse(await GetResponseAsync(_httpClientAppVeyor, buildDetails.AppVeyorBuildReportUrl, cancellationToken).ConfigureAwait(false));
             }
             catch
             {
                 string buildHistoryUrl = buildDetails.BaseApiUrl + "/history?recordsNumber=1&startBuildId=" + (int.Parse(buildDetails.BuildId) + 1);
-                JObject builds = JObject.Parse(await GetResponseAsync(_httpClientAppVeyor, buildHistoryUrl, cancellationToken).ConfigureAwait(false));
+                JsonNode builds = JsonNode.Parse(await GetResponseAsync(_httpClientAppVeyor, buildHistoryUrl, cancellationToken).ConfigureAwait(false));
 
-                string version = builds["builds"][0]["version"].ToObject<string>();
+                string version = builds["builds"][0]["version"].GetValue<string>();
                 buildDetails.Id = version;
                 buildDetails.AppVeyorBuildReportUrl = buildDetails.BaseApiUrl + "/build/" + version;
                 buildDetails.Url = buildDetails.BaseWebUrl + version;
 
-                return JObject.Parse(await GetResponseAsync(_httpClientAppVeyor, buildDetails.AppVeyorBuildReportUrl, cancellationToken).ConfigureAwait(false));
+                return JsonNode.Parse(await GetResponseAsync(_httpClientAppVeyor, buildDetails.AppVeyorBuildReportUrl, cancellationToken).ConfigureAwait(false));
             }
         }
 
