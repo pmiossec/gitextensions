@@ -2,7 +2,7 @@
 
 namespace GitExtensions.Extensibility.BuildServerIntegration;
 
-public class BuildInfo
+public class BuildInfo : IBuildInfo
 {
     public string? Id { get; set; }
     public DateTime StartDate { get; set; }
@@ -12,7 +12,9 @@ public class BuildInfo
     public IReadOnlyList<ObjectId> CommitHashList { get; set; } = Array.Empty<ObjectId>();
     public string? Url { get; set; }
     public bool ShowInBuildReportTab { get; set; } = true;
+    public string? BuildDefinitionName { get; set; }
     public string? Tooltip { get; set; }
+    public string? PullRequestId { get; set; }
     public string? PullRequestUrl { get; set; }
 
     public string StatusSymbol => Status switch
