@@ -23,7 +23,7 @@ public sealed partial class GitRevision : IGitItem, INotifyPropertyChanged
     [GeneratedRegex(@"\b[a-f\d]{7,40}\b(?![^@\s]*@)", RegexOptions.ExplicitCapture)]
     public static partial Regex Sha1HashShortRegex();
 
-    private BuildInfo? _buildStatus;
+    private IBuildInfo? _buildStatus;
     private string? _body;
 
     public GitRevision(ObjectId objectId)
@@ -72,7 +72,7 @@ public sealed partial class GitRevision : IGitItem, INotifyPropertyChanged
     private static DateTime FromUnixTimeSeconds(long unixTime)
         => unixTime == 0 ? DateTime.MaxValue : DateTimeOffset.FromUnixTimeSeconds(unixTime).LocalDateTime;
 
-    public BuildInfo? BuildStatus
+    public IBuildInfo? BuildStatus
     {
         get => _buildStatus;
         set

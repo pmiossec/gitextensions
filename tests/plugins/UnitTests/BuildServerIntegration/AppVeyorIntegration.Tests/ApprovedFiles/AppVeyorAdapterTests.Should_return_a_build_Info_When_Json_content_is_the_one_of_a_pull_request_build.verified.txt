@@ -17,6 +17,8 @@
   - dfc541e7eda18a9eb620a0a352e1d6fe0141b34d
   Url: https://ci.appveyor.com/project/account/repo/build/3.1.0.5444
   ShowInBuildReportTab: true
+  BuildDefinitionName: 
   Tooltip: 
+  PullRequestId: 
   PullRequestUrl: https://github.com/gitextensions/gitextensions/pull/6326
   StatusSymbol: ✔

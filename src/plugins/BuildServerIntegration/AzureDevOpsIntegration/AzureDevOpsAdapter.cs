@@ -112,7 +112,7 @@ Detail of the error:");
         /// </summary>
         public string UniqueKey => _settings?.ProjectUrl ?? throw new InvalidOperationException($"{nameof(AzureDevOpsAdapter)} is not yet initialized");
 
-        public IObservable<BuildInfo> GetFinishedBuildsSince(IScheduler scheduler, DateTime? sinceDate = null)
+        public IObservable<IBuildInfo> GetFinishedBuildsSince(IScheduler scheduler, DateTime? sinceDate = null)
         {
             if (!_firstCallForFinishedBuildsWasIgnored)
             {
@@ -123,7 +123,7 @@ Detail of the error:");
             return GetBuilds(scheduler, sinceDate, false);
         }
 
-        public IObservable<BuildInfo> GetRunningBuilds(IScheduler scheduler)
+        public IObservable<IBuildInfo> GetRunningBuilds(IScheduler scheduler)
             => GetBuilds(scheduler, null, true);
 
         public void OnRepositoryChanged()
@@ -131,10 +131,10 @@ Detail of the error:");
             _buildsCache = null;
         }
 
-        private IObservable<BuildInfo> GetBuilds(IScheduler scheduler, DateTime? sinceDate = null, bool running = false)
-            => Observable.Create<BuildInfo>((observer, cancellationToken) => ObserveBuildsAsync(sinceDate, running, observer, cancellationToken));
+        private IObservable<IBuildInfo> GetBuilds(IScheduler scheduler, DateTime? sinceDate = null, bool running = false)
+            => Observable.Create<IBuildInfo>((observer, cancellationToken) => ObserveBuildsAsync(sinceDate, running, observer, cancellationToken));
 
-        private async Task ObserveBuildsAsync(DateTime? sinceDate, bool running, IObserver<BuildInfo> observer, CancellationToken cancellationToken)
+        private async Task ObserveBuildsAsync(DateTime? sinceDate, bool running, IObserver<IBuildInfo> observer, CancellationToken cancellationToken)
         {
             if (_apiClient is null)
             {
@@ -160,7 +160,7 @@ Detail of the error:");
                     // Display cached builds results
                     if (!sinceDate.HasValue && _buildsCache.FinishedBuilds.Any())
                     {
-                        foreach (KeyValuePair<ObjectId, BuildInfo> buildInfo in _buildsCache.FinishedBuilds)
+                        foreach (KeyValuePair<ObjectId, IBuildInfo> buildInfo in _buildsCache.FinishedBuilds)
                         {
                             observer.OnNext(buildInfo.Value);
                         }
@@ -185,24 +185,24 @@ Detail of the error:");
                     foreach (IGrouping<string, Build> buildsForACommit in buildsByCommit)
                     {
                         List<Build> buildsToDisplay = buildsForACommit.OrderByDescending(b => b.FinishTime).ToList();
-                        Build buildToDisplay = buildsToDisplay.First();
-                        BuildInfo buildInfo = CreateBuildInfo(buildToDisplay);
+                        IBuildInfo buildInfo;
 
                         if (buildsToDisplay.Count > 1)
                         {
-                            buildInfo.Tooltip += Environment.NewLine + string.Join(Environment.NewLine, buildsToDisplay.Skip(1).Select(b => CreateBuildTooltip(b).tooltip));
+                            AggegatedBuildInfo aggegatedBuildInfo = new()
+                            {
+                                Builds = buildsToDisplay.Select(CreateBuildInfo).ToList<IBuildInfo>(),
+                            };
+
+                            buildInfo = aggegatedBuildInfo;
+                        }
+                        else
+                        {
+                            buildInfo = CreateBuildInfo(buildsToDisplay[0]);
                         }
 
                         // Aggregate with previously finished builds results
-                        ObjectId? buildHash = buildInfo.CommitHashList.First();
-                        if (_buildsCache.FinishedBuilds.TryGetValue(buildHash, out BuildInfo finishedBuild))
-                        {
-                            buildInfo.Tooltip += Environment.NewLine + finishedBuild.Tooltip;
-                            if (buildInfo.PullRequestUrl == null)
-                            {
-                                buildInfo.PullRequestUrl = finishedBuild.PullRequestUrl;
-                            }
-                        }
+                        ObjectId? buildHash = buildInfo.CommitHashList[0];
 
                         if (updateBuild)
                         {
@@ -321,6 +321,7 @@ Detail of the error:");
 
             string pullRequestTooltip = string.Empty;
             string pullRequestUrl = null;
+            string pullRequestId = null;
             if (buildDetail.IsPullRequest)
             {
                 // It's a PR and we need to dive into "Parameters" json to get the real commit hash
@@ -331,10 +332,9 @@ Detail of the error:");
                     buildDetail.SourceVersion = commitHash;
                 }
 
-                string pullRequestId = GetNodeValue(pullRequestNode, "system.pullRequest.pullRequestId");
+                pullRequestId = GetNodeValue(pullRequestNode, "system.pullRequest.pullRequestId");
                 if (!string.IsNullOrWhiteSpace(pullRequestId))
                 {
-                    pullRequestTooltip = $"{Environment.NewLine}PR #{pullRequestId}";
                     pullRequestUrl = $"{buildDetail.Repository.Url}/pullrequest/{pullRequestId}";
                 }
             }
@@ -345,10 +345,12 @@ Detail of the error:");
                 StartDate = buildDetail.StartTime ?? DateTime.MinValue,
                 Status = buildDetail.IsInProgress ? BuildStatus.InProgress : MapResult(buildDetail.Result),
                 Description = duration + " " + buildDetail.BuildNumber,
-                Tooltip = tooltip + pullRequestTooltip,
+                Tooltip = tooltip,
+                BuildDefinitionName = buildDetail.Definition.Name,
                 CommitHashList = [ObjectId.Parse(buildDetail.SourceVersion)],
                 Url = buildDetail._links?.Web?.Href,
                 ShowInBuildReportTab = false,
+                PullRequestId = pullRequestId,
                 PullRequestUrl = pullRequestUrl
             };
 

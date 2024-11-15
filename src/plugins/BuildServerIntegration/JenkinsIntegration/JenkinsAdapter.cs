@@ -179,7 +179,7 @@ namespace JenkinsIntegration
             };
         }
 
-        public IObservable<BuildInfo> GetFinishedBuildsSince(IScheduler scheduler, DateTime? sinceDate = null)
+        public IObservable<IBuildInfo> GetFinishedBuildsSince(IScheduler scheduler, DateTime? sinceDate = null)
         {
             // GetBuilds() will return the same builds as for GetRunningBuilds().
             // Multiple calls will fetch same info multiple times and make debugging very confusing
@@ -188,7 +188,7 @@ namespace JenkinsIntegration
             return Observable.Empty<BuildInfo>();
         }
 
-        public IObservable<BuildInfo> GetRunningBuilds(IScheduler scheduler)
+        public IObservable<IBuildInfo> GetRunningBuilds(IScheduler scheduler)
         {
             return GetBuilds(scheduler);
         }
