@@ -7,6 +7,6 @@ public class BuildsCache
 {
     public string? Id { get; set; }
     public string? BuildDefinitions { get; init; }
-    public Dictionary<ObjectId, BuildInfo> FinishedBuilds { get; } = [];
+    public Dictionary<ObjectId, IBuildInfo> FinishedBuilds { get; } = [];
     public DateTime LastCall { get; set; } = DateTime.MinValue;
 }

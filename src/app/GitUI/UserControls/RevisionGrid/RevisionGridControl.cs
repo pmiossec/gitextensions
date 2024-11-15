@@ -10,6 +10,7 @@ using GitCommands.Config;
 using GitCommands.Git;
 using GitCommands.Utils;
 using GitExtensions.Extensibility;
+using GitExtensions.Extensibility.BuildServerIntegration;
 using GitExtensions.Extensibility.Git;
 using GitExtensions.Extensibility.Translations;
 using GitExtUtils;
@@ -2192,6 +2193,19 @@ public sealed partial class RevisionGridControl : GitModuleControl, ICheckRefs, 
         SetEnabled(applyStashToolStripMenuItem, showStash || (!bareRepositoryOrArtificial && revision.IsAutostash));
         SetEnabled(popStashToolStripMenuItem, showStash);
         SetEnabled(dropStashToolStripMenuItem, showStash);
+
+       openBuildReportToolStripMenuItem.Click -= openBuildReportToolStripMenuItem_Click;
+       openBuildReportToolStripMenuItem.DropDownItems.Clear();
+
+       if (revision.BuildStatus is AggegatedBuildInfo multiple)
+       {
+           openBuildReportToolStripMenuItem.DropDownItems.AddRange(multiple.Builds.Select(b => new ToolStripMenuItem($"{b.StatusSymbol} {b.Id} [{b.BuildDefinitionName}]", null, (object? sender, EventArgs e) => OsShellUtil.OpenUrlInDefaultBrowser(b.Url))).ToArray());
+       }
+       else
+       {
+           openBuildReportToolStripMenuItem.Click += openBuildReportToolStripMenuItem_Click;
+       }
+
 
         int selectInLeftPanelCount = selectInLeftPanelDropDown.Items.Count;
         SetEnabled(tsmiSelectInLeftPanel, SelectInLeftPanel is not null && selectInLeftPanelCount > 0);

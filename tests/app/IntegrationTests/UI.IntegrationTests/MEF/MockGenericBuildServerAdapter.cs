@@ -19,12 +19,12 @@ internal class MockGenericBuildServerAdapter : IBuildServerAdapter
     {
     }
 
-    public IObservable<BuildInfo> GetFinishedBuildsSince(IScheduler scheduler, DateTime? sinceDate = null)
+    public IObservable<IBuildInfo> GetFinishedBuildsSince(IScheduler scheduler, DateTime? sinceDate = null)
     {
         throw new NotImplementedException();
     }
 
-    public IObservable<BuildInfo> GetRunningBuilds(IScheduler scheduler)
+    public IObservable<IBuildInfo> GetRunningBuilds(IScheduler scheduler)
     {
         throw new NotImplementedException();
     }

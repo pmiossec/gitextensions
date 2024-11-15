@@ -265,14 +265,14 @@ internal class AppVeyorAdapter : IBuildServerAdapter
         }
     }
 
-    public IObservable<BuildInfo> GetFinishedBuildsSince(IScheduler scheduler, DateTime? sinceDate = null)
+    public IObservable<IBuildInfo> GetFinishedBuildsSince(IScheduler scheduler, DateTime? sinceDate = null)
     {
         // AppVeyor api is different than TeamCity one and all build results are fetch in one call without
         // filter parameters possible (so this call is useless!)
-        return Observable.Empty<BuildInfo>();
+        return Observable.Empty<IBuildInfo>();
     }
 
-    public IObservable<BuildInfo> GetRunningBuilds(IScheduler scheduler)
+    public IObservable<IBuildInfo> GetRunningBuilds(IScheduler scheduler)
     {
         return GetBuilds(scheduler);
     }
