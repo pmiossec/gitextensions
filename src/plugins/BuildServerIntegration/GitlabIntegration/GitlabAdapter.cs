@@ -57,17 +57,17 @@ namespace GitExtensions.Plugins.GitlabIntegration
             }
         }
 
-        public IObservable<BuildInfo> GetFinishedBuildsSince(IScheduler scheduler, DateTime? sinceDate = null)
+        public IObservable<IBuildInfo> GetFinishedBuildsSince(IScheduler scheduler, DateTime? sinceDate = null)
         {
             return GetBuilds(scheduler, sinceDate, false);
         }
 
-        public IObservable<BuildInfo> GetRunningBuilds(IScheduler scheduler)
+        public IObservable<IBuildInfo> GetRunningBuilds(IScheduler scheduler)
         {
             return GetBuilds(scheduler, null, true);
         }
 
-        private IObservable<BuildInfo> GetBuilds(IScheduler scheduler, DateTime? sinceDate = null, bool running = false)
+        private IObservable<IBuildInfo> GetBuilds(IScheduler scheduler, DateTime? sinceDate = null, bool running = false)
         {
             return Observable.Create<BuildInfo>((observer, cancellationToken) => ObserveBuildsAsync(sinceDate, running, observer, cancellationToken));
         }

@@ -10,6 +10,10 @@
     <!-- To be removed when NRT annotations are complete -->
     <Nullable>annotations</Nullable>
   </PropertyGroup>
+  
+  <ItemGroup Condition="!$(MSBuildProjectFile.EndsWith('CommonTestUtils.csproj'))" >
+    <Using Include="FluentAssertions" />
+  </ItemGroup>
 
   <ItemGroup>
     <!-- CVE-2019-0820, see https://github.com/advisories/GHSA-cmhx-cq75-c4mj -->
