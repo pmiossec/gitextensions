@@ -10,5 +10,9 @@
     <!-- To be removed when NRT annotations are complete -->
     <Nullable>annotations</Nullable>
   </PropertyGroup>
+  
+  <ItemGroup Condition="!$(MSBuildProjectFile.EndsWith('CommonTestUtils.csproj'))" >
+    <Using Include="FluentAssertions" />
+  </ItemGroup>
 
 </Project>

@@ -9,6 +9,7 @@ using GitCommands;
 using GitCommands.Config;
 using GitCommands.Git;
 using GitExtensions.Extensibility;
+using GitExtensions.Extensibility.BuildServerIntegration;
 using GitExtensions.Extensibility.Configurations;
 using GitExtensions.Extensibility.Git;
 using GitExtensions.Extensibility.Translations;
@@ -2159,6 +2160,18 @@ namespace GitUI
             }
 
             SetEnabled(openBuildReportToolStripMenuItem, !string.IsNullOrWhiteSpace(revision.BuildStatus?.Url));
+
+            openBuildReportToolStripMenuItem.Click -= openBuildReportToolStripMenuItem_Click;
+            openBuildReportToolStripMenuItem.DropDownItems.Clear();
+
+            if (revision.BuildStatus is AggegatedBuildInfo multiple)
+            {
+                openBuildReportToolStripMenuItem.DropDownItems.AddRange(multiple.Builds.Select(b => new ToolStripMenuItem($"{b.StatusSymbol} {b.Id} [{b.BuildDefinitionName}]", null, (object? sender, EventArgs e) => OsShellUtil.OpenUrlInDefaultBrowser(b.Url))).ToArray());
+            }
+            else
+            {
+                openBuildReportToolStripMenuItem.Click += openBuildReportToolStripMenuItem_Click;
+            }
 
             SetEnabled(openPullRequestPageStripMenuItem, !string.IsNullOrWhiteSpace(revision.BuildStatus?.PullRequestUrl));
 

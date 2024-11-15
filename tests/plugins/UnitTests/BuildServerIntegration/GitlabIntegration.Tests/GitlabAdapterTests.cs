@@ -1,4 +1,5 @@
-﻿using System.Reactive.Concurrency;
+﻿using System.Linq;
+using System.Reactive.Concurrency;
 using FluentAssertions;
 using GitExtensions.Extensibility.BuildServerIntegration;
 using GitExtensions.Plugins.GitlabIntegration;
@@ -53,15 +54,15 @@ namespace GitlabIntegrationTests
                 Items = Array.Empty<GitlabPipeline>()
             };
 
-            List<BuildInfo> expected = [];
+            List<IBuildInfo> expected = [];
 
             _apiClient.GetPipelinesAsync(Arg.Any<DateTime?>(), false, 1, Arg.Any<CancellationToken>())
                 .Returns(pagedResponse);
 
-            List<BuildInfo> result = ProcessGetFinishedBuildsRequest();
+            List<IBuildInfo> result = ProcessGetFinishedBuildsRequest();
 
             _apiClient.Received(1).GetPipelinesAsync(Arg.Any<DateTime?>(), Arg.Any<bool>(), Arg.Any<int>(), Arg.Any<CancellationToken>());
-            result.OrderBy(x => x.Id).SequenceEqual(expected.OrderBy(x => x.Id), new BuildInfoEqualityComparer()).Should().BeTrue();
+            result.Should().BeEquivalentTo(expected, o => o.Using<BuildInfo>(new BuildInfoEqualityComparer()));
         }
 
         [Test]
@@ -79,7 +80,7 @@ namespace GitlabIntegrationTests
                 }
             };
 
-            List<BuildInfo> expected =
+            List<IBuildInfo> expected =
             [
                 GitlabAdapterTestData.Builds[1].Item1,
             ];
@@ -87,10 +88,10 @@ namespace GitlabIntegrationTests
             _apiClient.GetPipelinesAsync(Arg.Any<DateTime?>(), false, 1, Arg.Any<CancellationToken>())
                 .Returns(pagedResponse);
 
-            List<BuildInfo> result = ProcessGetFinishedBuildsRequest();
+            List<IBuildInfo> result = ProcessGetFinishedBuildsRequest();
 
             _apiClient.Received(1).GetPipelinesAsync(Arg.Any<DateTime?>(), Arg.Any<bool>(), Arg.Any<int>(), Arg.Any<CancellationToken>());
-            result.OrderBy(x => x.Id).SequenceEqual(expected.OrderBy(x => x.Id), new BuildInfoEqualityComparer()).Should().BeTrue();
+            result.Should().BeEquivalentTo(expected, o => o.Using<BuildInfo>(new BuildInfoEqualityComparer()));
         }
 
         [Test]
@@ -108,7 +109,7 @@ namespace GitlabIntegrationTests
                 }
             };
 
-            List<BuildInfo> expected =
+            List<IBuildInfo> expected =
             [
                 GitlabAdapterTestData.Builds[-7].Item1,
             ];
@@ -116,10 +117,10 @@ namespace GitlabIntegrationTests
             _apiClient.GetPipelinesAsync(Arg.Any<DateTime?>(), true, 1, Arg.Any<CancellationToken>())
                 .Returns(pagedResponse);
 
-            List<BuildInfo> result = ProcessGetRunningBuildsRequest();
+            List<IBuildInfo> result = ProcessGetRunningBuildsRequest();
 
             _apiClient.Received(1).GetPipelinesAsync(Arg.Any<DateTime?>(), Arg.Any<bool>(), Arg.Any<int>(), Arg.Any<CancellationToken>());
-            result.OrderBy(x => x.Id).SequenceEqual(expected.OrderBy(x => x.Id), new BuildInfoEqualityComparer()).Should().BeTrue();
+            result.Should().BeEquivalentTo(expected, o => o.Using<BuildInfo>(new BuildInfoEqualityComparer()));
         }
 
         [Test]
@@ -153,7 +154,7 @@ namespace GitlabIntegrationTests
                 }
             };
 
-            List<BuildInfo> expected =
+            List<IBuildInfo> expected =
             [
                 GitlabAdapterTestData.Builds[6].Item1,
                 GitlabAdapterTestData.Builds[5].Item1,
@@ -168,10 +169,10 @@ namespace GitlabIntegrationTests
             _apiClient.GetPipelinesAsync(Arg.Any<DateTime?>(), false, 2, Arg.Any<CancellationToken>())
                 .Returns(secondPagedResponse);
 
-            List<BuildInfo> result = ProcessGetFinishedBuildsRequest();
+            List<IBuildInfo> result = ProcessGetFinishedBuildsRequest();
 
             _apiClient.Received(2).GetPipelinesAsync(Arg.Any<DateTime?>(), Arg.Any<bool>(), Arg.Any<int>(), Arg.Any<CancellationToken>());
-            result.OrderBy(x => x.Id).SequenceEqual(expected.OrderBy(x => x.Id), new BuildInfoEqualityComparer()).Should().BeTrue();
+            result.Should().BeEquivalentTo(expected, o => o.Using<BuildInfo>(new BuildInfoEqualityComparer()));
         }
 
         [Test]
@@ -205,7 +206,7 @@ namespace GitlabIntegrationTests
                 }
             };
 
-            List<BuildInfo> expected =
+            List<IBuildInfo> expected =
             [
                 GitlabAdapterTestData.Builds[5].Item1,
                 GitlabAdapterTestData.Builds[4].Item1,
@@ -219,7 +220,7 @@ namespace GitlabIntegrationTests
             _apiClient.GetPipelinesAsync(Arg.Any<DateTime?>(), false, 2, Arg.Any<CancellationToken>())
                 .Returns(secondPagedResponse);
 
-            List<BuildInfo> result = ProcessGetFinishedBuildsRequest();
+            List<IBuildInfo> result = ProcessGetFinishedBuildsRequest();
 
             _apiClient.Received(2).GetPipelinesAsync(Arg.Any<DateTime?>(), Arg.Any<bool>(), Arg.Any<int>(), Arg.Any<CancellationToken>());
             result.Should().BeEquivalentTo(expected, o => o.Using<BuildInfo>(new BuildInfoEqualityComparer()));
@@ -249,7 +250,7 @@ namespace GitlabIntegrationTests
             _apiClient.GetPipelinesAsync(Arg.Any<DateTime?>(), false, 1, Arg.Any<CancellationToken>())
                 .Returns(firstResponse);
 
-            List<BuildInfo> result = ProcessGetFinishedBuildsRequest();
+            List<IBuildInfo> result = ProcessGetFinishedBuildsRequest();
 
             _apiClient.Received(1).GetPipelinesAsync(Arg.Any<DateTime?>(), Arg.Any<bool>(), Arg.Any<int>(), Arg.Any<CancellationToken>());
             result.Should().BeEquivalentTo(firstExpected, o => o.Using<BuildInfo>(new BuildInfoEqualityComparer()));
@@ -366,7 +367,7 @@ namespace GitlabIntegrationTests
             _apiClient.GetPipelinesAsync(Arg.Any<DateTime?>(), false, 3, Arg.Any<CancellationToken>())
                 .Returns(thirdPagedResponse);
 
-            List<BuildInfo> result = ProcessGetFinishedBuildsRequest();
+            List<IBuildInfo> result = ProcessGetFinishedBuildsRequest();
 
             result.Should().HaveCount(expectedPages);
         }
@@ -378,17 +379,17 @@ namespace GitlabIntegrationTests
             _apiClient.GetPipelinesAsync(Arg.Any<DateTime?>(), false, 1, Arg.Any<CancellationToken>())
                 .Throws(new UnauthorizedAccessException());
 
-            List<BuildInfo> result = ProcessGetFinishedBuildsRequest();
+            List<IBuildInfo> result = ProcessGetFinishedBuildsRequest();
 
             result.Should().BeEmpty();
         }
 
-        private List<BuildInfo> ProcessGetFinishedBuildsRequest()
+        private List<IBuildInfo> ProcessGetFinishedBuildsRequest()
         {
             ManualResetEvent observableEvent = new(false);
-            List<BuildInfo> result = [];
+            List<IBuildInfo> result = [];
 
-            IObservable<BuildInfo> observable = _target.GetFinishedBuildsSince(_scheduler);
+            IObservable<IBuildInfo> observable = _target.GetFinishedBuildsSince(_scheduler);
             observable.Subscribe(e =>
                 {
                     result.Add(e);
@@ -403,12 +404,12 @@ namespace GitlabIntegrationTests
             return result;
         }
 
-        private List<BuildInfo> ProcessGetRunningBuildsRequest()
+        private List<IBuildInfo> ProcessGetRunningBuildsRequest()
         {
             ManualResetEvent observableEvent = new(false);
-            List<BuildInfo> result = [];
+            List<IBuildInfo> result = [];
 
-            IObservable<BuildInfo> observable = _target.GetRunningBuilds(_scheduler);
+            IObservable<IBuildInfo> observable = _target.GetRunningBuilds(_scheduler);
             observable.Subscribe(e =>
                 {
                     result.Add(e);
