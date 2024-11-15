@@ -76,13 +76,13 @@ namespace GitUI.BuildServerIntegration
             NewThreadScheduler scheduler = NewThreadScheduler.Default;
 
             // Run this first as it (may) force start queries
-            IObservable<BuildInfo> runningBuildsObservable = buildServerAdapter.GetRunningBuilds(scheduler);
+            IObservable<IBuildInfo> runningBuildsObservable = buildServerAdapter.GetRunningBuilds(scheduler);
 
-            IObservable<BuildInfo> fullDayObservable = buildServerAdapter.GetFinishedBuildsSince(scheduler, DateTime.Today - TimeSpan.FromDays(3));
-            IObservable<BuildInfo> fullObservable = buildServerAdapter.GetFinishedBuildsSince(scheduler);
+            IObservable<IBuildInfo> fullDayObservable = buildServerAdapter.GetFinishedBuildsSince(scheduler, DateTime.Today - TimeSpan.FromDays(3));
+            IObservable<IBuildInfo> fullObservable = buildServerAdapter.GetFinishedBuildsSince(scheduler);
 
             bool anyRunningBuilds = false;
-            IObservable<BuildInfo> delayObservable = Observable.Defer(() => Observable.Empty<BuildInfo>()
+            IObservable<IBuildInfo> delayObservable = Observable.Defer(() => Observable.Empty<IBuildInfo>()
                                                                    .DelaySubscription(anyRunningBuilds ? ShortPollInterval : LongPollInterval));
 
             bool shouldLookForNewlyFinishedBuilds = false;
@@ -90,7 +90,7 @@ namespace GitUI.BuildServerIntegration
 
             // All finished builds have already been retrieved,
             // so looking for new finished builds make sense only if running builds have been found previously
-            IObservable<BuildInfo> fromNowObservable = Observable.If(() => shouldLookForNewlyFinishedBuilds,
+            IObservable<IBuildInfo> fromNowObservable = Observable.If(() => shouldLookForNewlyFinishedBuilds,
                 buildServerAdapter.GetFinishedBuildsSince(scheduler, nowFrozen)
                             .Finally(() => shouldLookForNewlyFinishedBuilds = false));
 
@@ -100,7 +100,7 @@ namespace GitUI.BuildServerIntegration
                 _buildStatusCancellationToken = new CompositeDisposable
                     {
                         fullDayObservable.OnErrorResumeNext(fullObservable)
-                                         .OnErrorResumeNext(Observable.Empty<BuildInfo>()
+                                         .OnErrorResumeNext(Observable.Empty<IBuildInfo>()
                                                                       .DelaySubscription(LongPollInterval)
                                                                       .OnErrorResumeNext(fromNowObservable)
                                                                       .Retry()
@@ -126,7 +126,7 @@ namespace GitUI.BuildServerIntegration
 
             return;
 
-            void UpdateAndReportExceptions(BuildInfo buildInfo)
+            void UpdateAndReportExceptions(IBuildInfo buildInfo)
             {
                 TaskManager.HandleExceptions(() => OnBuildInfoUpdate(buildInfo), Application.OnThreadException);
             }
@@ -281,7 +281,7 @@ namespace GitUI.BuildServerIntegration
             return null;
         }
 
-        private void OnBuildInfoUpdate(BuildInfo buildInfo)
+        private void OnBuildInfoUpdate(IBuildInfo buildInfo)
         {
             lock (_observerLock)
             {
