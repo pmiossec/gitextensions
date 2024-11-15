@@ -14,9 +14,9 @@ namespace GitUIPluginInterfaces.BuildServerIntegration
         /// </summary>
         string UniqueKey { get; }
 
-        IObservable<BuildInfo> GetFinishedBuildsSince(IScheduler scheduler, DateTime? sinceDate = null);
+        IObservable<IBuildInfo> GetFinishedBuildsSince(IScheduler scheduler, DateTime? sinceDate = null);
 
-        IObservable<BuildInfo> GetRunningBuilds(IScheduler scheduler);
+        IObservable<IBuildInfo> GetRunningBuilds(IScheduler scheduler);
 
         /// <summary>
         ///  Provides an extension point for handling the switch of repositories.
