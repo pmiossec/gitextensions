@@ -17,6 +17,8 @@
   - d4295d591a45c67d812aa1c4fa17b6a0f2ea3114
   Url: https://ci.appveyor.com/project/account/repo/build/3.1.0.5443
   ShowInBuildReportTab: true
+  BuildDefinitionName: 
   Tooltip: 
+  PullRequestId: 
   PullRequestUrl: 
   StatusSymbol: ✔
