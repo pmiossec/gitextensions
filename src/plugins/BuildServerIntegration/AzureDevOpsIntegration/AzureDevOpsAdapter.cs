@@ -180,29 +180,47 @@ Detail of the error:");
 
                 void AggregateAndDisplayBuilds(IEnumerable<Build> builds, bool updateBuild)
                 {
-                    IEnumerable<IGrouping<string, Build>> buildsByCommit = builds.GroupBy(b => b.SourceVersion);
+                    // Aggregate with previously finished builds results
+                    List<IBuildInfo> buildsInfos = builds.Select(CreateBuildInfo).ToList<IBuildInfo>();
 
-                    foreach (IGrouping<string, Build> buildsForACommit in buildsByCommit)
+                    IEnumerable<IGrouping<ObjectId, IBuildInfo>> buildsByCommit = buildsInfos.GroupBy(b => b.CommitHashList[0]);
+
+                    foreach (IGrouping<ObjectId, IBuildInfo> buildsForACommit in buildsByCommit)
                     {
-                        List<Build> buildsToDisplay = buildsForACommit.OrderByDescending(b => b.FinishTime).ToList();
                         IBuildInfo buildInfo;
 
-                        if (buildsToDisplay.Count > 1)
+                        ObjectId? buildHash = buildsForACommit.First().CommitHashList[0];
+                        string bhs = buildHash.ToString();
+                        bool foundCache = _buildsCache.FinishedBuilds.TryGetValue(buildHash, out IBuildInfo cachedFinishedBuilds);
+                        if (foundCache)
                         {
-                            AggegatedBuildInfo aggegatedBuildInfo = new()
+                            if (cachedFinishedBuilds is AggegatedBuildInfo)
                             {
-                                Builds = buildsToDisplay.Select(CreateBuildInfo).ToList<IBuildInfo>(),
-                            };
+                                AggegatedBuildInfo aggegatedBuildInfo = (AggegatedBuildInfo)cachedFinishedBuilds;
+                                aggegatedBuildInfo.AddBuilds(buildsForACommit);
+                                buildInfo = aggegatedBuildInfo;
+                            }
+                            else
+                            {
+                                // Convert a BuildInfo in AggegatedBuildInfo
+                                AggegatedBuildInfo aggegatedBuildInfo = new();
+                                aggegatedBuildInfo.AddBuilds([cachedFinishedBuilds]);
+                                aggegatedBuildInfo.AddBuilds(buildsForACommit);
+
+                                buildInfo = aggegatedBuildInfo;
+                            }
+                        }
+                        else if (buildsForACommit.Count() > 1)
+                        {
+                            AggegatedBuildInfo aggegatedBuildInfo = new();
+                            aggegatedBuildInfo.AddBuilds(buildsForACommit);
 
                             buildInfo = aggegatedBuildInfo;
                         }
                         else
                         {
-                            buildInfo = CreateBuildInfo(buildsToDisplay[0]);
+                            buildInfo = buildsInfos[0];
                         }
-
-                        // Aggregate with previously finished builds results
-                        ObjectId? buildHash = buildInfo.CommitHashList[0];
 
                         if (updateBuild)
                         {
