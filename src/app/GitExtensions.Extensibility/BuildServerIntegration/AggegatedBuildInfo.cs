@@ -4,8 +4,6 @@ namespace GitExtensions.Extensibility.BuildServerIntegration;
 
 public class AggegatedBuildInfo : IBuildInfo
 {
-    private List<IBuildInfo> _builds;
-
     public IBuildInfo DefaultBuild { get; private set; }
     public string? Id => DefaultBuild?.Id;
     public DateTime StartDate => DefaultBuild.StartDate;
@@ -14,14 +12,12 @@ public class AggegatedBuildInfo : IBuildInfo
     public string? Description => DefaultBuild.Description;
     public IReadOnlyList<ObjectId> CommitHashList => DefaultBuild.CommitHashList;
     public string? BuildDefinitionName => string.Empty;
-    public List<IBuildInfo> Builds
+    public List<IBuildInfo> Builds { get; } = new List<IBuildInfo>(2);
+
+    public void AddBuilds(IEnumerable<IBuildInfo> builds)
     {
-        get => _builds;
-        init
-        {
-            _builds = value;
-            SelectDefaultBuild();
-        }
+        Builds.AddRange(builds);
+        SelectDefaultBuild();
     }
 
     public string? Url => DefaultBuild.Url;
@@ -42,10 +38,10 @@ public class AggegatedBuildInfo : IBuildInfo
 
     private void SelectDefaultBuild()
     {
-        IEnumerable<IGrouping<string, IBuildInfo>> buildsByJob = _builds.GroupBy(b => b.BuildDefinitionName);
+        IEnumerable<IGrouping<string, IBuildInfo>> buildsByJob = Builds.GroupBy(b => b.BuildDefinitionName);
         if (buildsByJob.Count() == 1)
         {
-            DefaultBuild = _builds.OrderByDescending(b => b.StartDate).FirstOrDefault();
+            DefaultBuild = Builds.OrderByDescending(b => b.StartDate).FirstOrDefault();
         }
         else
         {
