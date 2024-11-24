@@ -1,4 +1,6 @@
-﻿using GitCommands;
+﻿using System.Text;
+using System.Text.RegularExpressions;
+using GitCommands;
 
 namespace GitUI
 {
@@ -20,6 +22,7 @@ namespace GitUI
 
             string pattern = searchPattern.ToPosixPath();
             string dir = workingDir.ToPosixPath();
+            Regex camelHumpsRegex = BuildRegexCamelHumps(pattern);
 
             if (pattern.StartsWith(dir, StringComparison.OrdinalIgnoreCase))
             {
@@ -28,7 +31,23 @@ namespace GitUI
             }
 
             // Method Contains have no override with StringComparison parameter
-            return fileName => fileName?.IndexOf(pattern, StringComparison.OrdinalIgnoreCase) is >= 0;
+            return fileName => fileName != null && (fileName.IndexOf(pattern, StringComparison.OrdinalIgnoreCase) is >= 0 || camelHumpsRegex.IsMatch(fileName));
+        }
+
+        private Regex BuildRegexCamelHumps(string searchPattern)
+        {
+            StringBuilder sb = new();
+            foreach (char c in searchPattern)
+            {
+                if (char.IsUpper(c) || c == '/')
+                {
+                    sb.Append(".*");
+                }
+
+                sb.Append(c);
+            }
+
+            return new Regex(sb.ToString(), RegexOptions.ExplicitCapture | RegexOptions.NonBacktracking);
         }
     }
 }
