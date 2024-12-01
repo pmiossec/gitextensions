@@ -2018,6 +2018,8 @@ namespace GitUI
         private void cboFindInCommitFilesGitGrep_TextUpdate(object? sender, EventArgs e)
         {
             FindInCommitFilesGitGrep(cboFindInCommitFilesGitGrep.Text);
+
+            // git -c color.ui=never diff --name-only -z -G"Feature:" c9aaa01ffe573c0d50ddc59b61265b2ef059d629^! --
         }
 
         private void FindInCommitFilesGitGrep(string search, int delay = 200)
