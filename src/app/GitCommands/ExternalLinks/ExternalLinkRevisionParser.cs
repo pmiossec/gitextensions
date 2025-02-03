@@ -58,20 +58,16 @@ namespace GitCommands.ExternalLinks
 
             foreach (ConfigFileRemote remote in matchingRemotes)
             {
-                if (definition.RemoteSearchInParts.Contains(ExternalLinkDefinition.RemotePart.URL))
+                if (!string.IsNullOrWhiteSpace(remote.Url)
+                    && definition.RemoteSearchInParts.Contains(ExternalLinkDefinition.RemotePart.URL))
                 {
-                    if (!string.IsNullOrWhiteSpace(remote.Url))
-                    {
-                        remoteUrls.Add(remote.Url);
-                    }
+                    remoteUrls.Add(remote.Url);
                 }
 
-                if (definition.RemoteSearchInParts.Contains(ExternalLinkDefinition.RemotePart.PushURL))
+                if (!string.IsNullOrWhiteSpace(remote.PushUrl)
+                    && definition.RemoteSearchInParts.Contains(ExternalLinkDefinition.RemotePart.PushURL))
                 {
-                    if (!string.IsNullOrWhiteSpace(remote.PushUrl))
-                    {
-                        remoteUrls.Add(remote.PushUrl);
-                    }
+                    remoteUrls.Add(remote.PushUrl);
                 }
             }
 
