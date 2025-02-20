@@ -5,7 +5,7 @@ namespace GitCommands.Remotes
 {
     public sealed partial class AzureDevOpsRemoteParser : RemoteParser
     {
-        [GeneratedRegex(@"^https:\/\/(?<owner>[^.]*)\.visualstudio\.com\/(?<project>[^\/]*)\/_git\/(?<repo>.*)$")]
+        [GeneratedRegex(@"^https:\/\/(?<owner>[^.]*)\.visualstudio\.com\/(DefaultCollection\/)?(?<project>[^\/]*)\/_git\/(?<repo>.*)$")]
         private static partial Regex VstsHttpsRemoteRegex();
 
         [GeneratedRegex(@"^[^@]*@vs-ssh\.visualstudio\.com:v\d\/(?<owner>[^\/]*)\/(?<project>[^\/]*)\/(?<repo>.*)$")]
