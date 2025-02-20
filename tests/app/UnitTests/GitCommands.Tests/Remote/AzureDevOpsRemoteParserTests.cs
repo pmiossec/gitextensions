@@ -10,6 +10,7 @@ namespace GitCommandsTests.Remote
         [TestCase("git@ssh.dev.azure.com:v3/owner/project/repo")]
         [TestCase("https://owner.visualstudio.com/project/_git/repo")]
         [TestCase("owner@vs-ssh.visualstudio.com:v3/owner/project/repo")]
+        [TestCase("https://owner.visualstudio.com/DefaultCollection/project/_git/repo")]
         public void Should_succeed_in_parsing_valid_url(string url)
         {
             AzureDevOpsRemoteParser azureDevOpsRemoteParser = new();

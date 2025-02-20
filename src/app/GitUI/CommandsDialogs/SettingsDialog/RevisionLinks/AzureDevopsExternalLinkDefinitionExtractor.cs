@@ -44,6 +44,19 @@ namespace GitUI.CommandsDialogs.SettingsDialog.RevisionLinks
             };
             externalLinkDefinitions.Add(definition);
 
+            definition = new()
+            {
+                Name = string.Format(BranchLink.Text, ServiceName),
+                Enabled = true,
+                SearchInParts = { ExternalLinkDefinition.RevisionPart.LocalBranches },
+                SearchPattern = @".+",
+                LinkFormats =
+                {
+                    new ExternalLinkFormat { Caption = string.Format(ViewBranchLink.Text, ServiceName), Format = $"{azureDevopsUrl}/_git/{repoName}?version=GB{{0}}" },
+                }
+            };
+            externalLinkDefinitions.Add(definition);
+
             externalLinkDefinitions.Add(new ExternalLinkDefinition
             {
                 Name = string.Format(IssuesLink.Text, ServiceName),
