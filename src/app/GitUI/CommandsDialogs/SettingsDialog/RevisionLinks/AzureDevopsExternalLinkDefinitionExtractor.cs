@@ -27,7 +27,7 @@ namespace GitUI.CommandsDialogs.SettingsDialog.RevisionLinks
             }
 
             accountName ??= "ACCOUNT_NAME";
-            repoName ??= "REPO_NAME";
+            repoName ??= "%REPO_NAME%";
 
             string azureDevopsUrl = $"https://dev.azure.com/{accountName}";
             ExternalLinkDefinition definition = new()
