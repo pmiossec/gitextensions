@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using System.Reflection;
 using System.Text;
 using GitExtensions.Extensibility.Configurations;
 using GitExtensions.Extensibility.Settings;
@@ -89,6 +90,8 @@ public interface IGitModule
     /// Gets the directory which contains the git repository.
     /// </summary>
     string WorkingDir { get; }
+
+    string RepoName { get; }
 
     /// <summary>
     /// Gets the location of .git directory for the current working folder.
