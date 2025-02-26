@@ -82,10 +82,13 @@ namespace GitExtensions.Plugins.BackgroundFetch
                 return;
             }
 
+            TimeSpan intervalTimeSpan = TimeSpan.FromSeconds(Math.Max(5, fetchInterval));
+            TimeSpan startTimer = fetchOnOpening ? TimeSpan.FromMilliseconds(10) : intervalTimeSpan;
+
             IObservable<long> fetchTriggers = isRefreshDisabled
                 ? WaitForRunningGitExitsObservable(gitModule)
                 : Observable
-                    .Timer(TimeSpan.FromSeconds(Math.Max(5, fetchInterval)))
+                    .Timer(startTimer, intervalTimeSpan)
                     .SelectMany(_ => WaitForRunningGitExitsObservable(gitModule))
                     .Repeat();
 
