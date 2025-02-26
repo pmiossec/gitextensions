@@ -87,6 +87,7 @@ namespace GitCommands
         {
             WorkingDir = (workingDir ?? "").NormalizePath().NormalizeWslPath().EnsureTrailingPathSeparator();
             WorkingDirGitDir = GitDirectoryResolverInstance.Resolve(WorkingDir);
+            RepoName = PathUtil.GetFileName(WorkingDir);
             _indexLockManager = new IndexLockManager(this);
             _commitDataManager = new CommitDataManager(() => this);
             _getAllChangedFilesOutputParser = new GetAllChangedFilesOutputParser(() => this);
@@ -190,6 +191,7 @@ namespace GitCommands
 
         /// <inherit/>
         public string WorkingDir { get; init; }
+        public string RepoName { get; init; }
 
         /// <summary>
         /// GitVersion for the default GitExecutable.
