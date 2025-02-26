@@ -29,7 +29,7 @@ public class ExternalLinkRevisionParserTests
         _remotesManager = Substitute.For<IConfigFileRemoteSettingsManager>();
         _remotesManager.LoadRemotes(false).Returns(GetDefaultRemotes());
 
-        _parser = new ExternalLinkRevisionParser(_remotesManager);
+        _parser = new ExternalLinkRevisionParser(_remotesManager, () => "repoName");
     }
 
     [Test]

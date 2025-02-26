@@ -81,6 +81,7 @@ public sealed partial class GitModule : IGitModule
         _executorProvider = executorProvider;
         _executor = executorProvider.GetExecutor(workingDir ?? "");
         WorkingDirGitDir = _executor.GetGitDirectory();
+        RepoName = PathUtil.GetFileName(WorkingDir);
         _indexLockManager = new IndexLockManager(this);
         _getAllChangedFilesOutputParser = new GetAllChangedFilesOutputParser(() => this);
 
@@ -172,6 +173,7 @@ public sealed partial class GitModule : IGitModule
     public IGitVersion GitVersion => Git.GitVersion.CurrentVersion(GitExecutable);
 
     public string WorkingDir => _executor.WorkingDir;
+    public string RepoName { get; init; }
 
     public IExecutable GitExecutable => _executor.GitExecutable;
 

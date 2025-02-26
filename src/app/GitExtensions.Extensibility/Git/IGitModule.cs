@@ -1,5 +1,6 @@
 ﻿using System.Collections.Frozen;
 using System.Diagnostics.CodeAnalysis;
+using System.Reflection;
 using System.Text;
 using GitExtensions.Extensibility.Configurations;
 using GitExtensions.Extensibility.Settings;
@@ -95,6 +96,8 @@ public interface IGitModule : IGitExecutor
     ///  If this module is a submodule, returns its super-project <see cref="IGitModule"/>, otherwise <c>null</c>.
     /// </value>
     public IGitModule? SuperprojectModule { get; }
+
+    string RepoName { get; }
 
     /// <summary>
     /// Gets the location of .git directory for the current working folder.
