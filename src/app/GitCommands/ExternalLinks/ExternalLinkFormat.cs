@@ -13,7 +13,7 @@ namespace GitCommands.ExternalLinks
         [XmlIgnore]
         public bool IsValid { get; private set; }
 
-        public ExternalLink Apply(Match? remoteMatch, Match? revisionMatch, GitRevision revision)
+        public ExternalLink Apply(Match? remoteMatch, Match? revisionMatch, GitRevision revision, string repoName)
         {
             List<string> groups = [];
             AddGroupsFromMatches(remoteMatch);
@@ -26,7 +26,7 @@ namespace GitCommands.ExternalLinks
             {
                 caption = string.Format(Caption, groupsArray);
                 Validates.NotNull(Format);
-                uri = Format.Replace("%COMMIT_HASH%", revision.Guid);
+                uri = Format.Replace("%COMMIT_HASH%", revision.Guid).Replace("%REPO_NAME%", repoName);
                 uri = string.Format(uri, groupsArray);
                 IsValid = true;
             }

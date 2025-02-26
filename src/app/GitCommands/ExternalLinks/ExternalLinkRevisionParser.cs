@@ -1,5 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 using GitCommands.Remotes;
+using GitExtensions.Extensibility.Git;
 using GitUIPluginInterfaces;
 
 namespace GitCommands.ExternalLinks
@@ -12,16 +13,19 @@ namespace GitCommands.ExternalLinks
     public sealed class ExternalLinkRevisionParser : IExternalLinkRevisionParser
     {
         private readonly IConfigFileRemoteSettingsManager _remotesManager;
+        private readonly Func<string> _getRepoName;
 
-        public ExternalLinkRevisionParser(IConfigFileRemoteSettingsManager remotesManager)
+        public ExternalLinkRevisionParser(IConfigFileRemoteSettingsManager remotesManager, Func<string> getRepoName)
         {
             _remotesManager = remotesManager;
+            _getRepoName = getRepoName;
         }
 
         public IEnumerable<ExternalLink> Parse(GitRevision revision, ExternalLinkDefinition definition)
         {
             IEnumerable<Match?> remoteMatches = ParseRemotes(definition);
-            return remoteMatches.SelectMany(remoteMatch => ParseRevision(revision, definition, remoteMatch));
+            string repoName = _getRepoName();
+            return remoteMatches.SelectMany(remoteMatch => ParseRevision(revision, definition, remoteMatch, repoName));
         }
 
         private static IEnumerable<ConfigFileRemote> GetMatchingRemotes(ExternalLinkDefinition definition, IEnumerable<ConfigFileRemote> remotes)
@@ -87,7 +91,7 @@ namespace GitCommands.ExternalLinks
             return allMatches;
         }
 
-        private static IEnumerable<ExternalLink> ParseRevision(GitRevision revision, ExternalLinkDefinition definition, Match? remoteMatch)
+        private static IEnumerable<ExternalLink> ParseRevision(GitRevision revision, ExternalLinkDefinition definition, Match? remoteMatch, string repoName)
         {
             List<IEnumerable<ExternalLink>> links = [];
 
@@ -96,7 +100,7 @@ namespace GitCommands.ExternalLinks
                 links.AddRange(
                     revision.Refs
                         .Where(b => !b.IsRemote)
-                        .Select(head => ParseRevisionPart(revision, definition, remoteMatch, head.LocalName)));
+                        .Select(head => ParseRevisionPart(revision, definition, remoteMatch, head.LocalName, repoName)));
             }
 
             if (definition.SearchInParts.Contains(ExternalLinkDefinition.RevisionPart.RemoteBranches))
@@ -104,18 +108,18 @@ namespace GitCommands.ExternalLinks
                 links.AddRange(
                     revision.Refs
                         .Where(b => b.IsRemote)
-                        .Select(head => ParseRevisionPart(revision, definition, remoteMatch, head.LocalName)));
+                        .Select(head => ParseRevisionPart(revision, definition, remoteMatch, head.LocalName, repoName)));
             }
 
             if (definition.SearchInParts.Contains(ExternalLinkDefinition.RevisionPart.Message))
             {
-                links.Add(ParseRevisionPart(revision, definition, remoteMatch, revision.Body));
+                links.Add(ParseRevisionPart(revision, definition, remoteMatch, revision.Body, repoName));
             }
 
             return links.SelectMany(list => list);
         }
 
-        private static IEnumerable<ExternalLink> ParseRevisionPart(GitRevision revision, ExternalLinkDefinition definition, Match? remoteMatch, string? part)
+        private static IEnumerable<ExternalLink> ParseRevisionPart(GitRevision revision, ExternalLinkDefinition definition, Match? remoteMatch, string? part, string repoName)
         {
             if (string.IsNullOrEmpty(definition.SearchPattern) || definition.SearchPatternRegex?.Value is null || part is null)
             {
@@ -150,7 +154,7 @@ namespace GitCommands.ExternalLinks
             {
                 foreach (ExternalLinkFormat format in definition.LinkFormats)
                 {
-                    yield return format.Apply(remoteMatch, match, revision);
+                    yield return format.Apply(remoteMatch, match, revision, repoName);
                 }
             }
         }

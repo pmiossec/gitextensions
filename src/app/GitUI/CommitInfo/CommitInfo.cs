@@ -97,7 +97,7 @@ namespace GitUI.CommitInfo
             _externalLinksStorage = new ExternalLinksStorage();
             _effectiveLinkDefinitionsProvider = new ConfiguredLinkDefinitionsProvider(_externalLinksStorage);
             _remotesManager = new ConfigFileRemoteSettingsManager(() => Module);
-            _externalLinkRevisionParser = new ExternalLinkRevisionParser(_remotesManager);
+            _externalLinkRevisionParser = new ExternalLinkRevisionParser(_remotesManager, () => Module.RepoName);
             _gitRevisionExternalLinksParser = new GitRevisionExternalLinksParser(_effectiveLinkDefinitionsProvider, _externalLinkRevisionParser);
             _gitDescribeProvider = new GitDescribeProvider(() => Module);
 
