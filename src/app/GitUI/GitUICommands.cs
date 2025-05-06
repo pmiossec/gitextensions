@@ -1846,9 +1846,9 @@ namespace GitUI
         {
             IReadOnlyList<string> candidates = Module.GetFullTree("HEAD");
 
-            Func<string?, bool> predicate = _findFilePredicateProvider.Get(name, Module.WorkingDir);
+            Func<string?, int> predicate = _findFilePredicateProvider.Get(name, Module.WorkingDir);
 
-            return candidates.Where(predicate);
+            return candidates.Where(c => predicate(c) != -1);
         }
 
         private bool Commit(IReadOnlyDictionary<string, string?> arguments)
