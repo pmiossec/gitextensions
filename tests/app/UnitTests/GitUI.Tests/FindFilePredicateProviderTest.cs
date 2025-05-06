@@ -51,8 +51,8 @@ namespace GitUITests
         [TestCase(@"\test2\t", "test1/test2/test3")]
         public void Get_should_correct_work_with_slashes_and_backslashes_in_pattern(string pattern, string filePath)
         {
-            Func<string?, bool> predicate = _provider.Get(pattern, workingDirDefault);
-            ClassicAssert.True(predicate(filePath));
+            Func<string?, int> predicate = _provider.Get(pattern, workingDirDefault);
+            ClassicAssert.True(predicate(filePath) != -1);
         }
 
         [TestCase(@"\test2\t", "D:/test1/test2/test3/")]
@@ -70,16 +70,16 @@ namespace GitUITests
         [TestCase(@"D:/test1", @"D:", "test1/test2/test3/")]
         public void Get_should_work_correct_when_workingDir_end_with_slash_or_not(string pattern, string workingDir, string filePath)
         {
-            Func<string?, bool> predicate = _provider.Get(pattern, workingDir);
-            ClassicAssert.True(predicate(filePath));
+            Func<string?, int> predicate = _provider.Get(pattern, workingDir);
+            ClassicAssert.True(predicate(filePath) != -1);
         }
 
         [TestCase(@"tEsT2", @"D:/", "Test1/teST2/test3/")]
         [TestCase(@"D:\Test\test1", @"D:/TEST", "teSt1/test2/test3/")]
         public void Get_should_work_with_different_cases(string pattern, string workingDir, string filePath)
         {
-            Func<string?, bool> predicate = _provider.Get(pattern, workingDir);
-            ClassicAssert.True(predicate(filePath));
+            Func<string?, int> predicate = _provider.Get(pattern, workingDir);
+            ClassicAssert.True(predicate(filePath) != -1);
         }
 
         [TestCase(@"D:/test1", @"D:/", "test1/test2/test3/", ExpectedResult = true)]
@@ -88,16 +88,16 @@ namespace GitUITests
         [TestCase(@"//d/test/test1", @"//d/test\", "test1/test2/test3/", ExpectedResult = true)]
         public bool Get_should_use_startwith_when_pattern_started_with_workingDir(string pattern, string workingDir, string filePath)
         {
-            Func<string?, bool> predicate = _provider.Get(pattern, workingDir);
-            return predicate(filePath);
+            Func<string?, int> predicate = _provider.Get(pattern, workingDir);
+            return predicate(filePath) != -1;
         }
 
         [TestCase(@"test2", @"D:/", "test1/test2/test3/", ExpectedResult = true)]
         [TestCase(@"test1", @"D:/test", "test1/test2/test3/", ExpectedResult = true)]
         public bool Get_should_use_contains_when_pattern_does_not_started_with_workingDir(string pattern, string workingDir, string filePath)
         {
-            Func<string?, bool> predicate = _provider.Get(pattern, workingDir);
-            return predicate(filePath);
+            Func<string?, int> predicate = _provider.Get(pattern, workingDir);
+            return predicate(filePath) != -1;
         }
 
         [TestCase(null)]
@@ -105,7 +105,7 @@ namespace GitUITests
         [TestCase(" ")]
         public void Get_should_not_throw_then_filePath_is_null_or_empty(string filePath)
         {
-            Func<string?, bool> predicate = _provider.Get(patternDefault, workingDirDefault);
+            Func<string?, int> predicate = _provider.Get(patternDefault, workingDirDefault);
 
             Action executor = () => { predicate(filePath); };
             executor.Should().NotThrow<ArgumentNullException>();
