@@ -498,8 +498,18 @@ partial class FileStatusList
 
         IEnumerable<GitItemStatus> FindDiffFilesMatches(string name)
         {
-            Func<string?, bool> predicate = _findFilePredicateProvider.Get(name, Module.WorkingDir);
-            return candidates.Where(item => predicate(item.Name) || predicate(item.OldName));
+            Func<string?, int> predicate = _findFilePredicateProvider.Get(name, Module.WorkingDir);
+            return candidates.Select(item =>
+            {
+                int score = predicate(item.Name);
+                if (score != -1)
+                {
+                    return (item, score);
+                }
+
+                score = predicate(item.OldName);
+                return (item, score);
+            }).Where(i => i.score != -1).OrderBy(i => i.score).Select(i => i.item);
         }
 
         GitItemStatus? selectedItem;
