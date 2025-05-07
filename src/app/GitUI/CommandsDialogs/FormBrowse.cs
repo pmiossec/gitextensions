@@ -3097,10 +3097,13 @@ namespace GitUI.CommandsDialogs
             string fullPath = Path.Combine(Module.WorkingDirGitDir, configFile);
             if (!File.Exists(fullPath))
             {
+                File.WriteAllText(fullPath, @"# Example: Sync master: (uncomment following line to enable)
+#master->origin/master");
+                Process.Start("notepad", fullPath);
                 return;
             }
 
-            IEnumerable<string> lines = File.ReadAllLines(fullPath).Where(l => !l.StartsWith("#") && l.Contains(trackingSymbol));
+            IEnumerable<string> lines = File.ReadAllLines(fullPath).Where(l => !l.StartsWith('#') && l.Contains(trackingSymbol));
 
             bool shouldRefresh = false;
             foreach (string line in lines)
