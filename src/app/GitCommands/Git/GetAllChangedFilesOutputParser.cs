@@ -293,6 +293,105 @@ namespace GitCommands.Git
             }
         }
 
+        public static IReadOnlyList<GitItemStatus> GetLockedFileList(string lockedFilesString)
+        {
+            List<GitItemStatus> lockFiles = new();
+            const char x = '?';
+
+            string[] files = lockedFilesString.Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
+            for (int n = 0; n < files.Length; n++)
+            {
+                string line = files[n];
+
+                IReadOnlyList<string> items = ParseLockedInfo(line);
+
+                string fileName = items[0];
+                string user = items[1];
+                string itemDesc = user.PadRight(20, ' ') + fileName;
+
+                // TODO: Verify parameters
+                GitItemStatus gitItemStatus = GitItemStatusFromCopyRename(StagedStatus.Unset, false, null, itemDesc, x, null);
+                gitItemStatus.File = fileName;
+                gitItemStatus.User = user;
+
+                lockFiles.Add(gitItemStatus);
+            }
+
+            return lockFiles;
+        }
+
+        private static IReadOnlyList<string> ParseLockedInfo(string line)
+        {
+            bool beginQuote = false;
+            List<string> items = new();
+            if (line[0] == '"' || line[0] == '\'')
+            {
+                beginQuote = true;
+            }
+
+            int userStart = 0;
+            string file = null;
+            string user = null;
+
+            for (int i = 1; i < line.Length; ++i)
+            {
+                if (file == null)
+                {
+                    if (beginQuote)
+                    {
+                        if (line[i] == '"' || line[i] == '\'')
+                        {
+                            file = line.Substring(0, i);
+
+                            // skip the quote
+                            i++;
+
+                            // clear it for user
+                            beginQuote = false;
+                        }
+                    }
+                    else if (line[i] == ' ' || line[i] == '\t')
+                    {
+                        file = line.Substring(0, i);
+                    }
+
+                    // skip spaces
+                    while (line[i] == ' ' || line[i] == '\t')
+                    {
+                        i++;
+                    }
+
+                    userStart = i;
+                }
+                else if (user == null)
+                {
+                    if (beginQuote)
+                    {
+                        if (line[i] == '"' || line[i] == '\'')
+                        {
+                            int length = i - userStart;
+
+                            user = line.Substring(userStart, length);
+
+                            // skip the quote
+                            i++;
+                        }
+                    }
+                    else if (line[i] == ' ' || line[i] == '\t')
+                    {
+                        int length = i - userStart;
+
+                        user = line.Substring(userStart, length);
+                    }
+                }
+            }
+
+            items.Add(file);
+            items.Add(user);
+
+            return items;
+        }
+
         private static GitItemStatus GitItemStatusFromCopyRename(StagedStatus staged, bool fromDiff, string nextFile, string fileName, char x, string status)
         {
             GitItemStatus gitItemStatus;

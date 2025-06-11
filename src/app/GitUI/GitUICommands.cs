@@ -1521,6 +1521,38 @@ namespace GitUI
                     return StartViewPatchDialog(args.Count == 3 ? args[2] : "");
                 case "uninstall":
                     return UninstallEditor();
+                case "lfslock":
+                    {
+                        string relativePath = GetRelativePath(args[2], Module.WorkingDir);
+
+                        string result = Module.LfsLock(relativePath);
+
+                        MessageBox.Show(result, "LFS lock Result");
+
+                        return true;
+                    }
+
+                case "lfsunlock":
+                    {
+                        string relativePath = GetRelativePath(args[2], Module.WorkingDir);
+
+                        string result = Module.LfsUnLock(relativePath);
+
+                        MessageBox.Show(result, "LFS Unlock Result");
+
+                        return true;
+                    }
+
+                case "showlfslocks":
+                    {
+                        using (FormLocks form = new(this))
+                        {
+                            form.ShowDialog();
+                        }
+
+                        return true;
+                    }
+
                 default:
                     if (args[1].StartsWith("git://") || args[1].StartsWith("http://") || args[1].StartsWith("https://"))
                     {
@@ -1996,6 +2028,91 @@ namespace GitUI
         #endregion
 
         internal TestAccessor GetTestAccessor() => new(this);
+
+        public bool StartLocksDialog(IWin32Window owner)
+        {
+            return DoActionOnRepo(owner: null, action: () =>
+            {
+                using (FormLocks form = new(this))
+                {
+                    form.ShowDialog(owner);
+                }
+
+                return true;
+            }, changesRepo: false);
+            ////if (Module.IsBareRepository())
+            ////{
+            ////    return false;
+            ////}
+
+            ////bool Action()
+            ////{
+            ////    // Commit dialog can be opened on its own without the main form
+            ////    // If it is opened by itself, we need to ensure plugins are loaded because some of them
+            ////    // may have hooks into the commit flow
+            ////    bool werePluginsRegistered = PluginRegistry.PluginsRegistered;
+
+            ////    try
+            ////    {
+            ////        // Load plugins synchronously
+            ////        // if the commit dialog is opened from the main form, all plugins are already loaded and we return instantly,
+            ////        // if the dialog is loaded on its own, plugins need to be loaded before we load the form
+            ////        if (!werePluginsRegistered)
+            ////        {
+            ////            ThreadHelper.JoinableTaskFactory.Run(async () =>
+            ////            {
+            ////                PluginRegistry.Initialize();
+            ////                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+            ////                PluginRegistry.Register(this);
+            ////            });
+            ////        }
+
+            ////        using (var form = new FormLocks(this))
+            ////        {
+            ////            form.ShowDialog(owner);
+            ////        }
+            ////    }
+            ////    finally
+            ////    {
+            ////        if (!werePluginsRegistered)
+            ////        {
+            ////            PluginRegistry.Unregister(this);
+            ////        }
+            ////    }
+
+            ////    return true;
+            ////}
+
+            ////return DoActionOnRepo(owner, true, false, PreCommit, PostCommit, Action);
+        }
+
+        /// <summary>
+        /// Returns a relative path string from a full path based on a base path
+        /// provided.
+        /// </summary>
+        /// <param name="fullPath">The path to convert. Can be either a file or a directory</param>
+        /// <param name="basePath">The base path on which relative processing is based. Should be a directory.</param>
+        /// <returns>
+        /// String of the relative path.
+        /// Examples of returned values:
+        ///  test.txt, ..\test.txt, ..\..\..\test.txt, ., .., subdir\test.txt
+        /// </returns>
+        private static string GetRelativePath(string fullPath, string basePath)
+        {
+            // Require trailing backslash for path
+            if (!basePath.EndsWith("\\"))
+            {
+                basePath += "\\";
+            }
+
+            Uri baseUri = new(basePath);
+            Uri fullUri = new(fullPath);
+
+            Uri relativeUri = baseUri.MakeRelativeUri(fullUri);
+
+            // Uri's use forward slashes so convert back to backward slashes
+            return relativeUri.ToString().Replace("/", "\\");
+        }
 
         internal struct TestAccessor
         {

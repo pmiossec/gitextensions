@@ -71,6 +71,25 @@ namespace GitExtUtils
             }
         }
 
+        public GitArgumentBuilder(string command, bool b)
+        {
+            if (command == null)
+            {
+                throw new ArgumentNullException(nameof(command));
+            }
+
+            _command = command;
+            _gitArgs = default;
+            GitCommandConfiguration commandConfiguration = GitCommandConfiguration.Default;
+
+            IReadOnlyList<GitConfigItem> defaultConfig = commandConfiguration.Get(command);
+            _configItems = new List<GitConfigItem>(capacity: defaultConfig.Count + 2);
+            if (defaultConfig.Count != 0)
+            {
+                _configItems.AddRange(defaultConfig);
+            }
+        }
+
         /// <summary>
         /// Add <paramref name="configItem"/> to this builder.
         /// </summary>

@@ -301,7 +301,7 @@ namespace GitCommands
 
         public static string CascadeShellMenuItems
         {
-            get => ReadStringRegValue("CascadeShellMenuItems", "110111000111111111");
+            get => ReadStringRegValue("CascadeShellMenuItems", "110111000111111111110");
             set => WriteStringRegValue("CascadeShellMenuItems", value);
         }
 

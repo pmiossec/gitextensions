@@ -44,6 +44,9 @@ IDI_ICONVIEWCHANGES         ICON    "Resources\\Diff.ico"
 IDI_ICONSTASH               ICON    "Resources\\stash.ico"
 IDI_ICONCREATEREPOSITORY    ICON    "Resources\\RepoCreate.ico"
 IDI_ICONPATCHAPPLY          ICON    "Resources\\PatchApply.ico"
+IDI_ICONLOCK                ICON    "Resources\\lock.ico"
+IDI_ICONLOCKS               ICON    "Resources\\locks.ico"
+IDI_ICONUNLOCK              ICON    "Resources\\unlock.ico"
 
 /////////////////////////////////////////////////////////////////////////////
 //

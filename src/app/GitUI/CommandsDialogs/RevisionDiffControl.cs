@@ -1,5 +1,7 @@
 using System.Text;
+using EnvDTE;
 using GitCommands;
+using GitCommands.Git;
 using GitExtensions.Extensibility;
 using GitExtensions.Extensibility.Git;
 using GitUI.ScriptsEngine;
@@ -653,6 +655,28 @@ namespace GitUI.CommandsDialogs
             _lastExplicitlySelectedItem = filename;
             _lastExplicitlySelectedItemLine = null;
             return _revisionGridUpdate.SetSelectedRevision(commitId);
+        }
+
+        private void toolStripMenuItem2_Click(object sender, EventArgs e)
+        {
+            if (DiffFiles.SelectedItem == null)
+            {
+                return;
+            }
+
+            string result = Module.LfsLock(DiffFiles.SelectedItem.Item.File);
+            MessageBox.Show(result, "LFS Lock Result");
+        }
+
+        private void toolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            if (DiffFiles.SelectedItem == null)
+            {
+                return;
+            }
+
+            string result = Module.LfsUnLock(DiffFiles.SelectedItem.Item.File);
+            MessageBox.Show(result, "LFS Unlock Result");
         }
 
         internal TestAccessor GetTestAccessor()

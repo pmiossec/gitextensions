@@ -112,7 +112,10 @@
             "Revert",
             "Settings",
             "View stash",
-            "View changes"});
+            "View changes",
+            "LFS Lock",
+            "LFS UnLock",
+            "Show LFS Locks"});
             _NO_TRANSLATE_chlMenuEntries.Location = new Point(3, 72);
             _NO_TRANSLATE_chlMenuEntries.Name = "_NO_TRANSLATE_chlMenuEntries";
             _NO_TRANSLATE_chlMenuEntries.Size = new Size(315, 94);

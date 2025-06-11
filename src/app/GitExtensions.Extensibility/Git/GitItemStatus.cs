@@ -21,6 +21,9 @@ public enum StagedStatus
 
 public sealed class GitItemStatus
 {
+    public string User { get; set; }
+    public string File { get; set; }
+
     [Flags]
     private enum Flags
     {

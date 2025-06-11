@@ -4138,6 +4138,35 @@ namespace GitCommands
             }
         }
 
+        private string LfsOperation(string file, string lfsOperation)
+        {
+            string cmd = lfsOperation + " " + file;
+
+            // for debugging
+            string output = _gitExecutable.GetOutput(new GitArgumentBuilder(cmd));
+
+            return output;
+        }
+
+        public string LfsLock(string file)
+        {
+            return LfsOperation(file, "lfs lock");
+        }
+
+        public string LfsUnLock(string file)
+        {
+            return LfsOperation(file, "lfs unlock");
+        }
+
+        public IReadOnlyList<GitItemStatus> LfsLockedFiles()
+        {
+            string output = _gitExecutable.GetOutput(new GitArgumentBuilder("lfs locks"));
+
+            List<GitItemStatus> result = GetAllChangedFilesOutputParser.GetLockedFileList(output).ToList();
+
+            return result;
+        }
+
         internal TestAccessor GetTestAccessor() => new(this);
 
         internal readonly struct TestAccessor

@@ -3321,5 +3321,10 @@ namespace GitUI
         {
             _buildServerWatcher.OnRepositoryChanged();
         }
+
+        internal void ShowLocks()
+        {
+            UICommands.StartLocksDialog(this);
+        }
     }
 }

@@ -515,4 +515,9 @@ public interface IGitModule
         CancellationToken cancellationToken);
 
     GitBlame Blame(string? fileName, string from, Encoding encoding, string? lines, CancellationToken cancellationToken);
+
+    string LfsOperation(string file, string lfsOperation);
+    string LfsLock(string file);
+    string LfsUnLock(string file);
+    IReadOnlyList<GitItemStatus> LfsLockedFiles();
 }

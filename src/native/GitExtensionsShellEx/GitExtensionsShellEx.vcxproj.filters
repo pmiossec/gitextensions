@@ -86,6 +86,15 @@
     <None Include="Resources\Diff.ico">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="Resources\lock.ico">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Resources\unlock.ico">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Resources\locks.ico">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resource.h">
