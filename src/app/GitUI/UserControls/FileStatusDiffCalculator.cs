@@ -315,7 +315,9 @@ namespace GitUI
             }
 
             IGitModule module = GetModule();
-            IReadOnlyList<GitItemStatus> statuses = module.GetGrepFilesStatus(selectedRev.ObjectId, _fileStatusDiffCalculatorInfo.GrepArguments, applyAppSettings: !_fileStatusDiffCalculatorInfo.FileTreeMode, cancellationToken);
+            IReadOnlyList<GitItemStatus> statuses = !selectedRev.IsArtificial && _fileStatusDiffCalculatorInfo.GrepArguments == @"-e ""^"""
+                ? module.GetTreeFiles(selectedRev.ObjectId, full: true)
+                : module.GetGrepFilesStatus(selectedRev.ObjectId, _fileStatusDiffCalculatorInfo.GrepArguments, applyAppSettings: !_fileStatusDiffCalculatorInfo.FileTreeMode, cancellationToken);
 
             if (_fileStatusDiffCalculatorInfo.FileTreeMode)
             {
