@@ -17,3 +17,6 @@
 *.bin binary diff=text
 *RevisionReaderTests.*.approved.* binary diff=text
 *DoAutoCRLF*.approved.* binary diff=text
+
+*.cs merge=mergiraf
+
