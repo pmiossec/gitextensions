@@ -2194,18 +2194,17 @@ public sealed partial class RevisionGridControl : GitModuleControl, ICheckRefs, 
         SetEnabled(popStashToolStripMenuItem, showStash);
         SetEnabled(dropStashToolStripMenuItem, showStash);
 
-       openBuildReportToolStripMenuItem.Click -= openBuildReportToolStripMenuItem_Click;
-       openBuildReportToolStripMenuItem.DropDownItems.Clear();
+        openBuildReportToolStripMenuItem.Click -= openBuildReportToolStripMenuItem_Click;
+        openBuildReportToolStripMenuItem.DropDownItems.Clear();
 
-       if (revision.BuildStatus is AggegatedBuildInfo multiple)
-       {
-           openBuildReportToolStripMenuItem.DropDownItems.AddRange(multiple.Builds.Select(b => new ToolStripMenuItem($"{b.StatusSymbol} {b.Id} [{b.BuildDefinitionName}]", null, (object? sender, EventArgs e) => OsShellUtil.OpenUrlInDefaultBrowser(b.Url))).ToArray());
-       }
-       else
-       {
-           openBuildReportToolStripMenuItem.Click += openBuildReportToolStripMenuItem_Click;
-       }
-
+        if (revision.BuildStatus is AggegatedBuildInfo multiple)
+        {
+            openBuildReportToolStripMenuItem.DropDownItems.AddRange(multiple.Builds.Select(b => new ToolStripMenuItem($"{b.StatusSymbol} {b.Id} [{b.BuildDefinitionName}]", null, (object? sender, EventArgs e) => OsShellUtil.OpenUrlInDefaultBrowser(b.Url))).ToArray());
+        }
+        else
+        {
+            openBuildReportToolStripMenuItem.Click += openBuildReportToolStripMenuItem_Click;
+        }
 
         int selectInLeftPanelCount = selectInLeftPanelDropDown.Items.Count;
         SetEnabled(tsmiSelectInLeftPanel, SelectInLeftPanel is not null && selectInLeftPanelCount > 0);

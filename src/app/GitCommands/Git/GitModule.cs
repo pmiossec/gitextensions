@@ -2927,6 +2927,9 @@ public sealed partial class GitModule : IGitModule
             : Array.Empty<string>();
     }
 
+    public IReadOnlyList<IGitRef> GetRefs(RefsFilter getRef)
+        => GetRefs(getRef, AppSettings.RefsSortBy, AppSettings.RefsSortOrder);
+
     /// <summary>
     /// Get the Git refs.
     /// </summary>

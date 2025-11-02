@@ -5,6 +5,7 @@ using GitExtensions.Extensibility.Git;
 using GitUI.CommandsDialogs.BrowseDialog;
 using GitUI.Properties;
 using ResourceManager;
+using ResourceManager.Hotkey;
 
 namespace GitUI.UserControls.RevisionGrid;
 
@@ -550,5 +551,3 @@ namespace GitUI.UserControls.RevisionGrid;
             AppSettings.SaveSettings();
         }
     }
-
-using ResourceManager.Hotkey;

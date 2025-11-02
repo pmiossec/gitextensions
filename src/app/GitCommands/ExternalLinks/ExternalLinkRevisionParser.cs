@@ -1,9 +1,8 @@
 ﻿﻿using System.Text.RegularExpressions;
-using GitCommands.Remotes;
-using GitExtensions.Extensibility.Git;
-using GitUIPluginInterfaces;
+﻿using GitCommands.Remotes;
+﻿using GitUIPluginInterfaces;
 
-namespace GitCommands.ExternalLinks;
+﻿namespace GitCommands.ExternalLinks;
 
 public interface IExternalLinkRevisionParser
 {
@@ -51,64 +50,7 @@ public sealed class ExternalLinkRevisionParser : IExternalLinkRevisionParser
 
         if (string.IsNullOrWhiteSpace(definition.RemoteSearchPattern) || definition.RemoteSearchPatternRegex?.Value is null)
         {
-            if (string.IsNullOrWhiteSpace(definition.UseRemotesPattern) || definition.UseRemotesRegex?.Value is null)
-            {
-                return remotes;
-            }
-
-            IEnumerable<ConfigFileRemote> matchingRemotes = remotes.Where(r => definition.UseRemotesRegex.Value.IsMatch(r.Name))
-                                                            .OrderBy(r => definition.UseRemotesPattern.IndexOf(r.Name, StringComparison.OrdinalIgnoreCase));
-            if (definition.UseOnlyFirstRemote)
-            {
-                matchingRemotes = matchingRemotes.Take(1);
-            }
-
-            return matchingRemotes;
-        }
-
-        private IEnumerable<Match?> ParseRemotes(ExternalLinkDefinition definition)
-        {
-            List<Match?> allMatches = [];
-
-            if (string.IsNullOrWhiteSpace(definition.RemoteSearchPattern) || definition.RemoteSearchPatternRegex?.Value is null)
-            {
-                allMatches.Add(null);
-                return allMatches;
-            }
-
-            List<string> remoteUrls = [];
-
-            IEnumerable<ConfigFileRemote> remotes = _remotesManager.LoadRemotes(false);
-            IEnumerable<ConfigFileRemote> matchingRemotes = GetMatchingRemotes(definition, remotes);
-
-            foreach (ConfigFileRemote remote in matchingRemotes)
-            {
-                if (!string.IsNullOrWhiteSpace(remote.Url)
-                    && definition.RemoteSearchInParts.Contains(ExternalLinkDefinition.RemotePart.URL))
-                {
-                    remoteUrls.Add(remote.Url);
-                }
-
-                if (!string.IsNullOrWhiteSpace(remote.PushUrl)
-                    && definition.RemoteSearchInParts.Contains(ExternalLinkDefinition.RemotePart.PushURL))
-                {
-                    remoteUrls.Add(remote.PushUrl);
-                }
-            }
-
-            foreach (string url in remoteUrls.Distinct())
-            {
-                MatchCollection matches = definition.RemoteSearchPatternRegex.Value.Matches(url);
-                for (int i = 0; i < matches.Count; i++)
-                {
-                    Match match = matches[i];
-                    if (match.Success)
-                    {
-                        allMatches.Add(match);
-                    }
-                }
-            }
-
+            allMatches.Add(null);
             return allMatches;
         }
 
@@ -119,20 +61,16 @@ public sealed class ExternalLinkRevisionParser : IExternalLinkRevisionParser
 
         foreach (ConfigFileRemote remote in matchingRemotes)
         {
-            if (definition.RemoteSearchInParts.Contains(ExternalLinkDefinition.RemotePart.URL))
+            if (!string.IsNullOrWhiteSpace(remote.Url)
+                && definition.RemoteSearchInParts.Contains(ExternalLinkDefinition.RemotePart.URL))
             {
-                if (!string.IsNullOrWhiteSpace(remote.Url))
-                {
-                    remoteUrls.Add(remote.Url);
-                }
+                remoteUrls.Add(remote.Url);
             }
 
-            if (definition.RemoteSearchInParts.Contains(ExternalLinkDefinition.RemotePart.PushURL))
+            if (!string.IsNullOrWhiteSpace(remote.PushUrl)
+                && definition.RemoteSearchInParts.Contains(ExternalLinkDefinition.RemotePart.PushURL))
             {
-                if (!string.IsNullOrWhiteSpace(remote.PushUrl))
-                {
-                    remoteUrls.Add(remote.PushUrl);
-                }
+                remoteUrls.Add(remote.PushUrl);
             }
         }
 
