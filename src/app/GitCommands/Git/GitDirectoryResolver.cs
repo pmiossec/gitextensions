@@ -20,6 +20,7 @@ public interface IGitDirectoryResolver
 /// </summary>
 public sealed class GitDirectoryResolver : IGitDirectoryResolver
 {
+    private (string RepositoryPath, string GitRepositoryPath)? _cache = null;
     private readonly IFileSystem _fileSystem;
 
     public GitDirectoryResolver(IFileSystem fileSystem)
@@ -67,6 +68,11 @@ public sealed class GitDirectoryResolver : IGitDirectoryResolver
             return string.Empty;
         }
 
+        if (_cache != null && _cache.Value.RepositoryPath == repositoryPath)
+        {
+            return _cache.Value.GitRepositoryPath;
+        }
+
         // Workaround for links to .git directories on WSL
         bool isWslLink = false;
         string gitPath = Path.Combine(repositoryPath, ".git");
@@ -94,11 +100,13 @@ public sealed class GitDirectoryResolver : IGitDirectoryResolver
                     return path.EnsureTrailingPathSeparator();
                 }
 
-                return Path.GetFullPath(Path.Combine(repositoryPath, path)).EnsureTrailingPathSeparator();
+                _cache = (repositoryPath, Path.GetFullPath(Path.Combine(repositoryPath, path)).EnsureTrailingPathSeparator());
+                return _cache.Value.GitRepositoryPath;
             }
         }
 
         gitPath = gitPath.EnsureTrailingPathSeparator();
-        return _fileSystem.Directory.Exists(gitPath) || isWslLink ? gitPath : repositoryPath;
+        _cache = (repositoryPath, isWslLink || _fileSystem.Directory.Exists(gitPath) ? gitPath : repositoryPath);
+        return _cache.Value.GitRepositoryPath;
     }
 }
