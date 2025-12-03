@@ -47,8 +47,8 @@ internal class RepositoryHistoryUIService : IRepositoryHistoryUIService
 
     private void AddRecentRepositories(ToolStripDropDownItem menuItemContainer, Repository repo, string? caption, int number, bool anchored = false)
     {
-        string numberString = number switch { < 10 => $"&{number}", 10 => "1&0", _ => $"{number}" };
-        ToolStripMenuItem item = new($"{numberString}: {caption}")
+        string numberString = number switch { < 10 => $"&{number}: ", 10 => "1&0: ", _ => string.Empty };
+        ToolStripMenuItem item = new($"{numberString}{caption}")
         {
             DisplayStyle = ToolStripItemDisplayStyle.ImageAndText
         };
