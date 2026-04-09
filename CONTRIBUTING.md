@@ -1,4 +1,4 @@
-﻿# Contributing to Git Extensions
+﻿# Contributing to Git Extensions (another change that will not conflict)
 
 :exclamation: As of 23 January 2019 all submissions to this project must be done under [The Developer Certificate of Origin](contributors.txt). You must sign it with your pull request, if you've not done so before.
 
